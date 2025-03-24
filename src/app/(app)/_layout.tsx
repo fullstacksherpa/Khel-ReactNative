@@ -49,9 +49,9 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="style"
+        name="venues"
         options={{
-          title: 'Style',
+          title: 'Venue',
           headerShown: false,
           tabBarIcon: ({ color }) => <StyleIcon color={color} />,
           tabBarButtonTestID: 'style-tab',
