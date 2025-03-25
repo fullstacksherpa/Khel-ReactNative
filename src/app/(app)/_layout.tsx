@@ -47,6 +47,15 @@ export default function TabLayout() {
           tabBarButtonTestID: 'feed-tab',
         }}
       />
+      <Tabs.Screen
+        name="game"
+        options={{
+          title: 'Game',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
+          tabBarButtonTestID: 'style-tab',
+        }}
+      />
 
       <Tabs.Screen
         name="venues"

@@ -2,7 +2,8 @@ import { Link } from 'expo-router';
 import React from 'react';
 
 import type { Post } from '@/api';
-import { Image, Pressable, Text, View } from '@/components/ui';
+import AnimationParallaxCarousel from '@/app/(app)/game';
+import { Pressable, Text, View } from '@/components/ui';
 
 type Props = Post;
 
@@ -19,13 +20,7 @@ export const Card = ({ title, body, id }: Props) => {
     <Link href={`/feed/${id}`} asChild>
       <Pressable>
         <View className="m-2 overflow-hidden rounded-xl  border border-neutral-300 bg-white  dark:bg-neutral-900">
-          <Image
-            className="h-56 w-full overflow-hidden rounded-t-xl"
-            contentFit="cover"
-            source={{
-              uri: images[Math.floor(Math.random() * images.length)],
-            }}
-          />
+          <AnimationParallaxCarousel />
 
           <View className="p-2">
             <Text className="py-3 text-2xl ">{title}</Text>
