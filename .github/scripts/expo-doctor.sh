@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure the .expo directory exists
+mkdir -p .expo
+
 # Run expo-doctor and capture output and exit code
 output=$(npx expo-doctor@latest 2>&1)
 exit_code=$?
