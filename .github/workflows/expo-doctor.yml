@@ -26,7 +26,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  
+
 jobs:
   doctor:
     name: Expo Doctor (expo)
@@ -46,12 +46,18 @@ jobs:
 
       - name: Run prebuild
         run: pnpm run prebuild
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
       - name: 🚑 Run Doctor Checks
         run: |
           chmod +x .github/scripts/expo-doctor.sh
           rm -rf ios android
           .github/scripts/expo-doctor.sh
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
       - name: Add doctor report as comment on PR
         if: github.event_name == 'pull_request' && always()
