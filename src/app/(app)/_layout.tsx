@@ -1,11 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Link, Redirect, SplashScreen, Tabs } from 'expo-router';
+import { Redirect, SplashScreen, Tabs } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { I18nManager } from 'react-native';
 
-import { Pressable, Text } from '@/components/ui';
 import {
-  Feed as FeedIcon,
   Settings as SettingsIcon,
   Style as StyleIcon,
 } from '@/components/ui/icons';
@@ -30,7 +28,7 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (!isFirstTime) {
+  if (isFirstTime) {
     return <Redirect href="/onboarding" />;
   }
   if (status === 'signOut') {
@@ -38,15 +36,7 @@ export default function TabLayout() {
   }
   return (
     <Tabs>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Feed',
-          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-          headerRight: () => <CreateNewPostLink />,
-          tabBarButtonTestID: 'feed-tab',
-        }}
-      />
+      <Tabs.Screen name="index" />
       <Tabs.Screen
         name="game"
         options={{
@@ -78,13 +68,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-
-const CreateNewPostLink = () => {
-  return (
-    <Link href="/feed/add-post" asChild>
-      <Pressable>
-        <Text className="px-3 text-primary-300">Create</Text>
-      </Pressable>
-    </Link>
-  );
-};

@@ -1,12 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const PlainScreen = () => {
+// Adjust path to where the CustomHeader component is located
+
+const MyScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        Hello, this is a plain React Native screen!
+      <Text>
+        Hello, this is a plain React Native screen with a custom header!
       </Text>
+      {/* Rest of your screen content */}
     </View>
   );
 };
@@ -14,14 +17,8 @@ const PlainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  text: {
-    fontSize: 20,
-    color: '#333',
+    backgroundColor: 'white', // Make sure background is white or any color you prefer
   },
 });
 
-export default PlainScreen;
+export default MyScreen;

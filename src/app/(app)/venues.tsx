@@ -1,19 +1,19 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
   FlatList,
   Image,
   Pressable,
-  SafeAreaView,
   Text,
   TextInput,
   View,
 } from 'react-native';
 
+import CustomHeader from '@/components/custom-header';
 import VenueCard from '@/components/venue/venue-card';
 
-// Interface for individual courts
 interface Court {
   id: string;
   name: string;
@@ -42,7 +42,7 @@ export interface Facility {
 }
 
 // eslint-disable-next-line max-lines-per-function
-const BookScreen = () => {
+const VenueScreen = () => {
   const [venues, _] = useState<Facility[]>([
     {
       id: '1',
@@ -111,112 +111,101 @@ const BookScreen = () => {
       ],
     },
   ]);
-
-  // useEffect(() => {
-  //   const fetchVenues = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:8000/venue/venues');
-  //       setVenues(response.data);
-  //     } catch (error) {
-  //       console.error('Failed to fetch venues:', error);
-  //     }
-  //   };
-
-  //   fetchVenues();
-  // }, []);
-
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#1dbf25' }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: 12,
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '500' }}>Boudhanath</Text>
-          <AntDesign name="arrowdown" size={24} color="black" />
-        </View>
-
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <CustomHeader>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 10,
+            justifyContent: 'space-between',
+            padding: 12,
           }}
         >
-          <Ionicons name="chatbox-outline" size={24} color="black" />
-          <Ionicons name="notifications-outline" size={24} color="black" />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+            <Text style={{ fontSize: 16, fontWeight: '500' }}>Boudhanath</Text>
+            <AntDesign name="arrowdown" size={24} color="black" />
+          </View>
 
-          <View>
-            <Image
-              style={{ width: 30, height: 30, borderRadius: 15 }}
-              source={{
-                uri: 'https://lh3.googleusercontent.com/ogw/AF2bZyi09EC0vkA0pKVqrtBq0Y-SLxZc0ynGmNrVKjvV66i3Yg=s64-c-mo',
-              }}
-            />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <Ionicons name="chatbox-outline" size={24} color="black" />
+            <Ionicons name="notifications-outline" size={24} color="black" />
+
+            <View>
+              <Image
+                style={{ width: 30, height: 30, borderRadius: 15 }}
+                source={{
+                  uri: 'https://lh3.googleusercontent.com/ogw/AF2bZyi09EC0vkA0pKVqrtBq0Y-SLxZc0ynGmNrVKjvV66i3Yg=s64-c-mo',
+                }}
+              />
+            </View>
           </View>
         </View>
-      </View>
-
-      <View
-        style={{
-          marginHorizontal: 12,
-          backgroundColor: '#E8E8E8',
-          padding: 12,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderRadius: 25,
-        }}
-      >
-        <TextInput placeholder="Search For Venues" />
-        <Ionicons name="search" size={24} color="gray" />
-      </View>
-
-      <Pressable
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          padding: 13,
-        }}
-      >
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            borderColor: '#E0E0E0',
-            borderWidth: 2,
-          }}
-        >
-          <Text>Sports & Availabilty</Text>
-        </View>
 
         <View
           style={{
-            padding: 10,
-            borderRadius: 10,
-            borderColor: '#E0E0E0',
-            borderWidth: 2,
+            marginHorizontal: 12,
+            backgroundColor: '#E8E8E8',
+            padding: 12,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderRadius: 25,
           }}
         >
-          <Text>Favorites</Text>
+          <TextInput placeholder="Search For Venues" />
+          <Ionicons name="search" size={24} color="gray" />
         </View>
 
-        <View
+        <Pressable
           style={{
-            padding: 10,
-            borderRadius: 10,
-            borderColor: '#E0E0E0',
-            borderWidth: 2,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            padding: 13,
           }}
         >
-          <Text>Offers</Text>
-        </View>
-      </Pressable>
+          <View
+            style={{
+              padding: 10,
+              borderRadius: 10,
+              borderColor: '#E0E0E0',
+              borderWidth: 2,
+            }}
+          >
+            <Text>Sports & Availabilty</Text>
+          </View>
+
+          <View
+            style={{
+              padding: 10,
+              borderRadius: 10,
+              borderColor: '#E0E0E0',
+              borderWidth: 2,
+            }}
+          >
+            <Text>Favorites</Text>
+          </View>
+
+          <View
+            style={{
+              padding: 10,
+              borderRadius: 10,
+              borderColor: '#E0E0E0',
+              borderWidth: 2,
+            }}
+          >
+            <Text>Offers</Text>
+          </View>
+        </Pressable>
+      </CustomHeader>
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <FlatList
           showsVerticalScrollIndicator={false}
@@ -226,8 +215,8 @@ const BookScreen = () => {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 
-export default BookScreen;
+export default VenueScreen;

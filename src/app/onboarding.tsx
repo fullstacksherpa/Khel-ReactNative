@@ -67,7 +67,7 @@ export default function WelcomeScreen() {
 
   const onButtonPress = () => {
     setIsFirstTime(false);
-    router.replace('/login');
+    router.replace('/');
   };
 
   return (
