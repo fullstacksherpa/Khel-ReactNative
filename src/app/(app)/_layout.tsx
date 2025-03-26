@@ -30,7 +30,7 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (isFirstTime) {
+  if (!isFirstTime) {
     return <Redirect href="/onboarding" />;
   }
   if (status === 'signOut') {
