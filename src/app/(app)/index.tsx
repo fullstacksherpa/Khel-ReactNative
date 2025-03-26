@@ -1,11 +1,27 @@
 import React from 'react';
-import { View } from 'react-native';
-import MapView from 'react-native-maps';
+import { StyleSheet, Text, View } from 'react-native';
 
-export default function AirbnbScreen() {
+const PlainScreen = () => {
   return (
-    <View>
-      <MapView style={{ width: '100%', height: '100%' }} />
+    <View style={styles.container}>
+      <Text style={styles.text}>
+        Hello, this is a plain React Native screen!
+      </Text>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  text: {
+    fontSize: 20,
+    color: '#333',
+  },
+});
+
+export default PlainScreen;
