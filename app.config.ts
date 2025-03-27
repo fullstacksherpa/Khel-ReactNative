@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: Env.VERSION.toString(),
   orientation: 'portrait',
   icon: './assets/icon.png',
-  userInterfaceStyle: 'automatic',
+  userInterfaceStyle: 'light',
   newArchEnabled: true,
   updates: {
     fallbackToCacheTimeout: 0,
@@ -51,7 +51,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#2E3C4B',
     },
-    package: Env.PACKAGE,
+    package: Env.PACKAGE, //Unique app identifier for Android.
   },
   web: {
     favicon: './assets/favicon.png',
@@ -76,6 +76,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     ['app-icon-badge', appIconBadgeConfig],
     ['react-native-edge-to-edge'],
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission:
+          'Show current location and nearby games on map.',
+      },
+    ],
+    [
+      '@rnmapbox/maps',
+      {
+        RNMapboxMapsDownloadToken: Env.SECRET_KEY,
+      },
+    ],
   ],
   extra: {
     ...ClientEnv,

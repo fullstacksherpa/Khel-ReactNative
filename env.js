@@ -80,6 +80,8 @@ const client = z.object({
 
   // ADD YOUR CLIENT ENV VARS HERE
   API_URL: z.string(),
+  MAPBOX_ACCESS_TOKEN: z.string(),
+  MAPBOX_PUBLIC_TOKEN: z.string(),
 });
 
 const buildTime = z.object({
@@ -102,6 +104,8 @@ const _clientEnv = {
 
   // ADD YOUR ENV VARS HERE TOO
   API_URL: process.env.API_URL,
+  MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN,
+  MAPBOX_PUBLIC_TOKEN: process.env.MAPBOX_PUBLIC_TOKEN,
 };
 
 /**
