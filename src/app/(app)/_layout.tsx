@@ -1,14 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { Redirect, SplashScreen, Tabs } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { I18nManager } from 'react-native';
 
-import {
-  Settings as SettingsIcon,
-  Style as StyleIcon,
-} from '@/components/ui/icons';
 import { useAuth, useIsFirstTime } from '@/lib';
 
+// eslint-disable-next-line max-lines-per-function
 export default function TabLayout() {
   // Force LTR on all screens
   useEffect(() => {
@@ -36,13 +34,37 @@ export default function TabLayout() {
   }
   return (
     <Tabs>
-      <Tabs.Screen name="index" />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="home"
+              size={focused ? 30 : 24} // Increase size when focused
+              color={color}
+            />
+          ),
+          tabBarActiveTintColor: '#74c365',
+          tabBarInactiveTintColor: 'gray',
+          tabBarButtonTestID: 'style-tab',
+        }}
+      />
       <Tabs.Screen
         name="game"
         options={{
           title: 'Game',
           headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="addusergroup"
+              size={focused ? 30 : 24} // Increase size when focused
+              color={color}
+            />
+          ),
+          tabBarActiveTintColor: '#74c365',
+          tabBarInactiveTintColor: 'gray',
           tabBarButtonTestID: 'style-tab',
         }}
       />
@@ -52,7 +74,15 @@ export default function TabLayout() {
         options={{
           title: 'Venue',
           headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="creditcard"
+              size={focused ? 30 : 24} // Increase size when focused
+              color={color}
+            />
+          ),
+          tabBarActiveTintColor: '#74c365',
+          tabBarInactiveTintColor: 'gray',
           tabBarButtonTestID: 'style-tab',
         }}
       />
@@ -61,7 +91,15 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           headerShown: false,
-          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign
+              name="setting"
+              size={focused ? 30 : 24} // Increase size when focused
+              color={color}
+            />
+          ),
+          tabBarActiveTintColor: '#74c365',
+          tabBarInactiveTintColor: 'gray',
           tabBarButtonTestID: 'settings-tab',
         }}
       />
