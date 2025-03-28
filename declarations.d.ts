@@ -1,4 +1,4 @@
 declare module '@assets/*' {
-  const content: string;
+  const content: ImageSourcePropType;
   export default content;
 }

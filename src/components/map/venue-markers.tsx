@@ -5,8 +5,10 @@ import { type OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPre
 import { featureCollection, point } from '@turf/helpers';
 
 import { futsalData } from '@/mock';
+import { useVenue } from '@/providers/venue-provider';
 
 export default function VenueMarkers() {
+  const { setSelectedVenue } = useVenue();
   const points = futsalData.map((s) =>
     point([s.long, s.lat], { futsalData: s })
   );
@@ -15,6 +17,7 @@ export default function VenueMarkers() {
     if (event.features[0].properties?.futsalData) {
       // setSelectedVenues(event.features[0].properties.futsalData);
       console.log(event);
+      setSelectedVenue(event.features[0].properties?.futsalData);
     }
   };
 
