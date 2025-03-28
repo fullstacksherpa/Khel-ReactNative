@@ -2,15 +2,30 @@ import {
   createContext,
   type PropsWithChildren,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
-const VenueContext = createContext({});
+import { futsalData } from '@/mock';
+interface VenueContextType {
+  nearbyVenues: any[];
+  setNearbyVenues: React.Dispatch<React.SetStateAction<any[]>>;
+  selectedVenue?: any;
+  setSelectedVenue: React.Dispatch<React.SetStateAction<any | undefined>>;
+}
+
+const VenueContext = createContext<VenueContextType | undefined>(undefined);
 
 // eslint-disable-next-line max-lines-per-function
 export default function VenueProvider({ children }: PropsWithChildren) {
-  const [nearbyVenues, setNearbyVenues] = useState([]);
-  const [selectedVenue, setSelectedVenue] = useState();
+  const [nearbyVenues, setNearbyVenues] = useState<any[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState<any | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    setSelectedVenue(futsalData);
+  }, []);
 
   // useEffect(() => {
   //   const fetchVenues = async () => {
@@ -44,4 +59,10 @@ export default function VenueProvider({ children }: PropsWithChildren) {
   );
 }
 
-export const useVenue = () => useContext(VenueContext);
+export const useVenue = () => {
+  const context = useContext(VenueContext);
+  if (!context) {
+    throw new Error('useVenue must be used within a VenueProvider');
+  }
+  return context;
+};
