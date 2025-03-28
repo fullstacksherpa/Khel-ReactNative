@@ -124,8 +124,10 @@ const VenueScreen = () => {
           }}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-            <Text style={{ fontSize: 16, fontWeight: '500' }}>Boudhanath</Text>
-            <AntDesign name="arrowdown" size={24} color="black" />
+            <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>
+              Boudhanath
+            </Text>
+            <AntDesign name="arrowdown" size={24} color="white" />
           </View>
 
           <View
@@ -135,14 +137,14 @@ const VenueScreen = () => {
               gap: 10,
             }}
           >
-            <Ionicons name="chatbox-outline" size={24} color="black" />
-            <Ionicons name="notifications-outline" size={24} color="black" />
+            <Ionicons name="chatbox-outline" size={24} color="white" />
+            <Ionicons name="notifications-outline" size={24} color="white" />
 
             <View>
               <Image
                 style={{ width: 30, height: 30, borderRadius: 15 }}
                 source={{
-                  uri: 'https://lh3.googleusercontent.com/ogw/AF2bZyi09EC0vkA0pKVqrtBq0Y-SLxZc0ynGmNrVKjvV66i3Yg=s64-c-mo',
+                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
                 }}
               />
             </View>
@@ -180,7 +182,7 @@ const VenueScreen = () => {
               borderWidth: 2,
             }}
           >
-            <Text>Sports & Availabilty</Text>
+            <Text className="text-white">Sports & Availabilty</Text>
           </View>
 
           <View
@@ -191,7 +193,7 @@ const VenueScreen = () => {
               borderWidth: 2,
             }}
           >
-            <Text>Favorites</Text>
+            <Text className="text-white">Favorites</Text>
           </View>
 
           <View
@@ -202,7 +204,7 @@ const VenueScreen = () => {
               borderWidth: 2,
             }}
           >
-            <Text>Offers</Text>
+            <Text className="text-white">Offers</Text>
           </View>
         </Pressable>
       </CustomHeader>
