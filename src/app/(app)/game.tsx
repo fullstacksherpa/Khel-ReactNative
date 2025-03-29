@@ -1,4 +1,4 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 // import { useNavigation } from '@react-navigation/native';
 import { FlatList, Pressable, ScrollView, Text, View } from 'react-native';
 
+import Address from '@/components/address';
+import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
 import Game from '@/components/game/game-card';
 import UpcomingGame from '@/components/game/upcoming-game-card';
@@ -163,9 +165,9 @@ const HomeScreen = () => {
               style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
             >
               <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>
-                Kathmandu
+                <Address />
               </Text>
-              <AntDesign name="arrowdown" size={24} color="white" />
+              <MaterialIcons name="location-pin" size={20} color="#f94449" />
             </View>
 
             <View
@@ -358,6 +360,7 @@ const HomeScreen = () => {
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}
+      <AddressBottomSheet />
     </>
   );
 };

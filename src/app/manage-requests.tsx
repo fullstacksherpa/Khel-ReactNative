@@ -50,7 +50,7 @@ const ManageRequests = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [gameId]);
 
   const fetchRequests = async () => {
     try {
@@ -68,7 +68,7 @@ const ManageRequests = () => {
 
   useEffect(() => {
     fetchPlayers();
-  }, []);
+  }, [gameId]);
 
   const fetchPlayers = async () => {
     try {
