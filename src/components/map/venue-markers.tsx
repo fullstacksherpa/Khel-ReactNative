@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import pin from '@assets/pin.png';
+import pin from '@assets/soccermarker.png';
 import { CircleLayer, Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 import { type OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPressEvent';
 import { featureCollection, point } from '@turf/helpers';
@@ -57,7 +57,7 @@ export default function VenueMarkers() {
         filter={['!', ['has', 'point_count']]}
         style={{
           iconImage: 'pin',
-          iconSize: 0.5,
+          iconSize: 0.09,
           iconAllowOverlap: true,
           iconAnchor: 'bottom',
         }}
