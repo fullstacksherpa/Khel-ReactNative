@@ -1,14 +1,14 @@
-import React from 'react';
-import { SafeAreaView, Text } from 'react-native';
-
-import TabScreen from '@/components/map/tabscreen';
+import { useRouter } from 'expo-router';
+import { Pressable, Text, View } from 'react-native';
 
 const ToggleGameVenue = () => {
+  const router = useRouter();
   return (
-    <SafeAreaView>
-      <Text>hello</Text>
-      <TabScreen />
-    </SafeAreaView>
+    <View className="flex-1 items-center justify-center">
+      <Pressable onPress={() => router.push('/login')}>
+        <Text>Login</Text>
+      </Pressable>
+    </View>
   );
 };
 

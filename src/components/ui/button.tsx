@@ -1,6 +1,6 @@
 import React from 'react';
-import type { PressableProps, View } from 'react-native';
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import type { PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
@@ -46,7 +46,7 @@ const button = tv({
     },
     size: {
       default: {
-        container: 'h-10 px-4',
+        container: 'h-14 px-4',
         label: 'text-base',
       },
       lg: {
@@ -90,6 +90,8 @@ interface Props extends ButtonVariants, Omit<PressableProps, 'disabled'> {
   loading?: boolean;
   className?: string;
   textClassName?: string;
+  icon?: React.ReactNode; // For leading icon
+  trailingIcon?: React.ReactNode; // For trailing icon
 }
 
 export const Button = React.forwardRef<View, Props>(
@@ -103,6 +105,8 @@ export const Button = React.forwardRef<View, Props>(
       className = '',
       testID,
       textClassName = '',
+      icon,
+      trailingIcon,
       ...props
     },
     ref
@@ -123,7 +127,8 @@ export const Button = React.forwardRef<View, Props>(
         {props.children ? (
           props.children
         ) : (
-          <>
+          <View className="flex-row items-center">
+            {icon && <View className="mr-2">{icon}</View>}
             {loading ? (
               <ActivityIndicator
                 size="small"
@@ -138,7 +143,8 @@ export const Button = React.forwardRef<View, Props>(
                 {text}
               </Text>
             )}
-          </>
+            {trailingIcon && <View className="ml-4">{trailingIcon}</View>}
+          </View>
         )}
       </Pressable>
     );
