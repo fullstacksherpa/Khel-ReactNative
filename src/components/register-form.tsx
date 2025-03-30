@@ -18,6 +18,15 @@ const schema = z.object({
       required_error: 'Email is required',
     })
     .email('Invalid email format'),
+  first_name: z.string({
+    required_error: 'first name is required',
+  }),
+  last_name: z.string({
+    required_error: 'last name is required',
+  }),
+  phone: z.string({
+    required_error: 'phone number is required',
+  }),
   password: z
     .string({
       required_error: 'Password is required',
@@ -27,13 +36,12 @@ const schema = z.object({
 
 export type FormType = z.infer<typeof schema>;
 
-export type LoginFormProps = {
+export type RegisterFormProps = {
   onSubmit: SubmitHandler<FormType>;
   isPending: boolean;
 };
-
 // eslint-disable-next-line max-lines-per-function
-export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
+export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
   const { handleSubmit, control } = useForm<FormType>({
     resolver: zodResolver(schema),
   });
@@ -51,7 +59,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
             <TouchableOpacity
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
-                router.back();
+                router.push('/onboarding');
               }}
             >
               <AntDesign name="arrowleft" size={24} color="black" />
@@ -70,58 +78,64 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
             />
           </View>
           <View
-            className="flex-col bg-white px-8 pb-80 pt-8"
+            className="flex-col bg-white px-8 pb-80 pt-12"
             style={{ borderTopLeftRadius: 70, borderTopRightRadius: 70 }}
           >
-            <View className="items-center justify-center pb-5">
-              <Text
-                testID="form-title"
-                className="pb-6 text-center text-4xl font-bold"
-              >
-                Sign In
-              </Text>
+            <View className="mb-4">
+              <ControlledInput
+                testID="email-input"
+                control={control}
+                name="email"
+                placeholder="messi@gmail.com"
+              />
             </View>
-
-            <ControlledInput
-              testID="email-input"
-              control={control}
-              name="email"
-              label="Email"
-            />
-
+            <View className="mb-4">
+              <ControlledInput
+                control={control}
+                name="first_name"
+                placeholder="sunny"
+              />
+            </View>
+            <View className="mb-4">
+              <ControlledInput
+                control={control}
+                name="last_name"
+                placeholder="lama"
+              />
+            </View>
+            <View className="mb-4">
+              <ControlledInput
+                control={control}
+                name="phone"
+                placeholder="985102****"
+              />
+            </View>
             <ControlledInput
               testID="password-input"
               control={control}
               name="password"
-              label="Password"
-              placeholder="***"
-              secureTextEntry={true}
+              placeholder="Enter you password"
             />
-            <TouchableOpacity className="mb-7 flex items-end">
-              <Text className="text-gray-700 underline underline-offset-4">
-                Forgot Password
-              </Text>
-            </TouchableOpacity>
             <Button
               testID="login-button"
-              className="rounded-3xl bg-green-500"
+              className="mt-7 rounded-3xl bg-green-500"
               textClassName="text-2xl"
-              label={isPending ? 'Logging in...' : 'Login'}
+              label={isPending ? 'Registering...' : 'Register'}
               trailingIcon={
                 !isPending && (
                   <ArrowRight stroke="white" width={24} height={24} />
                 )
               }
+              onPress={handleSubmit(onSubmit)}
               loading={isPending} // Pass the isPending value to show the loading spinner
               disabled={isPending} // Disable the button to prevent duplicate requests
-              onPress={handleSubmit(onSubmit)}
             />
             <View className="mt-6 flex-row justify-center gap-2">
               <Text className="font-semibold text-gray-700">
-                Don't have account ?
+                Already have an account ?
               </Text>
-              <TouchableOpacity onPress={() => router.push('/register')}>
-                <Text className="font-semibold text-green-800">Register</Text>
+              <TouchableOpacity onPress={() => router.push('/login')}>
+                <Text className="font-semibold text-green-800">Log In</Text>
               </TouchableOpacity>
             </View>
           </View>
