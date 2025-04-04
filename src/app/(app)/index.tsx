@@ -11,11 +11,17 @@ import Map from '@/components/map';
 import SelectedVenueSheet from '@/components/map/selected-venue-sheet';
 import TabScreen from '@/components/map/tabscreen';
 import { useAuth } from '@/lib/auth';
+import { getAccessToken } from '@/lib/auth/utils';
 
 // Adjust path to where the CustomHeader component is located
 
 // eslint-disable-next-line max-lines-per-function
 const MyScreen = () => {
+  const access_token = getAccessToken();
+  console.log(
+    'OyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJLaGVsIiwiZXhwIjoxNzQzOTg2NjAzLCJpYXQiOjE3NDM3Mjc0MDMsImlzcyI6IktoZWwiLCJuYmYiOjE3NDM3Mjc0MDMsInN1YiI6MjF9.3w7gwVhL584N1HC-oZs5VyD4rXfKV5Oozs18mHO76tU'
+  );
+  console.log(access_token);
   const userStatus = useAuth.use.status();
   console.log(userStatus);
   return (
