@@ -16,17 +16,17 @@ export default function Login() {
   // const signIn = useAuth.use.signIn();
 
   const onSubmit: LoginFormProps['onSubmit'] = (data) => {
-    console.log(data);
     loginUser(data, {
       onSuccess: (response) => {
         showMessage({
           message: 'Login Successfully 🔥',
           type: 'success',
         });
-        const { accessToken, refreshToken } = response.data;
-        const token = { access: accessToken, refresh: refreshToken };
         // Call the Zustand store signIn function with the token.
-        signIn(token);
+        signIn({
+          access: response.data.access_token,
+          refresh: response.data.refresh_token,
+        });
         // setItem('USERNAME', user.username);
         // setItem('USERIMAGE', user.image);
 
@@ -39,6 +39,7 @@ export default function Login() {
       },
     });
   };
+
   return (
     <>
       <StatusBar style="light" />

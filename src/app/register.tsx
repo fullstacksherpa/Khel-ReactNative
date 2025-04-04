@@ -13,7 +13,6 @@ import { showErrorMessage } from '@/components/ui';
 export default function Register() {
   const { mutate: registerUser, isPending } = useRegister();
   const router = useRouter();
-  // const signIn = useAuth.use.signIn();
 
   const onSubmit: RegisterFormProps['onSubmit'] = (data) => {
     registerUser(data, {
@@ -23,25 +22,20 @@ export default function Register() {
           type: 'success',
         });
         console.log(response);
-        // const { token, user } = response.data;
-        // signIn(token, user.userId);
-        // const mmkvToken = getToken();
-        // const mmkvUserId = getUserId();
-        // setItem('USERNAME', user.username);
-        // setItem('USERIMAGE', user.image);
-        // console.log(
-        //   `this is mmkvToken:🔐 ${mmkvToken} this is userId ${mmkvUserId}`
-        // );
 
-        const timeoutId = setTimeout(() => router.push('/'), 1000);
+        const timeoutId = setTimeout(
+          () => router.push('/email-verification'),
+          1000
+        );
 
         return () => clearTimeout(timeoutId);
       },
-      onError: () => {
-        showErrorMessage('Error registering user');
+      onError: (error) => {
+        const errorMessage =
+          error.response?.data.message || 'Error registering user';
+        showErrorMessage(errorMessage);
       },
     });
-    // signIn({ access: 'access-token', refresh: 'refresh-token' });
   };
   return (
     <>

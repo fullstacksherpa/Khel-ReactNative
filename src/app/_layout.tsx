@@ -35,7 +35,19 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="email-verification"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="request-reset-password"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="reset-password-screen"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </Providers>
   );

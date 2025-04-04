@@ -4,3 +4,9 @@ export type PaginateQuery<T> = {
   next: string | null;
   previous: string | null;
 };
+
+export type APIError = {
+  success: false;
+  message: string;
+  status: number;
+};

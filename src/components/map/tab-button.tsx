@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { type LayoutChangeEvent, Pressable, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -22,28 +22,28 @@ const TabButtons = ({
   selectedTab,
   setSelectedTab,
 }: TabButtonsProps) => {
-  const [dimensions, setDimensions] = useState({ height: 9, width: 100 });
-  const buttonWidth = dimensions.width / buttons.length;
-
+  const [buttonWidth, setButtonWidth] = React.useState(0); // Store button width
   const tabPositionX = useSharedValue(0);
 
+  // Get the tab bar width and calculate button width when layout changes
   const onTabbarLayout = (e: LayoutChangeEvent) => {
-    setDimensions({
-      height: e.nativeEvent.layout.height,
-      width: e.nativeEvent.layout.width,
-    });
+    const width = e.nativeEvent.layout.width;
+    setButtonWidth(width / buttons.length); // Calculate width for each button
   };
 
+  // Handle tab press and trigger animation
   const onTabPress = (index: number) => {
-    setSelectedTab(index); // Update state first
-    tabPositionX.value = withTiming(buttonWidth * index);
+    setSelectedTab(index);
+    tabPositionX.value = withTiming(buttonWidth * index); // Animate tab position
   };
 
+  // Animated style for the tab position
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: tabPositionX.value }],
     };
   });
+
   return (
     <View
       accessibilityRole="tabbar"
@@ -62,7 +62,7 @@ const TabButtons = ({
             backgroundColor: '#fff',
             borderRadius: 15,
             marginHorizontal: 5,
-            height: dimensions.height - 10,
+            height: 40, // You can replace this with dynamic height if needed
             width: buttonWidth - 10,
           },
         ]}

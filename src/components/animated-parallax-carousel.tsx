@@ -1,5 +1,12 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Animated, { useSharedValue } from 'react-native-reanimated';
 
 import ParallaxCarouselCard from '@/components/venue/parallax-carousel-card';
@@ -11,6 +18,9 @@ const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 2;
 
 const AnimationParallaxCarousel = () => {
   const scrollX = useSharedValue(0);
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    scrollX.value = event.nativeEvent.contentOffset.x;
+  };
   return (
     <View style={styles.parallaxCarouselView}>
       <Animated.ScrollView
@@ -22,9 +32,7 @@ const AnimationParallaxCarousel = () => {
         scrollEventThrottle={12}
         showsHorizontalScrollIndicator={false} // Hide horizontal scroll bar
         showsVerticalScrollIndicator={false}
-        onScroll={(event) => {
-          scrollX.value = event.nativeEvent.contentOffset.x;
-        }}
+        onScroll={onScroll}
       >
         {mockCarouselItems.map((item, index) => (
           <ParallaxCarouselCard

@@ -72,9 +72,9 @@ export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
               ref={animation}
               style={{
                 width: '100%',
-                height: 200,
+                height: 160,
               }}
-              source={require('../../assets/animation/login.json')}
+              source={require('../../assets/animation/football.json')}
             />
           </View>
           <View
@@ -86,28 +86,28 @@ export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
                 testID="email-input"
                 control={control}
                 name="email"
-                placeholder="messi@gmail.com"
+                placeholder="Email"
               />
             </View>
             <View className="mb-4">
               <ControlledInput
                 control={control}
                 name="first_name"
-                placeholder="sunny"
+                placeholder="First Name"
               />
             </View>
             <View className="mb-4">
               <ControlledInput
                 control={control}
                 name="last_name"
-                placeholder="lama"
+                placeholder="Last Name"
               />
             </View>
             <View className="mb-4">
               <ControlledInput
                 control={control}
                 name="phone"
-                placeholder="985102****"
+                placeholder="Phone Number"
               />
             </View>
             <ControlledInput

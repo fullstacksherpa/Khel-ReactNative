@@ -46,15 +46,15 @@ export const _useGameVenue = create<GameVenueStore>((set) => ({
 
   fetchNearbyVenues: async () => {
     try {
-      const location = await Location.getCurrentPositionAsync();
-      const { data } = await axios.get('nearby_venues', {
-        params: {
-          lat: location.coords.latitude,
-          long: location.coords.longitude,
-          max_dist_meters: 2000,
-        },
-      });
-      set({ nearbyVenues: data });
+      // const location = await Location.getCurrentPositionAsync();
+      // const {} = await axios.get('nearby_venues', {
+      //   params: {
+      //     lat: location.coords.latitude,
+      //     long: location.coords.longitude,
+      //     max_dist_meters: 2000,
+      //   },
+      // });
+      set({ nearbyVenues: futsalData });
     } catch (error) {
       console.error('Failed to fetch venues:', error);
     }

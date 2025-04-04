@@ -2,43 +2,72 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { useRef } from 'react';
-import type { SubmitHandler } from 'react-hook-form';
-import { useForm } from 'react-hook-form';
-import { SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import * as z from 'zod';
 
-import { Button, ControlledInput, Text, View } from '@/components/ui';
+import { Button, ControlledInput, Text } from '@/components/ui';
 import { ArrowRight } from '@/components/ui/icons';
 
+//
+// Define a Zod schema for your form
+//
 const schema = z.object({
   email: z
-    .string({
-      required_error: 'Email is required',
-    })
+    .string({ required_error: 'Email is required' })
     .email('Invalid email format'),
-  password: z
-    .string({
-      required_error: 'Password is required',
-    })
-    .min(4, 'Password must be at least 4 characters'),
 });
 
-export type FormType = z.infer<typeof schema>;
+export type RequestResetFormType = z.infer<typeof schema>;
 
-export type LoginFormProps = {
-  onSubmit: SubmitHandler<FormType>;
+export type RequestResetFormProps = {
+  onSubmit: SubmitHandler<RequestResetFormType>;
   isPending: boolean;
 };
 
 // eslint-disable-next-line max-lines-per-function
-export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
-  const { handleSubmit, control } = useForm<FormType>({
+export const RequestResetForm = ({
+  onSubmit,
+  isPending,
+}: RequestResetFormProps) => {
+  const { control, handleSubmit } = useForm<RequestResetFormType>({
     resolver: zodResolver(schema),
   });
+
   const router = useRouter();
+  const [countdown, setCountdown] = useState(0);
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
   const animation = useRef<LottieView>(null);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    } else {
+      setIsResendDisabled(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  const handleResendEmail = () => {
+    if (isResendDisabled) return;
+
+    // Reset the timer
+    setCountdown(40);
+    setIsResendDisabled(true);
+
+    // Implement your resend email logic here
+    console.log('Resend email clicked');
+    // Call your API to resend verification email
+
+    // Show success message (you might want to use a toast instead)
+    alert('Verification email has been resent!');
+  };
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -52,7 +81,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
                 //TODO: sometime there might be no back, will cause error router.back()
-                router.push('/register');
+                router.push('/login');
               }}
             >
               <AntDesign name="arrowleft" size={24} color="black" />
@@ -67,7 +96,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                 width: '100%',
                 height: 200,
               }}
-              source={require('../../assets/animation/login.json')}
+              source={require('../../assets/animation/football.json')}
             />
           </View>
           <View
@@ -79,7 +108,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                 testID="form-title"
                 className="pb-6 text-center text-4xl font-bold"
               >
-                Sign In
+                Reset Password
               </Text>
             </View>
 
@@ -87,32 +116,15 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
               testID="email-input"
               control={control}
               name="email"
-              label="Email"
+              placeholder="Enter your email"
+              keyboardType="email-address"
             />
 
-            <ControlledInput
-              testID="password-input"
-              control={control}
-              name="password"
-              label="Password"
-              placeholder="***"
-              secureTextEntry={true}
-            />
-            <TouchableOpacity
-              className="mb-7 flex items-end"
-              onPress={() => {
-                router.push('/request-reset-password');
-              }}
-            >
-              <Text className="text-gray-700 underline underline-offset-4">
-                Forgot Password
-              </Text>
-            </TouchableOpacity>
             <Button
-              testID="login-button"
-              className="rounded-3xl bg-green-500"
+              testID="request-reset-button"
+              className="mt-6 rounded-3xl bg-green-500"
               textClassName="text-2xl"
-              label={isPending ? 'Logging in...' : 'Login'}
+              label={isPending ? 'Requesting...' : 'Request reset'}
               trailingIcon={
                 !isPending && (
                   <ArrowRight stroke="white" width={24} height={24} />
@@ -123,12 +135,20 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
               onPress={handleSubmit(onSubmit)}
             />
             <View className="mt-6 flex-row justify-center gap-2">
-              <Text className="font-semibold text-gray-700">
-                Don't have account ?
+              <Text className="text-lg font-semibold text-gray-700">
+                Didn't receive the email?
               </Text>
-              <TouchableOpacity onPress={() => router.push('/register')}>
-                <Text className="font-semibold text-green-800">Register</Text>
-              </TouchableOpacity>
+              {isResendDisabled ? (
+                <Text className="text-lg font-bold text-gray-700 ">
+                  Resend in {countdown}s
+                </Text>
+              ) : (
+                <TouchableOpacity onPress={handleResendEmail}>
+                  <Text className="text-lg font-bold text-gray-700 ">
+                    Resend Email
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </SafeAreaView>
