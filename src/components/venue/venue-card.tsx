@@ -1,126 +1,86 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
   Pressable,
-  ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 
-// Interface for individual courts
-interface Court {
-  id: string;
-  name: string;
-}
+const CARD_WIDTH = Dimensions.get('window').width - 25;
+const IMAGE_HEIGHT = 190;
 
-// Interface for each sport available
-interface Sport {
-  id: string;
-  name: string;
-  icon: string;
-  price: number;
-  courts: Court[];
-}
-
-// Interface for each facility or item in the list
-export interface Facility {
-  id: string;
-  name: string;
-  address: string;
-  location: string;
-  image: string;
-  newImage: string;
-  rating: number;
-  timings: string;
-  sportsAvailable: Sport[];
-}
-
-interface VenueCardProps {
-  item: Facility;
-}
-
-const { width } = Dimensions.get('window');
+type VenueCardProps = {
+  item: {
+    image: string;
+    name: string;
+    address: string;
+    price?: string;
+    rating?: number;
+  };
+};
 
 // eslint-disable-next-line max-lines-per-function
 const VenueCard = ({ item }: VenueCardProps) => {
-  // const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  // Array of images for the carousel (swapable images)
+  const [isFavorite, setIsFavorite] = useState(false);
+
   const images = [
     item.image,
     'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
   ];
 
   const handleScroll = (event: any) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / width);
+    const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
     setActiveIndex(index);
   };
 
   return (
-    <View style={{ margin: 15 }}>
+    <View
+      style={{
+        marginVertical: 15,
+        backgroundColor: '#fff',
+        marginHorizontal: 8,
+        borderRadius: 16,
+      }}
+    >
       <Link href={`/venue-info-screen`} asChild>
         <Pressable
-          // onPress={() => {
-          //   router.push('/venue-info-screen');
-          // }}
           style={{
-            backgroundColor: 'white',
-            borderRadius: 5,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            borderRadius: 11,
+            overflow: 'hidden',
           }}
         >
-          <View style={{ width: width - 30, overflow: 'hidden' }}>
-            <ScrollView
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              onScroll={handleScroll}
-              scrollEventThrottle={16}
-              decelerationRate="fast"
-              style={{ width: width - 30 }}
-            >
-              {images.map((uri, index) => (
+          <FlatList
+            horizontal
+            data={images}
+            keyExtractor={(_, index) => index.toString()}
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+            onScroll={handleScroll}
+            renderItem={({ item }) => (
+              <View className=" p-2">
                 <Image
-                  key={index}
+                  source={{ uri: item }}
                   style={{
-                    width: width - 30,
-                    height: 200,
-                  }}
-                  source={{ uri }}
-                />
-              ))}
-            </ScrollView>
-
-            {/* Carousel indicators */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                marginTop: 5,
-              }}
-            >
-              {images.map((_, index) => (
-                <View
-                  key={index}
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    margin: 3,
-                    backgroundColor:
-                      activeIndex === index ? 'black' : 'lightgray',
+                    borderRadius: 11,
+                    width: CARD_WIDTH,
+                    height: IMAGE_HEIGHT,
+                    resizeMode: 'cover',
                   }}
                 />
-              ))}
-            </View>
-          </View>
+              </View>
+            )}
+          />
+          {/*indicator */}
 
-          <View style={{ paddingVertical: 12, paddingHorizontal: 10 }}>
+          <View
+            style={{ paddingTop: 4, paddingBottom: 8, paddingHorizontal: 12 }}
+          >
             <View
               style={{
                 flexDirection: 'row',
@@ -129,8 +89,8 @@ const VenueCard = ({ item }: VenueCardProps) => {
               }}
             >
               <Text style={{ fontSize: 15, fontWeight: '500' }}>
-                {item.name.length > 40
-                  ? item.name.substring(0, 40) + '...'
+                {item.name.length > 28
+                  ? item.name.substring(0, 28) + '...'
                   : item.name}
               </Text>
               <View
@@ -138,28 +98,28 @@ const VenueCard = ({ item }: VenueCardProps) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 6,
-                  backgroundColor: 'green',
-                  padding: 6,
+                  backgroundColor: '#90EE90',
+                  padding: 3,
                   borderRadius: 6,
                 }}
               >
-                <AntDesign name="star" size={20} color="white" />
-                <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                <AntDesign name="star" size={18} color="#15803D" />
+                <Text style={{ color: '#15803D', fontWeight: 'bold' }}>
                   {item.rating}
                 </Text>
               </View>
             </View>
 
             <Text style={{ color: 'gray' }}>
-              {item?.address.length > 40
-                ? item?.address.substring(0, 40) + '...'
+              {item?.address.length > 28
+                ? item?.address.substring(0, 28) + '...'
                 : item?.address}
             </Text>
 
             <View
               style={{
                 height: 1,
-                borderWidth: 0.6,
+                borderWidth: 0.7,
                 borderColor: '#E0E0E0',
                 marginVertical: 10,
               }}
@@ -172,14 +132,84 @@ const VenueCard = ({ item }: VenueCardProps) => {
                 justifyContent: 'space-between',
               }}
             >
-              <Text>Upto 10% Off</Text>
-              <Text style={{ fontWeight: '500' }}>INR 25O Onwards</Text>
+              <Text>05:00 AM - 11:00 PM</Text>
+              <Text style={{ fontWeight: '500' }}>Rs 25O Onwards</Text>
             </View>
           </View>
         </Pressable>
       </Link>
+      <View style={styles.indicatorContainer}>
+        {images.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.indicator,
+              activeIndex === index && styles.activeIndicator,
+            ]}
+          />
+        ))}
+      </View>
+
+      <Pressable
+        onPress={() => setIsFavorite(!isFavorite)}
+        style={styles.favoriteButton}
+      >
+        <MaterialIcons
+          name={isFavorite ? 'favorite' : 'favorite-border'}
+          size={24}
+          color={isFavorite ? 'red' : 'black'}
+        />
+      </Pressable>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  indicatorContainer: {
+    position: 'absolute',
+    bottom: 110,
+    right: 170,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
+  indicator: {
+    height: 6,
+    width: 6,
+    borderRadius: 3,
+    backgroundColor: '#999',
+    marginHorizontal: 3,
+  },
+  activeIndicator: {
+    backgroundColor: '#000',
+  },
+  infoContainer: {
+    padding: 10,
+  },
+  name: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 2,
+  },
+  location: {
+    color: 'gray',
+    marginBottom: 4,
+  },
+  price: {
+    fontWeight: '600',
+    color: '#15803D',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 4,
+    elevation: 5,
+  },
+});
 
 export default VenueCard;
