@@ -37,20 +37,24 @@ const Amenities = () => {
   ];
   return (
     <View style={{ padding: 10 }}>
-      <Text style={{ fontSize: 17, fontWeight: '600' }}>
-        Most Popular Facilities
+      <Text style={{ fontSize: 30, fontWeight: '600', marginVertical: 8 }}>
+        Amenities
       </Text>
       <View
-        style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        }}
       >
         {services.map((item, index) => (
           <View
             style={{
               margin: 10,
-              backgroundColor: '#17B169',
-              paddingHorizontal: 11,
-              paddingVertical: 5,
-              borderRadius: 25,
+              backgroundColor: '#10D000',
+              paddingHorizontal: 6,
+              paddingVertical: 6,
+              borderRadius: 8,
             }}
             key={index}
           >

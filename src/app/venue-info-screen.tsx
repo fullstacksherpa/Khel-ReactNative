@@ -1,7 +1,6 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Image,
@@ -21,8 +20,6 @@ import Amenities from '@/components/venue/amenities';
 const VenueInfoScreen = () => {
   // const navigation = useNavigation();
 
-  const router = useRouter();
-
   return (
     <>
       <SafeAreaView
@@ -33,17 +30,6 @@ const VenueInfoScreen = () => {
       >
         <ScrollView>
           <>
-            <Pressable onPress={() => router.push('/new-onboarding')}>
-              <Text
-                style={{
-                  padding: 10,
-                  backgroundColor: 'black',
-                  color: 'white',
-                }}
-              >
-                Go to Onboarding
-              </Text>
-            </Pressable>
             <View>
               <Image
                 style={{ width: '100%', height: 200, resizeMode: 'cover' }}
@@ -150,80 +136,50 @@ const VenueInfoScreen = () => {
             >
               Sports Available
             </Text>
-            {/* <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-              {route.params.sportsAvailable.map((item, index) => (
-                <View
-                  style={{
-                    borderColor: '#686868',
-                    margin: 10,
-                    padding: 20,
-                    width: 130,
-                    height: 90,
-                    borderWidth: 1,
-                    borderRadius: 5,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    style={{ textAlign: 'center' }}
-                    name={item.icon}
-                    size={24}
-                    color="gray"
-                  />
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      marginTop: 10,
-                    }}
-                  >
-                    {item.name}
-                  </Text>
-                </View>
-              ))}
-            </ScrollView> */}
 
             <Amenities />
-
-            <View style={{ marginHorizontal: 10 }}>
-              <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                Activities
-              </Text>
-              <Pressable
-                style={{
-                  borderColor: '#787878',
-                  marginTop: 10,
-                  borderWidth: 1,
-                  padding: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                }}
-              >
-                <AntDesign name="plus" size={24} color="black" />
-                <Text>Create Activity</Text>
-              </Pressable>
-            </View>
           </>
         </ScrollView>
       </SafeAreaView>
-      <Pressable
-        onPress={() => {}}
-        style={{
-          backgroundColor: 'green',
-          padding: 8,
-          marginBottom: 30,
-          borderRadius: 3,
-          marginHorizontal: 15,
-        }}
-      >
-        <Text
-          style={{ textAlign: 'center', color: 'white', fontWeight: 'bold' }}
+      <View className="mx-auto mb-8 flex-row gap-4">
+        <Pressable
+          style={{
+            width: '41%',
+            marginTop: 10,
+            borderWidth: 1,
+            borderColor: '#787878',
+            padding: 10,
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+          }}
         >
-          Book Now
-        </Text>
-      </Pressable>
+          <AntDesign name="plus" size={24} color="black" />
+          <Text>Host Game</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => {}}
+          style={{
+            width: '41%',
+            marginTop: 10,
+            backgroundColor: 'green',
+            borderWidth: 1,
+            padding: 10,
+            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <Text
+            style={{ textAlign: 'center', color: 'white', fontWeight: 'bold' }}
+          >
+            Book Hourly
+          </Text>
+        </Pressable>
+      </View>
     </>
   );
 };

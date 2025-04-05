@@ -210,7 +210,7 @@ const VenueScreen = () => {
           </View>
         </Pressable>
       </CustomHeader>
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{ flex: 1, backgroundColor: '#EBEBE5' }}>
         <FlatList
           showsVerticalScrollIndicator={false}
           data={venues}
