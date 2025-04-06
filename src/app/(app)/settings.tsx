@@ -58,6 +58,11 @@ const ToggleGameVenue = () => {
           update password
         </Text>
       </Pressable>
+      <Pressable onPress={() => router.push('/venue-details')}>
+        <Text className="bold text-3xl font-bold text-red-500 underline">
+          venue details
+        </Text>
+      </Pressable>
     </View>
   );
 };

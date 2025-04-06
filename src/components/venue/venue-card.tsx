@@ -32,6 +32,8 @@ const VenueCard = ({ item }: VenueCardProps) => {
   const images = [
     item.image,
     'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
+    item.image,
+    'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
   ];
 
   const handleScroll = (event: any) => {
@@ -48,7 +50,7 @@ const VenueCard = ({ item }: VenueCardProps) => {
         borderRadius: 16,
       }}
     >
-      <Link href={`/venue-info-screen`} asChild>
+      <Link href={`/venue-details`} asChild>
         <Pressable
           style={{
             borderRadius: 11,
@@ -76,7 +78,6 @@ const VenueCard = ({ item }: VenueCardProps) => {
               </View>
             )}
           />
-          {/*indicator */}
 
           <View
             style={{ paddingTop: 4, paddingBottom: 8, paddingHorizontal: 12 }}
@@ -170,20 +171,20 @@ const styles = StyleSheet.create({
     bottom: 110,
     right: 170,
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: 'transparent',
     borderRadius: 12,
     paddingHorizontal: 6,
     paddingVertical: 4,
   },
   indicator: {
-    height: 6,
-    width: 6,
+    height: 7,
+    width: 7,
     borderRadius: 3,
-    backgroundColor: '#999',
+    backgroundColor: '#fff',
     marginHorizontal: 3,
   },
   activeIndicator: {
-    backgroundColor: '#000',
+    backgroundColor: '#15803D',
   },
   infoContainer: {
     padding: 10,
