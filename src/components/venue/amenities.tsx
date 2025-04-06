@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native';
 
+// eslint-disable-next-line max-lines-per-function
 const Amenities = () => {
   const services = [
     {
@@ -37,7 +38,7 @@ const Amenities = () => {
   ];
   return (
     <View style={{ padding: 10 }}>
-      <Text style={{ fontSize: 30, fontWeight: '600', marginVertical: 8 }}>
+      <Text style={{ fontSize: 20, fontWeight: '600', marginVertical: 5 }}>
         Amenities
       </Text>
       <View
@@ -51,14 +52,20 @@ const Amenities = () => {
           <View
             style={{
               margin: 10,
-              backgroundColor: '#10D000',
+              backgroundColor: '#d3d3d3',
               paddingHorizontal: 6,
               paddingVertical: 6,
               borderRadius: 8,
             }}
             key={index}
           >
-            <Text style={{ textAlign: 'center', color: 'white' }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: 'black',
+                letterSpacing: 1.5,
+              }}
+            >
               {item.name}
             </Text>
           </View>

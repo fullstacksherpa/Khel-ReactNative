@@ -48,6 +48,7 @@ export default function RootLayout() {
           name="reset-password-screen"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="venue-details" />
       </Stack>
     </Providers>
   );
