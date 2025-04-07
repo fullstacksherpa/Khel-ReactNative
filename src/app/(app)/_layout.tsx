@@ -2,19 +2,14 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Redirect, SplashScreen, Tabs } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
-import { I18nManager } from 'react-native';
 
 import { useAuth, useIsFirstTime } from '@/lib';
 
 // eslint-disable-next-line max-lines-per-function
 export default function TabLayout() {
-  // Force LTR on all screens
-  useEffect(() => {
-    I18nManager.forceRTL(false);
-    I18nManager.allowRTL(false);
-  }, []);
   const status = useAuth.use.status();
   const [isFirstTime] = useIsFirstTime();
+
   const hideSplash = useCallback(async () => {
     await SplashScreen.hideAsync();
   }, []);
@@ -32,6 +27,7 @@ export default function TabLayout() {
   if (status === 'signOut') {
     return <Redirect href="/login" />;
   }
+
   return (
     <Tabs>
       <Tabs.Screen
@@ -86,6 +82,7 @@ export default function TabLayout() {
           tabBarButtonTestID: 'style-tab',
         }}
       />
+
       <Tabs.Screen
         name="settings"
         options={{

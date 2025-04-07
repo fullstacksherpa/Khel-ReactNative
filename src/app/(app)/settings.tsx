@@ -63,6 +63,11 @@ const ToggleGameVenue = () => {
           venue details
         </Text>
       </Pressable>
+      <Pressable onPress={() => router.push('/owner-dashboard')}>
+        <Text className="bold text-3xl font-bold text-red-500 underline">
+          Venue Owner Dashboard
+        </Text>
+      </Pressable>
     </View>
   );
 };

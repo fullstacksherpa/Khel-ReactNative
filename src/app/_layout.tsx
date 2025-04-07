@@ -49,6 +49,7 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="venue-details" />
+        <Stack.Screen name="owner-dashboard" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );

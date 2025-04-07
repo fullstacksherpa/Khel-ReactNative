@@ -308,6 +308,17 @@ const VenueDetails = () => {
             marginVertical: 10,
           }}
         />
+        <View>
+          <Text>check all review</Text>
+        </View>
+        <View
+          style={{
+            height: 1,
+            borderWidth: 0.7,
+            borderColor: '#E0E0E0',
+            marginVertical: 10,
+          }}
+        />
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>
             View Cancellation Policy
