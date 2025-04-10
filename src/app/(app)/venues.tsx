@@ -1,8 +1,9 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Stack } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -11,6 +12,8 @@ import {
   View,
 } from 'react-native';
 
+import { type ListVenuesVariables } from '@/api/venues/types';
+import { useInfiniteVenues } from '@/api/venues/venues';
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
@@ -45,74 +48,22 @@ export interface Facility {
 
 // eslint-disable-next-line max-lines-per-function
 const VenueScreen = () => {
-  const [venues, _] = useState<Facility[]>([
-    {
-      id: '1',
-      name: 'Boudha Futsal Arena',
-      address: 'Boudhanath, Kathmandu',
-      location: '27.7215, 85.3620',
-      image:
-        'https://lh3.googleusercontent.com/p/AF1QipNvhST26oX_hk5IZZUhLjiuLqdMLYFmWylZhZW1=s680-w680-h510',
-      newImage: 'https://source.unsplash.com/400x300/?stadium',
-      rating: 4.5,
-      timings: '6:00 AM - 10:00 PM',
-      sportsAvailable: [
-        {
-          id: 's1',
-          name: 'Futsal',
-          icon: '⚽',
-          price: 500,
-          courts: [
-            { id: 'c1', name: 'Court A' },
-            { id: 'c2', name: 'Court B' },
-          ],
-        },
-      ],
-    },
-    {
-      id: '2',
-      name: 'Thamel Basketball Court',
-      address: 'Thamel, Kathmandu',
-      location: '27.7152, 85.3123',
-      image:
-        'https://lh3.googleusercontent.com/p/AF1QipMpJ7Hh_lx39OEHchNUlqRasFZ5bVYs3_0-PkYA=s680-w680-h510',
-      newImage: 'https://source.unsplash.com/400x300/?court',
-      rating: 4.2,
-      timings: '7:00 AM - 9:00 PM',
-      sportsAvailable: [
-        {
-          id: 's2',
-          name: 'Basketball',
-          icon: '🏀',
-          price: 300,
-          courts: [{ id: 'c3', name: 'Main Court' }],
-        },
-      ],
-    },
-    {
-      id: '3',
-      name: 'Patan Tennis Club',
-      address: 'Patan, Lalitpur',
-      location: '27.6695, 85.3249',
-      image:
-        'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
-      newImage: 'https://source.unsplash.com/400x300/?tenniscourt',
-      rating: 4.7,
-      timings: '5:30 AM - 9:00 PM',
-      sportsAvailable: [
-        {
-          id: 's3',
-          name: 'Tennis',
-          icon: '🎾',
-          price: 600,
-          courts: [
-            { id: 'c4', name: 'Grass Court' },
-            { id: 'c5', name: 'Clay Court' },
-          ],
-        },
-      ],
-    },
-  ]);
+  const variables: ListVenuesVariables = {
+    sport: 'Futsal',
+    // Optional: lat, lng, distance, and limit (if not provided, limit defaults to 10)
+    limit: 2,
+  };
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteVenues({ variables });
+
+  // Combine pages into a single array
+  const venues = data?.pages.flatMap((page) => page.data);
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -210,13 +161,50 @@ const VenueScreen = () => {
           </View>
         </Pressable>
       </CustomHeader>
+
       <View style={{ flex: 1, backgroundColor: '#EBEBE5' }}>
+        {isLoading && (
+          <View
+            style={{
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}
+          >
+            <ActivityIndicator />
+          </View>
+        )}
+        {error && (
+          <View
+            style={{
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 1,
+            }}
+          >
+            <Text className="text-red-400">{`fail to load venue, ${error.message}`}</Text>
+          </View>
+        )}
         <FlatList
-          showsVerticalScrollIndicator={false}
           data={venues}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <VenueCard item={item} />}
-          keyExtractor={(item) => item.id} // Added keyExtractor here
           contentContainerStyle={{ paddingBottom: 20 }}
+          // When the list end is reached, trigger fetching the next page.
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator style={{ padding: 10 }} />
+            ) : null
+          }
         />
       </View>
       <AddressBottomSheet />
