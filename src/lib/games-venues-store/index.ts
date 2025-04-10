@@ -30,7 +30,7 @@ interface GameVenueStore {
 export const _useGameVenue = create<GameVenueStore>((set) => ({
   nearbyVenues: [],
   setNearbyVenues: (venues) => set({ nearbyVenues: venues }),
-  selectedVenue: futsalData, // Default
+  selectedVenue: undefined,
   setSelectedVenue: (venue) => set({ selectedVenue: venue }),
 
   nearbyGames: [],

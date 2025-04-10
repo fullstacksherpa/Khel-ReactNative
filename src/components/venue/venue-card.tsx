@@ -16,11 +16,16 @@ const IMAGE_HEIGHT = 190;
 
 type VenueCardProps = {
   item: {
-    image: string;
+    id: number;
     name: string;
     address: string;
-    price?: string;
-    rating?: number;
+    image_urls: string[];
+    location: number[]; // [longitude, latitude]
+    open_time: string;
+    phone_number: string;
+    sport: string;
+    total_reviews: number;
+    average_rating: number;
   };
 };
 
@@ -28,13 +33,6 @@ type VenueCardProps = {
 const VenueCard = ({ item }: VenueCardProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
-
-  const images = [
-    item.image,
-    'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
-    item.image,
-    'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
-  ];
 
   const handleScroll = (event: any) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
@@ -59,7 +57,7 @@ const VenueCard = ({ item }: VenueCardProps) => {
         >
           <FlatList
             horizontal
-            data={images}
+            data={item.image_urls}
             keyExtractor={(_, index) => index.toString()}
             showsHorizontalScrollIndicator={false}
             pagingEnabled
@@ -106,7 +104,7 @@ const VenueCard = ({ item }: VenueCardProps) => {
               >
                 <AntDesign name="star" size={18} color="#15803D" />
                 <Text style={{ color: '#15803D', fontWeight: 'bold' }}>
-                  {item.rating}
+                  {`${item.average_rating} (${item.total_reviews})`}
                 </Text>
               </View>
             </View>
@@ -133,14 +131,14 @@ const VenueCard = ({ item }: VenueCardProps) => {
                 justifyContent: 'space-between',
               }}
             >
-              <Text>05:00 AM - 11:00 PM</Text>
-              <Text style={{ fontWeight: '500' }}>Rs 25O Onwards</Text>
+              <Text>{item.open_time}</Text>
+              <Text style={{ fontWeight: '500' }}>{item.phone_number}</Text>
             </View>
           </View>
         </Pressable>
       </Link>
       <View style={styles.indicatorContainer}>
-        {images.map((_, index) => (
+        {item.image_urls.map((_, index) => (
           <View
             key={index}
             style={[

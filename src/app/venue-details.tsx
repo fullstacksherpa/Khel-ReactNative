@@ -195,7 +195,7 @@ const VenueDetails = () => {
               }}
               onPress={() => Linking.openURL(`tel:${phoneNumber}`)}
             >
-              <FontAwesome5 name="phone-alt" size={24} color="black" />
+              <FontAwesome5 name="phone-alt" size={24} color="green" />
             </TouchableOpacity>
           </View>
         </View>
