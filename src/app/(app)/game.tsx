@@ -3,9 +3,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-// import { useNavigation } from '@react-navigation/native';
-import { FlatList, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 
+import { type ListGamesVariables, useInfiniteGames } from '@/api/games/games';
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
@@ -15,6 +22,31 @@ import { type IGame } from '@/types';
 
 // eslint-disable-next-line max-lines-per-function
 const HomeScreen = () => {
+  // Use these variables for filtering the games
+  const variables: ListGamesVariables = {
+    limit: 2,
+  };
+
+  // Get infinite pages from the API using react-query-kit hook
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteGames({ variables });
+
+  // For debugging purposes
+  console.log(data?.pages);
+  console.log('full', data?.pages[0]?.data);
+
+  // Since the API response returns an object with a top-level "data" array,
+  // we flatten the pages by directly merging the arrays from each page.
+  const gamesFromApi = data?.pages.flatMap((page) => page.data) ?? [];
+  console.log(gamesFromApi);
+
+  // Dummy games data for the Calendar option
   const Dummygames: IGame[] = [
     {
       _id: 'game1',
@@ -130,7 +162,10 @@ const HomeScreen = () => {
       ],
       totalPlayers: 12,
       queries: [
-        { question: 'Is it indoor or beach?', answer: 'Beach volleyball.' },
+        {
+          question: 'Is it indoor or beach?',
+          answer: 'Beach volleyball.',
+        },
       ],
       requests: [{ userId: 'user101', comment: 'Excited to join!' }],
       isBooked: false,
@@ -141,19 +176,21 @@ const HomeScreen = () => {
       courtNumber: null,
     },
   ];
+
   const router = useRouter();
   const [sport, setSport] = useState('Badminton');
-  const [upcomingGames] = useState<IGame[]>([]);
-  const [games] = useState<IGame[]>(Dummygames);
+  const [dummyGames] = useState<IGame[]>(Dummygames);
 
-  // const initialOption = route.params?.initialOption || 'My Sports';
+  // Option state to switch between "My Sports" and "Calendar" view.
   const initialOption = 'My Sports';
   const [option, setOption] = useState(initialOption);
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <CustomHeader>
         <View style={{ padding: 12 }}>
+          {/* Top Header with address and icons */}
           <View
             style={{
               flexDirection: 'row',
@@ -171,15 +208,10 @@ const HomeScreen = () => {
             </View>
 
             <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-              }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
             >
               <Ionicons name="chatbox-outline" size={24} color="white" />
               <Ionicons name="notifications-outline" size={24} color="white" />
-
               <View>
                 <Image
                   style={{ width: 30, height: 30, borderRadius: 15 }}
@@ -191,6 +223,7 @@ const HomeScreen = () => {
             </View>
           </View>
 
+          {/* Option Selector */}
           <View
             style={{
               flexDirection: 'row',
@@ -236,87 +269,35 @@ const HomeScreen = () => {
             </Pressable>
           </View>
 
+          {/* Horizontal Sport Picker */}
           <View style={{ marginVertical: 7 }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Pressable
-                onPress={() => setSport('Badminton')}
-                style={{
-                  padding: 10,
-                  borderColor: 'white',
-                  borderWidth: sport === 'Badminton' ? 0 : 1,
-                  marginRight: 10,
-                  borderRadius: 8,
-                  backgroundColor:
-                    sport === 'Badminton' ? '#1dbf22' : 'transparent',
-                }}
-              >
-                <Text
-                  style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
+              {['Badminton', 'Cricket', 'Cycling', 'Running'].map((s) => (
+                <Pressable
+                  key={s}
+                  onPress={() => setSport(s)}
+                  style={{
+                    padding: 10,
+                    borderColor: 'white',
+                    borderWidth: sport === s ? 0 : 1,
+                    marginRight: 10,
+                    borderRadius: 8,
+                    backgroundColor: sport === s ? '#1dbf22' : 'transparent',
+                  }}
                 >
-                  Badminton
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => setSport('Cricket')}
-                style={{
-                  padding: 10,
-                  borderColor: 'white',
-                  borderWidth: sport === 'Cricket' ? 0 : 1,
-                  marginRight: 10,
-                  borderRadius: 8,
-                  backgroundColor:
-                    sport === 'Cricket' ? '#1dbf22' : 'transparent',
-                }}
-              >
-                <Text
-                  style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
-                >
-                  Cricket
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => setSport('Cycling')}
-                style={{
-                  padding: 10,
-                  borderColor: 'white',
-                  borderWidth: sport === 'Cycling' ? 0 : 1,
-                  marginRight: 10,
-                  borderRadius: 8,
-                  backgroundColor:
-                    sport === 'Cycling' ? '#1dbf22' : 'transparent',
-                }}
-              >
-                <Text
-                  style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
-                >
-                  Cycling
-                </Text>
-              </Pressable>
-
-              <Pressable
-                onPress={() => setSport('Running')}
-                style={{
-                  padding: 10,
-                  borderColor: 'white',
-                  borderWidth: sport === 'Running' ? 0 : 1,
-                  marginRight: 10,
-                  borderRadius: 8,
-                  backgroundColor:
-                    sport === 'Running' ? '#1dbf22' : 'transparent',
-                }}
-              >
-                <Text
-                  style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
-                >
-                  Running
-                </Text>
-              </Pressable>
+                  <Text
+                    style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
+                  >
+                    {s}
+                  </Text>
+                </Pressable>
+              ))}
             </ScrollView>
           </View>
         </View>
       </CustomHeader>
+
+      {/* Create Game & Filter/Sort Row */}
       <View
         style={{
           flexDirection: 'row',
@@ -326,40 +307,80 @@ const HomeScreen = () => {
           backgroundColor: 'white',
         }}
       >
-        <Pressable
-          onPress={() => {
-            router.push('/create-game');
-          }}
-        >
+        <Pressable onPress={() => router.push('/create-game')}>
           <Text style={{ fontWeight: 'bold' }}>Create Game</Text>
         </Pressable>
-
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
           <Pressable>
             <Text style={{ fontWeight: 'bold' }}>Filter</Text>
           </Pressable>
-
           <Pressable>
             <Text style={{ fontWeight: 'bold' }}>Sort</Text>
           </Pressable>
         </View>
       </View>
+
+      {/* Loading Indicator */}
+      {isLoading && (
+        <View
+          style={{
+            padding: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
+          <ActivityIndicator />
+        </View>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <View
+          style={{
+            padding: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{ color: 'red' }}
+          >{`Failed to load venue: ${error.message}`}</Text>
+        </View>
+      )}
+
+      {/* "My Sports" Option displays games fetched from API */}
       {option === 'My Sports' && (
         <FlatList
-          data={games}
+          data={gamesFromApi}
           renderItem={({ item }) => <Game item={item} />}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.game_id.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator style={{ padding: 10 }} />
+            ) : null
+          }
         />
       )}
+
+      {/* "Calendar" Option displays dummy games */}
       {option === 'Calendar' && (
         <FlatList
-          data={upcomingGames}
+          data={dummyGames}
           renderItem={({ item }) => <UpcomingGame item={item} />}
           keyExtractor={(item) => item._id}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}
+
       <AddressBottomSheet />
     </>
   );
