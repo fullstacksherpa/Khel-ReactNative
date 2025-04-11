@@ -1,19 +1,22 @@
-import scooterImage from '@assets/scooter.png';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
-import { Button, Image, Text, View } from 'react-native';
+import React from 'react';
 
-import { useVenue } from '@/providers/venue-provider';
+import { useGameVenue } from '@/lib/games-venues-store';
+
+import VenueCard from '../venue/venue-card';
 
 // eslint-disable-next-line max-lines-per-function
 export default function SelectedVenueSheet() {
-  const { selectedVenue, setSelectedVenue } = useVenue();
+  const { selectedVenue, setSelectedVenue } = useGameVenue();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  const snapPoints = React.useMemo(() => [110], []);
+
   useEffect(() => {
     if (selectedVenue && bottomSheetRef.current) {
+      console.log('opening bottom sheet .......................');
       bottomSheetRef.current.expand();
     } else if (bottomSheetRef.current) {
       bottomSheetRef.current.close();
@@ -23,67 +26,18 @@ export default function SelectedVenueSheet() {
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={-1}
-      snapPoints={[200]}
+      index={selectedVenue ? 0 : -1} // Directly control visibility via state
+      snapPoints={snapPoints}
       enablePanDownToClose
-      onClose={() => setSelectedVenue(undefined)}
-      backgroundStyle={{ backgroundColor: '#414442' }}
+      onChange={(index) => {
+        if (index === -1) {
+          setSelectedVenue(undefined);
+        }
+      }}
     >
       {selectedVenue && (
-        <BottomSheetView style={{ flex: 1, padding: 10, gap: 20 }}>
-          {/* TOP part */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source={scooterImage} style={{ width: 60, height: 60 }} />
-            <View style={{ flex: 1, gap: 5 }}>
-              <Text style={{ color: 'white', fontSize: 20, fontWeight: '600' }}>
-                Lime - S
-              </Text>
-              <Text style={{ color: 'gray', fontSize: 18 }}>
-                id-{selectedVenue.id} · Madison Avenue
-              </Text>
-            </View>
-            <View style={{ gap: 5 }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 5,
-                  alignSelf: 'flex-start',
-                }}
-              >
-                <FontAwesome6 name="flag-checkered" size={18} color="#42E100" />
-                <Text
-                  style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}
-                >
-                  {(12 / 1000).toFixed(1)} km changeLater
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 5,
-                  alignSelf: 'flex-start',
-                }}
-              >
-                <FontAwesome6 name="clock" size={18} color="#42E100" />
-                <Text
-                  style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}
-                >
-                  {(30 / 60).toFixed(0)} min
-                </Text>
-              </View>
-            </View>
-          </View>
-          {/* Bottom part */}
-          <View>
-            <Button
-              title="Start journey"
-              onPress={() => {
-                setSelectedVenue(undefined);
-              }}
-            />
-          </View>
+        <BottomSheetView>
+          <VenueCard item={selectedVenue} />
         </BottomSheetView>
       )}
     </BottomSheet>

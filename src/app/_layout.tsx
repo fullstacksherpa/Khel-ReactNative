@@ -12,7 +12,6 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/api';
 import { hydrateAuth } from '@/lib';
-import VenueProvider from '@/providers/venue-provider';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -60,12 +59,10 @@ function Providers({ children }: { children: React.ReactNode }) {
     <GestureHandlerRootView style={styles.container}>
       <KeyboardProvider>
         <APIProvider>
-          <VenueProvider>
-            <BottomSheetModalProvider>
-              {children}
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </VenueProvider>
+          <BottomSheetModalProvider>
+            {children}
+            <FlashMessage position="top" />
+          </BottomSheetModalProvider>
         </APIProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>

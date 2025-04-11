@@ -4,28 +4,38 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 
-import { type IGame } from '@/types';
-
 interface GameProps {
-  item: IGame; // Type the `item` prop as `IGame`
+  item: {
+    game_id: number;
+    venue_id: number;
+    venue_name: string;
+    sport_type: string;
+    price: number;
+    format: string;
+    game_admin_name: string;
+    game_level: string;
+    start_time: string;
+    end_time: string;
+    max_players: number;
+    current_player: number;
+    player_images: string[];
+    venue_lat: number;
+    venue_lon: number;
+  };
 }
 
 // eslint-disable-next-line max-lines-per-function
 const Game: React.FC<GameProps> = ({ item }) => {
+  const isUserInRequests = false;
   const router = useRouter();
   console.log('Game', item);
-
-  const isUserInRequests = item?.requests.some(
-    (request) => request.userId === '5'
-  );
 
   return (
     <Pressable
       onPress={() => {
-        // Navigating to the 'game' page and passing the 'item' as a query parameter
         router.push({
           pathname: '/login',
-          params: { item: JSON.stringify(item) }, // Convert item to string for passing in query params
+          params: { item: JSON.stringify(item) },
         });
       }}
       style={{
@@ -52,7 +62,9 @@ const Game: React.FC<GameProps> = ({ item }) => {
           <View style={{ flexDirection: 'row' }}>
             <Image
               style={{ width: 56, height: 56, borderRadius: 28 }}
-              source={{ uri: item?.adminUrl }}
+              source={{
+                uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
+              }}
             />
             <View
               style={{
@@ -61,27 +73,24 @@ const Game: React.FC<GameProps> = ({ item }) => {
                 marginLeft: -7,
               }}
             >
-              {item?.players
-                ?.filter((c) => c?.name !== item?.adminName)
-                .map((player, index) => (
-                  <Image
-                    key={index}
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 22,
-                      marginLeft: -7,
-                    }}
-                    source={{ uri: player?.imageUrl }}
-                  />
-                ))}
+              {item?.player_images?.map((imageUrl, index) => (
+                <Image
+                  key={index}
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    marginLeft: -7,
+                  }}
+                  source={{ uri: imageUrl }}
+                />
+              ))}
             </View>
           </View>
 
           <View style={{ marginLeft: 10, flex: 1 }}>
-            {/* Adjust the marginLeft value to space out the text */}
             <Text style={{ fontSize: 16, fontWeight: '500' }}>
-              • {item?.players.length}/{item?.totalPlayers} Going
+              • {item?.current_player}/{item?.max_players} Going
             </Text>
           </View>
 
@@ -96,7 +105,7 @@ const Game: React.FC<GameProps> = ({ item }) => {
             }}
           >
             <Text style={{ fontWeight: '500' }}>
-              Only {item?.totalPlayers - item?.players.length} slots left 🚀
+              Only {item?.max_players - item?.current_player} slots left 🚀
             </Text>
           </View>
         </View>
@@ -110,15 +119,15 @@ const Game: React.FC<GameProps> = ({ item }) => {
         >
           <View>
             <Text style={{ marginTop: 10, color: 'gray', fontSize: 15 }}>
-              {item?.adminName}
+              {item?.game_admin_name}
             </Text>
 
             <Text style={{ marginTop: 10, fontSize: 14, fontWeight: '500' }}>
-              {item?.date}, {item?.time}
+              {item?.start_time}, {item?.end_time}
             </Text>
           </View>
 
-          {item?.matchFull && (
+          {item?.max_players === item?.current_player && (
             <Image
               style={{ width: 100, height: 70, resizeMode: 'contain' }}
               source={{
@@ -142,7 +151,7 @@ const Game: React.FC<GameProps> = ({ item }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {item?.area}
+            {item?.venue_name}
           </Text>
         </View>
 
@@ -160,11 +169,11 @@ const Game: React.FC<GameProps> = ({ item }) => {
               paddingVertical: 6,
               borderRadius: 7,
               marginTop: 12,
-              alignSelf: 'flex-start', // This line ensures the width is based on the content
+              alignSelf: 'flex-start',
             }}
           >
             <Text style={{ fontSize: 13, fontWeight: '400' }}>
-              Intermediate to Advanced
+              {item?.game_level}
             </Text>
           </View>
           {isUserInRequests && (
@@ -177,11 +186,9 @@ const Game: React.FC<GameProps> = ({ item }) => {
                 marginTop: 10,
               }}
             >
-              <View>
-                <Text style={{ textAlign: 'center', color: 'white' }}>
-                  Requested
-                </Text>
-              </View>
+              <Text style={{ textAlign: 'center', color: 'white' }}>
+                Requested
+              </Text>
             </View>
           )}
         </View>

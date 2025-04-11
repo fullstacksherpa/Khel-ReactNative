@@ -1,16 +1,25 @@
-import axios from 'axios';
-import * as Location from 'expo-location';
 import { create } from 'zustand';
-
-import { futsalData } from '@/mock';
 
 import { createSelectors } from '../utils';
 
+export interface Venue {
+  id: number;
+  name: string;
+  address: string;
+  location: [number, number]; // [lng, lat]
+  image_urls: string[];
+  sport: string;
+  open_time: string;
+  phone_number: string;
+  average_rating: number;
+  total_reviews: number;
+}
+
 interface GameVenueStore {
-  nearbyVenues: any[];
-  setNearbyVenues: (venues: any[]) => void;
-  selectedVenue?: any;
-  setSelectedVenue: (venue: any) => void;
+  nearbyVenues: Venue[] | undefined;
+  setNearbyVenues: (venues: Venue[] | undefined) => void;
+  selectedVenue?: Venue | undefined;
+  setSelectedVenue: (venue: Venue | undefined) => void;
 
   nearbyGames: any[];
   setNearbyGames: (games: any[]) => void;
@@ -22,16 +31,17 @@ interface GameVenueStore {
 
   currentSelection: 'venues' | 'games';
   setCurrentSelection: (selection: 'venues' | 'games') => void;
-
-  fetchNearbyVenues: () => Promise<void>;
-  fetchNearbyGames: () => Promise<void>;
 }
 
 export const _useGameVenue = create<GameVenueStore>((set) => ({
   nearbyVenues: [],
   setNearbyVenues: (venues) => set({ nearbyVenues: venues }),
   selectedVenue: undefined,
-  setSelectedVenue: (venue) => set({ selectedVenue: venue }),
+  setSelectedVenue: (venue) =>
+    set((state) => ({
+      ...state,
+      selectedVenue: venue,
+    })),
 
   nearbyGames: [],
   setNearbyGames: (games) => set({ nearbyGames: games }),
@@ -43,38 +53,6 @@ export const _useGameVenue = create<GameVenueStore>((set) => ({
 
   currentSelection: 'venues', // Default selection
   setCurrentSelection: (selection) => set({ currentSelection: selection }),
-
-  fetchNearbyVenues: async () => {
-    try {
-      // const location = await Location.getCurrentPositionAsync();
-      // const {} = await axios.get('nearby_venues', {
-      //   params: {
-      //     lat: location.coords.latitude,
-      //     long: location.coords.longitude,
-      //     max_dist_meters: 2000,
-      //   },
-      // });
-      set({ nearbyVenues: futsalData });
-    } catch (error) {
-      console.error('Failed to fetch venues:', error);
-    }
-  },
-
-  fetchNearbyGames: async () => {
-    try {
-      const location = await Location.getCurrentPositionAsync();
-      const { data } = await axios.get('nearby_games', {
-        params: {
-          lat: location.coords.latitude,
-          long: location.coords.longitude,
-          max_dist_meters: 2000,
-        },
-      });
-      set({ nearbyGames: data });
-    } catch (error) {
-      console.error('Failed to fetch games:', error);
-    }
-  },
 }));
 
 export const useGameVenue = createSelectors(_useGameVenue);
