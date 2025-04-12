@@ -47,7 +47,6 @@ export default function RootLayout() {
           name="reset-password-screen"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="venue-details" />
         <Stack.Screen name="owner-dashboard" options={{ headerShown: false }} />
       </Stack>
     </Providers>

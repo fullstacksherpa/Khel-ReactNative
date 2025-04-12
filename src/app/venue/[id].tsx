@@ -2,8 +2,10 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   FlatList,
@@ -22,44 +24,43 @@ import Animated, {
   useScrollViewOffset,
 } from 'react-native-reanimated';
 
+import { useVenue } from '@/api/venues/venues';
 import Amenities from '@/components/venue/amenities';
 import RatingBottomSheet from '@/components/venue/rating-bottomsheet'; // Adjust the import path as needed
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 300;
 
-const images = [
-  'https://images.pexels.com/photos/3660204/pexels-photo-3660204.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
-  'https://images.pexels.com/photos/3660204/pexels-photo-3660204.jpeg?auto=compress&cs=tinysrgb&w=800',
-  'https://lh3.googleusercontent.com/p/AF1QipOcYgj76vIPZotPrYrd8EuKv96Mz3OgYgDfyYBc=s680-w680-h510',
-];
-
 // eslint-disable-next-line max-lines-per-function
 const VenueDetails = () => {
-  const router = useRouter();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOfset = useScrollViewOffset(scrollRef);
+  const scrollOffset = useScrollViewOffset(
+    scrollRef.current ? scrollRef : null
+  );
+  const local = useLocalSearchParams<{ id: string }>();
+
+  const { data, isPending, isError } = useVenue({
+    //@ts-ignore
+    variables: { id: local.id },
+  });
+  const router = useRouter();
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isRatingSheetOpen, setIsRatingSheetOpen] = useState(false);
-
-  const phoneNumber = '+9779812345678';
-  const description =
-    'Goal Arena is a premium indoor futsal venue located in the heart of Kathmandu. It features a well-maintained artificial turf, floodlights for night matches, clean changing rooms, and a small café for refreshments. Perfect for casual games, tournaments, and team bookings.';
 
   const imageAnimatedStyle = useAnimatedStyle(() => ({
     transform: [
       {
         translateY: interpolate(
-          scrollOfset.value,
+          scrollOffset.value,
           [-IMG_HEIGHT, 0, IMG_HEIGHT],
           [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
         ),
       },
       {
         scale: interpolate(
-          scrollOfset.value,
+          scrollOffset.value,
           [-IMG_HEIGHT, 0, IMG_HEIGHT],
           [2, 1, 1]
         ),
@@ -68,12 +69,12 @@ const VenueDetails = () => {
   }));
 
   const headerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(scrollOfset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
+    opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
   }));
 
   const backButtonAnimatedStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
-      scrollOfset.value,
+      scrollOffset.value,
       [0, IMG_HEIGHT / 1.4],
       ['#d3d3d3', '#15803D']
     );
@@ -94,6 +95,25 @@ const VenueDetails = () => {
     // You can integrate API calls or local state updates here.
     Alert.alert('Thank you!', `Rating: ${rating}\nReview: ${review}`);
   };
+
+  if (isPending) {
+    return (
+      <View className="flex-1 justify-center  p-3">
+        <Stack.Screen options={{ title: 'Venue', headerBackTitle: 'Back' }} />
+
+        <ActivityIndicator />
+      </View>
+    );
+  }
+  if (isError) {
+    return (
+      <View className="flex-1 justify-center p-3">
+        <Stack.Screen options={{ title: 'Post', headerBackTitle: 'Back' }} />
+
+        <Text className="text-center">Error loading this Venue</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -127,7 +147,7 @@ const VenueDetails = () => {
       >
         {/* Carousel */}
         <FlatList
-          data={images}
+          data={data.image_urls}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
@@ -142,7 +162,7 @@ const VenueDetails = () => {
         />
         {/* Indicators */}
         <View style={styles.indicatorContainer}>
-          {images.map((_, index) => (
+          {data.image_urls.map((_, index) => (
             <View
               key={index}
               style={[
@@ -164,7 +184,7 @@ const VenueDetails = () => {
                 letterSpacing: 2,
               }}
             >
-              Arena Futsal
+              {data.name}
             </Text>
             <View
               style={{
@@ -176,13 +196,21 @@ const VenueDetails = () => {
             >
               <Ionicons name="time-outline" size={24} color="black" />
               <Text style={{ fontSize: 15, fontWeight: '500' }}>
-                9 AM - 10 PM
+                {data.open_time}
               </Text>
             </View>
-            <View style={{ marginTop: 5, flexDirection: 'row', gap: 5 }}>
+            <View
+              style={{
+                marginTop: 5,
+                flexDirection: 'row',
+                gap: 5,
+
+                alignItems: 'center',
+              }}
+            >
               <Ionicons name="location" size={24} color="black" />
               <Text style={{ fontSize: 14, width: '80%', fontWeight: '500' }}>
-                Boudha, ramhiti
+                {data.address}
               </Text>
             </View>
           </View>
@@ -193,7 +221,7 @@ const VenueDetails = () => {
                 backgroundColor: '#d3d3d3',
                 padding: 10,
               }}
-              onPress={() => Linking.openURL(`tel:${phoneNumber}`)}
+              onPress={() => Linking.openURL(`tel:+977${data.phone_number}`)}
             >
               <FontAwesome5 name="phone-alt" size={24} color="green" />
             </TouchableOpacity>
@@ -228,12 +256,14 @@ const VenueDetails = () => {
                 <FontAwesome
                   key={i}
                   style={{ paddingHorizontal: 3 }}
-                  name={i < Math.floor(3) ? 'star' : 'star-o'}
+                  name={i < Math.floor(data.average_rating) ? 'star' : 'star-o'}
                   size={15}
                   color="#F59E0B"
                 />
               ))}
-              <Text style={{ fontSize: 10 }}>{3.5} (9 ratings)</Text>
+              <Text style={{ fontSize: 10 }}>
+                {data.average_rating} ({data.total_reviews})
+              </Text>
             </View>
             <Pressable
               style={{
@@ -252,6 +282,9 @@ const VenueDetails = () => {
             </Pressable>
           </View>
           <View>
+            <Text
+              style={{ fontSize: 15 }}
+            >{`(${data.completed_games}) games completed`}</Text>
             <Pressable
               style={{
                 marginTop: 6,
@@ -264,7 +297,7 @@ const VenueDetails = () => {
                 padding: 10,
               }}
             >
-              <Text>1 Upcoming</Text>
+              <Text>{`${data.upcoming_games} Upcoming`}</Text>
             </Pressable>
           </View>
         </View>
@@ -291,7 +324,9 @@ const VenueDetails = () => {
             Description
           </Text>
           <Text style={{ fontSize: 16 }}>
-            {expanded ? description : description.slice(0, 200) + '..... '}
+            {expanded
+              ? data.description
+              : data.description?.slice(0, 200) + '..... '}
             <Text
               onPress={toggleExpanded}
               style={{ color: 'green', fontWeight: 'bold' }}

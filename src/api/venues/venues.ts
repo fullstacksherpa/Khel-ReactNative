@@ -3,7 +3,11 @@ import { createInfiniteQuery, createQuery } from 'react-query-kit';
 
 import { client } from '../common'; // your axios client
 import type { APIError } from '../types';
-import type { ListVenuesResponse, ListVenuesVariables } from './types';
+import type {
+  ListVenuesResponse,
+  ListVenuesVariables,
+  VenueDetails,
+} from './types';
 
 export type IsVenueOwnerResponse = {
   data: {
@@ -74,4 +78,20 @@ export const useInfiniteVenues = createInfiniteQuery<
   },
   // Start with the first page
   initialPageParam: 1,
+});
+
+type VenueDetailsVariables = { id: string };
+type VenueDetailsResponse = VenueDetails;
+
+export const useVenue = createQuery<
+  VenueDetailsResponse,
+  VenueDetailsVariables,
+  AxiosError
+>({
+  queryKey: ['venues', 'detail'], // Your queryKey can be adjusted as needed.
+  fetcher: (variables) => {
+    return client
+      .get(`venue/${variables.id}`)
+      .then((response) => response.data.data);
+  },
 });

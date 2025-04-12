@@ -48,7 +48,7 @@ const VenueCard = ({ item }: VenueCardProps) => {
         borderRadius: 16,
       }}
     >
-      <Link href={`/venue-details`} asChild>
+      <Link href={`/venue/${item.id}`} asChild>
         <Pressable
           style={{
             borderRadius: 11,

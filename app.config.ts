@@ -86,7 +86,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       '@rnmapbox/maps',
       {
-        RNMapboxMapsDownloadToken: Env.SECRET_KEY,
+        RNMapboxMapsDownloadToken: Env.MAPBOX_ACCESS_TOKEN,
+        RNMapboxMapsVersion: '11.8.0',
       },
     ],
   ],
@@ -94,12 +95,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...ClientEnv,
     eas: {
       projectId: Env.EAS_PROJECT_ID,
-    },
-    locales: {
-      en: {
-        languageCode: 'en',
-        direction: 'ltr',
-      },
     },
   },
 });

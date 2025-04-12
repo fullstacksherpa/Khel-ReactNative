@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import pin from '@assets/venuepin.png';
+import pin from '@assets/soccermarker.png';
 import { CircleLayer, Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
 import { type OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPressEvent';
 import { featureCollection, point } from '@turf/helpers';
@@ -43,6 +43,7 @@ export default function VenueMarkers() {
       console.log('Data fetched successfully:', data);
       console.log(`setting nearbyVenues....🔥 ${JSON.stringify(nearbyVenues)}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, data]);
 
   // Optionally handle loading and error states

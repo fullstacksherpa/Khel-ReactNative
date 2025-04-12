@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { type Game } from '@/api/games/games';
+
 import { createSelectors } from '../utils';
 
 export interface Venue {
@@ -21,8 +23,8 @@ interface GameVenueStore {
   selectedVenue?: Venue | undefined;
   setSelectedVenue: (venue: Venue | undefined) => void;
 
-  nearbyGames: any[];
-  setNearbyGames: (games: any[]) => void;
+  nearbyGames: Game[] | undefined;
+  setNearbyGames: (games: Game[] | undefined) => void;
   selectedGame?: any;
   setSelectedGame: (game: any) => void;
 
