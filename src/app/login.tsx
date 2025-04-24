@@ -9,6 +9,7 @@ import type { LoginFormProps } from '@/components/login-form';
 import { LoginForm } from '@/components/login-form';
 import { showErrorMessage } from '@/components/ui';
 import { signIn } from '@/lib/auth';
+import { setItem } from '@/lib/storage';
 
 export default function Login() {
   const { mutate: loginUser, isPending } = useLogin();
@@ -27,8 +28,9 @@ export default function Login() {
           access: response.data.access_token,
           refresh: response.data.refresh_token,
         });
-        // setItem('USERNAME', user.username);
-        // setItem('USERIMAGE', user.image);
+        setItem('USERNAME', response.data.first_name);
+        setItem('USERIMAGE', response.data.profile_image);
+        setItem('USERID', response.data.userID);
 
         const timeoutId = setTimeout(() => router.push('/'), 1000);
 

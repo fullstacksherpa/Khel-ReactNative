@@ -45,6 +45,7 @@ export const useListVenues = createQuery<
     client
       .get('/list-venues', { params: variables })
       .then((response) => response.data),
+  staleTime: 5 * 60 * 1000,
 });
 
 export const useInfiniteVenues = createInfiniteQuery<
@@ -88,10 +89,8 @@ export const useVenue = createQuery<
   VenueDetailsVariables,
   AxiosError
 >({
-  queryKey: ['venues', 'detail'], // Your queryKey can be adjusted as needed.
-  fetcher: (variables) => {
-    return client
-      .get(`venue/${variables.id}`)
-      .then((response) => response.data.data);
-  },
+  queryKey: ['venues', 'detail'],
+  fetcher: (variables) =>
+    client.get(`venue/${variables.id}`).then((response) => response.data.data),
+  staleTime: 10 * 60 * 1000,
 });

@@ -48,6 +48,7 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="owner-dashboard" options={{ headerShown: false }} />
+        <Stack.Screen name="player-screen" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );

@@ -24,6 +24,7 @@ import Animated, {
   useScrollViewOffset,
 } from 'react-native-reanimated';
 
+import { useCreateReview } from '@/api/venues/review';
 import { useVenue } from '@/api/venues/venues';
 import Amenities from '@/components/venue/amenities';
 import RatingBottomSheet from '@/components/venue/rating-bottomsheet'; // Adjust the import path as needed
@@ -33,13 +34,18 @@ const IMG_HEIGHT = 300;
 
 // eslint-disable-next-line max-lines-per-function
 const VenueDetails = () => {
+  const { mutate, isPending: isReviewSubmitting } = useCreateReview();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(
     scrollRef.current ? scrollRef : null
   );
   const local = useLocalSearchParams<{ id: string }>();
 
-  const { data, isPending, isError } = useVenue({
+  const {
+    data,
+    isPending: isVenueLoading,
+    isError,
+  } = useVenue({
     //@ts-ignore
     variables: { id: local.id },
   });
@@ -92,11 +98,48 @@ const VenueDetails = () => {
   const toggleExpanded = () => setExpanded(!expanded);
 
   const handleRatingSubmit = (rating: number, review: string) => {
-    // You can integrate API calls or local state updates here.
-    Alert.alert('Thank you!', `Rating: ${rating}\nReview: ${review}`);
+    if (!local.id) return;
+
+    mutate(
+      {
+        venueID: local.id,
+        data: {
+          rating,
+          comment: review,
+        },
+      },
+      {
+        onSuccess: () => {
+          setIsRatingSheetOpen(false);
+          Alert.alert('Thank you!', 'Your review has been submitted ✅');
+        },
+        onError: (error) => {
+          console.error('Failed to submit review', error);
+
+          const apiError = error.response?.data;
+
+          if (apiError?.status === 409) {
+            Alert.alert(
+              'Already Reviewed',
+              apiError.message || 'You have already reviewed this venue.'
+            );
+          } else if (apiError?.status === 500) {
+            Alert.alert(
+              'Server Error',
+              'Something went wrong on our end. Please try again later.'
+            );
+          } else {
+            Alert.alert(
+              'Oops!',
+              apiError?.message || 'Something went wrong. Please try again.'
+            );
+          }
+        },
+      }
+    );
   };
 
-  if (isPending) {
+  if (isVenueLoading) {
     return (
       <View className="flex-1 justify-center  p-3">
         <Stack.Screen options={{ title: 'Venue', headerBackTitle: 'Back' }} />
@@ -218,12 +261,12 @@ const VenueDetails = () => {
             <TouchableOpacity
               style={{
                 borderRadius: 10,
-                backgroundColor: '#d3d3d3',
+                backgroundColor: 'black',
                 padding: 10,
               }}
               onPress={() => Linking.openURL(`tel:+977${data.phone_number}`)}
             >
-              <FontAwesome5 name="phone-alt" size={24} color="green" />
+              <FontAwesome5 name="phone-alt" size={24} color="white" />
             </TouchableOpacity>
           </View>
         </View>
@@ -411,7 +454,8 @@ const VenueDetails = () => {
         isOpen={isRatingSheetOpen}
         onClose={() => setIsRatingSheetOpen(false)}
         onSubmit={handleRatingSubmit}
-        name="Arena futsal"
+        name={data.name}
+        isReviewSubmitting={isReviewSubmitting}
       />
     </View>
   );

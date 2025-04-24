@@ -21,7 +21,7 @@ import UpcomingGame from '@/components/game/upcoming-game-card';
 import { type IGame } from '@/types';
 
 // eslint-disable-next-line max-lines-per-function
-const HomeScreen = () => {
+export default function HomeScreen() {
   // Use these variables for filtering the games
   const variables: ListGamesVariables = {
     limit: 2,
@@ -36,10 +36,6 @@ const HomeScreen = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteGames({ variables });
-
-  // For debugging purposes
-  console.log(data?.pages);
-  console.log('full', data?.pages[0]?.data);
 
   // Since the API response returns an object with a top-level "data" array,
   // we flatten the pages by directly merging the arrays from each page.
@@ -384,6 +380,4 @@ const HomeScreen = () => {
       <AddressBottomSheet />
     </>
   );
-};
-
-export default HomeScreen;
+}

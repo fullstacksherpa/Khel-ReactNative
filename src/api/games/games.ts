@@ -23,9 +23,39 @@ export type Game = {
   venue_lon: number;
 };
 
+export type GameDetails = {
+  game_id: number;
+  venue_id: number;
+  venue_name: string;
+  sport_type: string;
+  price: number;
+  format: string;
+  game_level: string;
+  admin_id: number;
+  game_admin_name: string;
+  is_booked: boolean;
+  start_time: string;
+  end_time: string;
+  max_players: number;
+  current_player: number;
+  player_images: string[];
+  player_ids: number[];
+  requested_player_ids: number[];
+  venue_lat: number;
+  venue_lon: number;
+};
+
 // The API now returns a simple JSON object with a data array of games.
 export type ListGamesResponse = {
   data: Game[];
+};
+
+export type GameDetailsResponse = {
+  data: GameDetails;
+};
+
+export type GameDetailsVariables = {
+  gameID: number;
 };
 
 export type ListGamesVariables = {
@@ -89,4 +119,17 @@ export const useInfiniteGames = createInfiniteQuery<
     return pages.length + 1;
   },
   initialPageParam: 0,
+});
+
+export const useGameDetails = createQuery<
+  GameDetailsResponse,
+  GameDetailsVariables,
+  AxiosError<APIError>
+>({
+  queryKey: ['game-details'], // base key; queryKey will also include the variables
+  fetcher: (GameDetailsVariables) =>
+    client
+      .get<GameDetailsResponse>(`/games/${GameDetailsVariables.gameID}`)
+      .then((res) => res.data),
+  staleTime: 5 * 60 * 1000,
 });

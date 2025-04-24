@@ -22,5 +22,6 @@ export type LoginResponse = {
     refresh_token: string;
     first_name: string;
     profile_image: string;
+    userID: string;
   };
 };

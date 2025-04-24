@@ -48,7 +48,8 @@ export const hydrateAuth = () => _useAuth.getState().hydrate();
 
 export const handleSignOut = async () => {
   const signOut = useAuth.use.signOut();
-  const { access } = getToken();
+  const token = getToken();
+  const access = token ? token.access : null;
   console.log(access);
   try {
     await client.post(
