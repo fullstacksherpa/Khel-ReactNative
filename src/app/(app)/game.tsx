@@ -303,7 +303,12 @@ export default function HomeScreen() {
           backgroundColor: 'white',
         }}
       >
-        <Pressable onPress={() => router.push('/create-game')}>
+        <Pressable
+          onPress={() => {
+            console.log('createnew bottom pressed ⚙️');
+            router.push('/c-game');
+          }}
+        >
           <Text style={{ fontWeight: 'bold' }}>Create Game</Text>
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
@@ -351,7 +356,7 @@ export default function HomeScreen() {
         <FlatList
           data={gamesFromApi}
           renderItem={({ item }) => <Game item={item} />}
-          keyExtractor={(item) => item.game_id.toString()}
+          keyExtractor={(item, index) => `${item.game_id}-${index}`}
           contentContainerStyle={{ paddingBottom: 20 }}
           onEndReached={() => {
             if (hasNextPage && !isFetchingNextPage) {
@@ -372,7 +377,7 @@ export default function HomeScreen() {
         <FlatList
           data={dummyGames}
           renderItem={({ item }) => <UpcomingGame item={item} />}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item, index) => `${item._id}-${index}`}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}

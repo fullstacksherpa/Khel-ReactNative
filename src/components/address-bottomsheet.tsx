@@ -89,20 +89,20 @@ const AddressBottomSheet: React.FC = () => {
       snapPoints={[250]}
       enablePanDownToClose
       onClose={closeSheet}
-      backgroundStyle={{ backgroundColor: '#414442' }}
+      backgroundStyle={{ backgroundColor: '#19892C' }}
     >
       <BottomSheetView style={{ flex: 1, padding: 10, gap: 20 }}>
-        <Text style={{ fontSize: 18, fontWeight: '600', color: 'white' }}>
+        <Text style={{ fontSize: 18, fontWeight: '600', color: '#fff' }}>
           Update Address
         </Text>
         <TextInput
           placeholder="Enter new address"
-          placeholderTextColor="gray"
+          placeholderTextColor="#fff"
           value={newAddress}
           onChangeText={setNewAddress}
           style={{
             borderWidth: 1,
-            borderColor: 'gray',
+            borderColor: '#fff',
             padding: 10,
             marginVertical: 10,
             borderRadius: 5,
@@ -112,8 +112,9 @@ const AddressBottomSheet: React.FC = () => {
         <Button
           title="Use Current Location"
           onPress={handleUseCurrentLocation}
+          color="#fff"
         />
-        <Button title="Update" onPress={handleUpdate} />
+        <Button title="Update" onPress={handleUpdate} color="#fff" />
       </BottomSheetView>
     </BottomSheet>
   );
