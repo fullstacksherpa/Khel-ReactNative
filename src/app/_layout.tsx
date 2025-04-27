@@ -50,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="owner-dashboard" options={{ headerShown: false }} />
         <Stack.Screen name="player-screen" options={{ headerShown: false }} />
         <Stack.Screen name="c-game" options={{ headerShown: false }} />
+        <Stack.Screen name="feedback" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );
