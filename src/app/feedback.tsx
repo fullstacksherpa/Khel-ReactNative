@@ -94,8 +94,8 @@ const AppFeedback: React.FC = () => {
       <Text
         style={{
           fontSize: 19,
-          fontWeight: '400',
-          color: 'black',
+          fontWeight: '700',
+          color: 'grey',
           alignSelf: 'center',
         }}
       >

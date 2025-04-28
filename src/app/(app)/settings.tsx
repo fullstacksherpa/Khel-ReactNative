@@ -11,6 +11,9 @@ import {
   View,
 } from 'react-native';
 
+import { client } from '@/api';
+import { useAuth } from '@/lib/auth/index';
+
 // Reusable list item component
 interface ListItemProps {
   icon: React.ReactNode;
@@ -54,6 +57,27 @@ const ListItem: React.FC<ListItemProps> = ({
 const ProfileScreen: React.FC = () => {
   const router = useRouter();
 
+  const signOut = useAuth.use.signOut();
+  const signOutHandler = async () => {
+    try {
+      const { access } = useAuth.getState().token || {};
+      if (!access) throw new Error('No access token found');
+
+      await client('/users/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${access}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      signOut(); // ✅ Call signOut from Zustand
+      router.push('/login'); // Redirect after sign-out
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
   return (
     <View
       className="flex-1 bg-gray-50"
@@ -63,7 +87,7 @@ const ProfileScreen: React.FC = () => {
     >
       {/* Header */}
       <TouchableOpacity
-        onPress={() => router.push('/user-profile')}
+        onPress={() => router.push('/view-profile')}
         className="flex-row items-center bg-white p-4"
       >
         {/* TODO: make image dynamic */}
@@ -141,7 +165,7 @@ const ProfileScreen: React.FC = () => {
           <ListItem
             icon={<MaterialIcons name="logout" size={24} color="#888" />}
             title="Logout"
-            onPress={() => router.push('/invite')}
+            onPress={signOutHandler}
           />
         </View>
       </ScrollView>

@@ -51,6 +51,13 @@ export default function RootLayout() {
         <Stack.Screen name="player-screen" options={{ headerShown: false }} />
         <Stack.Screen name="c-game" options={{ headerShown: false }} />
         <Stack.Screen name="feedback" options={{ headerShown: false }} />
+        <Stack.Screen name="view-profile" options={{ headerShown: false }} />
+        <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
+        <Stack.Screen name="help-support" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="/support/accounts"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </Providers>
   );
