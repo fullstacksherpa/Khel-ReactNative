@@ -1,6 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Stack } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -48,6 +49,7 @@ export interface Facility {
 
 // eslint-disable-next-line max-lines-per-function
 const VenueScreen = () => {
+  const router = useRouter();
   const variables: ListVenuesVariables = {
     sport: 'Futsal',
     // Optional: lat, lng, distance, and limit (if not provided, limit defaults to 10)
@@ -93,14 +95,14 @@ const VenueScreen = () => {
             <Ionicons name="chatbox-outline" size={24} color="white" />
             <Ionicons name="notifications-outline" size={24} color="white" />
 
-            <View>
+            <Pressable onPress={() => router.push('/view-profile')}>
               <Image
                 style={{ width: 30, height: 30, borderRadius: 15 }}
                 source={{
                   uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
                 }}
               />
-            </View>
+            </Pressable>
           </View>
         </View>
 

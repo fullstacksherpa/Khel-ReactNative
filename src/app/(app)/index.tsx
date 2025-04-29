@@ -1,8 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Stack } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
@@ -17,6 +18,7 @@ import { getAccessToken } from '@/lib/auth/utils';
 
 // eslint-disable-next-line max-lines-per-function
 const MyScreen = () => {
+  const router = useRouter();
   const access_token = getAccessToken();
   console.log(`COPY ACCESS_TOKEN${access_token}`);
   const userStatus = useAuth.use.status();
@@ -52,14 +54,14 @@ const MyScreen = () => {
               <Ionicons name="chatbox-outline" size={24} color="white" />
               <Ionicons name="notifications-outline" size={24} color="white" />
 
-              <View>
+              <Pressable onPress={() => router.push('/view-profile')}>
                 <Image
                   style={{ width: 30, height: 30, borderRadius: 15 }}
                   source={{
                     uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
                   }}
                 />
-              </View>
+              </Pressable>
             </View>
           </View>
           <View className="mt-2">
