@@ -112,9 +112,9 @@ const ProfileScreen: React.FC = () => {
       </TouchableOpacity>
 
       {/* Content */}
-      <ScrollView className="mt-4 px-4">
+      <ScrollView className="mt-4 px-1">
         {/* Section 1 */}
-        <View className="mb-6 rounded-xl bg-white p-4">
+        <View className="mb-6 rounded-xl bg-white px-1 py-2">
           <ListItem
             icon={
               <MaterialIcons name="book-online" size={24} color="#00A86B" />
@@ -149,11 +149,11 @@ const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Section 2 */}
-        <View className="rounded-xl bg-white p-4">
+        <View className="rounded-xl bg-white px-1 py-2">
           <ListItem
             icon={<MaterialIcons name="local-offer" size={24} color="#888" />}
             title="Offers"
-            onPress={() => router.push('/offers')}
+            onPress={() => router.push('/link')}
           />
           <View className="my-2 h-px bg-gray-200" />
           <ListItem

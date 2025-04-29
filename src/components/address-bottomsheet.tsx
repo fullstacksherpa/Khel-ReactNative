@@ -1,8 +1,12 @@
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetTextInput,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Button, Text, TextInput } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 
+import { Button } from '@/components/ui';
 import { updateAddress, updateLocation } from '@/lib/location/index';
 import { useAddressSheetStore } from '@/lib/location-bottomsheet';
 
@@ -89,32 +93,51 @@ const AddressBottomSheet: React.FC = () => {
       snapPoints={[250]}
       enablePanDownToClose
       onClose={closeSheet}
-      backgroundStyle={{ backgroundColor: '#19892C' }}
+      backgroundStyle={{ backgroundColor: '#f7ffff' }}
     >
       <BottomSheetView style={{ flex: 1, padding: 10, gap: 20 }}>
-        <Text style={{ fontSize: 18, fontWeight: '600', color: '#fff' }}>
-          Update Address
-        </Text>
-        <TextInput
-          placeholder="Enter new address"
-          placeholderTextColor="#fff"
-          value={newAddress}
-          onChangeText={setNewAddress}
+        <Text
           style={{
-            borderWidth: 1,
-            borderColor: '#fff',
-            padding: 10,
-            marginVertical: 10,
-            borderRadius: 5,
-            color: 'white',
+            fontSize: 20,
+            fontWeight: '900',
+            color: '#808080',
+            alignSelf: 'center',
+            letterSpacing: 2,
           }}
-        />
+        >
+          Update Your Address
+        </Text>
+        <View className="flex flex-row gap-2">
+          <BottomSheetTextInput
+            placeholder="Enter new address"
+            placeholderTextColor="#808080"
+            value={newAddress}
+            onChangeText={setNewAddress}
+            style={{
+              width: 280,
+              borderWidth: 1,
+              borderColor: '#808080',
+              padding: 12,
+              marginVertical: 10,
+              borderRadius: 5,
+              color: '#0B1215',
+              letterSpacing: 1,
+            }}
+          />
+          <Button
+            className="rounded-lg bg-highlightYellow p-2"
+            textClassName="text-md font-bold"
+            label={'Locate Me'}
+            onPress={handleUseCurrentLocation}
+          />
+        </View>
+
         <Button
-          title="Use Current Location"
-          onPress={handleUseCurrentLocation}
-          color="#fff"
+          className="my-2 rounded-3xl bg-green-500"
+          textClassName="text-2xl"
+          label={'Update'}
+          onPress={handleUpdate}
         />
-        <Button title="Update" onPress={handleUpdate} color="#fff" />
       </BottomSheetView>
     </BottomSheet>
   );

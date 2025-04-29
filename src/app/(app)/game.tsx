@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  RefreshControl,
   ScrollView,
   Text,
   View,
@@ -35,6 +36,8 @@ export default function HomeScreen() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch,
+    isRefetching,
   } = useInfiniteGames({ variables });
 
   // Since the API response returns an object with a top-level "data" array,
@@ -208,14 +211,14 @@ export default function HomeScreen() {
             >
               <Ionicons name="chatbox-outline" size={24} color="white" />
               <Ionicons name="notifications-outline" size={24} color="white" />
-              <View>
+              <Pressable onPress={() => router.push('/view-profile')}>
                 <Image
                   style={{ width: 30, height: 30, borderRadius: 15 }}
                   source={{
                     uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
                   }}
                 />
-              </View>
+              </Pressable>
             </View>
           </View>
 
@@ -355,6 +358,10 @@ export default function HomeScreen() {
       {option === 'My Sports' && (
         <FlatList
           data={gamesFromApi}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+          }
           renderItem={({ item }) => <Game item={item} />}
           keyExtractor={(item, index) => `${item.game_id}-${index}`}
           contentContainerStyle={{ paddingBottom: 20 }}

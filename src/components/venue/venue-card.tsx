@@ -1,12 +1,15 @@
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
+  Linking,
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -132,7 +135,12 @@ const VenueCard = ({ item }: VenueCardProps) => {
               }}
             >
               <Text>{item.open_time}</Text>
-              <Text style={{ fontWeight: '500' }}>{item.phone_number}</Text>
+              <TouchableOpacity
+                className="pr-3"
+                onPress={() => Linking.openURL(`tel:+977${item.phone_number}`)}
+              >
+                <FontAwesome5 name="phone-alt" size={23} color="gray" />
+              </TouchableOpacity>
             </View>
           </View>
         </Pressable>

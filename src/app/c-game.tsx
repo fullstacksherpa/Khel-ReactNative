@@ -1,5 +1,7 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -33,6 +35,17 @@ const sports = [
   'cricket',
   'tennis',
 ];
+const sportIcons: Record<
+  string,
+  { Icon: typeof FontAwesome | typeof MaterialIcons; name: string }
+> = {
+  futsal: { Icon: FontAwesome, name: 'soccer-ball-o' },
+  basketball: { Icon: MaterialIcons, name: 'sports-basketball' },
+  badminton: { Icon: MaterialIcons, name: 'sports-tennis' }, // good alt
+  'e-sport': { Icon: MaterialIcons, name: 'sports-esports' },
+  cricket: { Icon: MaterialIcons, name: 'sports-cricket' },
+  tennis: { Icon: MaterialIcons, name: 'sports-tennis' },
+};
 const gameLevels = ['beginner', 'intermediate', 'advanced'];
 const visibilityOptions = ['public', 'private'];
 
@@ -209,6 +222,7 @@ export default function CreateGameScreen({
         <ScrollView
           showsHorizontalScrollIndicator={false}
           nestedScrollEnabled
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           <TouchableOpacity
@@ -287,13 +301,12 @@ export default function CreateGameScreen({
               marginVertical: 10,
             }}
           >
-            <View style={{ marginHorizontal: 10 }}>
+            <View>
               <Text
                 style={{
                   marginBottom: 10,
                   fontSize: 15,
                   fontWeight: '500',
-                  marginLeft: 17,
                 }}
               >
                 Game Visibility
@@ -304,7 +317,7 @@ export default function CreateGameScreen({
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 15,
-                  marginHorizontal: 20,
+                  justifyContent: 'center',
                 }}
               >
                 <Pressable
@@ -318,8 +331,10 @@ export default function CreateGameScreen({
                           backgroundColor: '#07bc0c',
                           width: 140,
                           justifyContent: 'center',
-                          borderRadius: 6,
-                          padding: 10,
+                          borderRadius: 7,
+                          padding: 8,
+                          borderColor: '#D0D0D0',
+                          borderWidth: 1,
                         }
                       : {
                           flexDirection: 'row',
@@ -328,8 +343,10 @@ export default function CreateGameScreen({
                           backgroundColor: 'white',
                           width: 140,
                           justifyContent: 'center',
-                          borderRadius: 6,
-                          padding: 10,
+                          borderRadius: 7,
+                          padding: 8,
+                          borderColor: '#D0D0D0',
+                          borderWidth: 1,
                         }
                   }
                 >
@@ -342,7 +359,7 @@ export default function CreateGameScreen({
                     style={
                       visibility.includes('public')
                         ? { color: 'white', fontWeight: 'bold', fontSize: 15 }
-                        : { color: 'black', fontWeight: 'bold', fontSize: 15 }
+                        : { color: 'black', fontWeight: 'normal', fontSize: 15 }
                     }
                   >
                     Public
@@ -359,8 +376,10 @@ export default function CreateGameScreen({
                           backgroundColor: '#07bc0c',
                           width: 140,
                           justifyContent: 'center',
-                          borderRadius: 6,
-                          padding: 10,
+                          borderRadius: 7,
+                          padding: 8,
+                          borderColor: '#D0D0D0',
+                          borderWidth: 1,
                         }
                       : {
                           flexDirection: 'row',
@@ -369,8 +388,10 @@ export default function CreateGameScreen({
                           backgroundColor: 'white',
                           width: 140,
                           justifyContent: 'center',
-                          borderRadius: 6,
-                          padding: 10,
+                          borderRadius: 7,
+                          padding: 8,
+                          borderColor: '#D0D0D0',
+                          borderWidth: 1,
                         }
                   }
                 >
@@ -383,7 +404,7 @@ export default function CreateGameScreen({
                     style={
                       visibility.includes('private')
                         ? { color: 'white', fontWeight: 'bold', fontSize: 15 }
-                        : { color: 'black', fontWeight: 'bold', fontSize: 15 }
+                        : { color: 'black', fontWeight: 'normal', fontSize: 15 }
                     }
                   >
                     Invite Only
@@ -403,13 +424,18 @@ export default function CreateGameScreen({
           />
 
           {/* Game Level*/}
-          <View>
+          <View className="pt-3">
             <Text style={{ marginBottom: 10, fontSize: 15, fontWeight: '500' }}>
               Game Level
             </Text>
 
             <Pressable
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 10,
+                justifyContent: 'center',
+              }}
             >
               {gameLevels.map((level) => {
                 const isSelected = gameLevel === level;
@@ -422,17 +448,19 @@ export default function CreateGameScreen({
                       alignItems: 'center',
                       gap: 8,
                       backgroundColor: isSelected ? '#07bc0c' : 'white',
-                      width: 120,
+                      width: 110,
                       justifyContent: 'center',
-                      borderRadius: 3,
-                      padding: 10,
+                      borderRadius: 7,
+                      padding: 8,
+                      borderColor: '#D0D0D0',
+                      borderWidth: 1,
                     }}
                   >
                     <Text
                       style={{
                         color: isSelected ? 'white' : 'black',
                         fontWeight: isSelected ? 'bold' : 'normal',
-                        fontSize: 15,
+                        fontSize: isSelected ? 13 : 15,
                         textTransform: 'capitalize',
                       }}
                     >
@@ -449,75 +477,29 @@ export default function CreateGameScreen({
               borderColor: '#E0E0E0',
               borderWidth: 0.7,
               height: 1,
-              marginVertical: 9,
+              marginVertical: 14,
             }}
           />
 
           {/*Total player*/}
 
-          <View>
-            <Text style={{ fontSize: 16 }}>Total Players</Text>
-            <View
-              style={{
-                padding: 10,
-                backgroundColor: '#F0F0F0',
-                marginTop: 10,
-                borderRadius: 6,
-              }}
-            >
-              <View style={{ marginVertical: 5 }}>
-                <View>
-                  <TextInput
-                    value={maxPlayers.toString()}
-                    keyboardType="numeric"
-                    onChangeText={(text) => setMaxPlayers(text)}
-                    style={{
-                      padding: 10,
-                      backgroundColor: 'white',
-                      borderColor: '#D0D0D0',
-                      borderWidth: 1,
-                    }}
-                    placeholder="Total Players (including you)"
-                  />
-                </View>
-              </View>
-            </View>
-          </View>
+          <View className="flex flex-row items-center gap-3">
+            <Text style={{ fontSize: 15, fontWeight: 500 }}>Total Players</Text>
 
-          <Text
-            style={{
-              borderColor: '#E0E0E0',
-              borderWidth: 0.7,
-              height: 1,
-              marginVertical: 9,
-            }}
-          />
-
-          {/*Instruction*/}
-          <View>
-            <Text style={{ marginTop: 20, fontSize: 16 }}>
-              Add Instructions
-            </Text>
-            <View
-              style={{
-                padding: 10,
-                backgroundColor: '#F0F0F0',
-                marginTop: 10,
-                borderRadius: 6,
-              }}
-            >
+            <View>
               <TextInput
-                onChangeText={handleInstructionChange}
-                value={instruction}
+                value={maxPlayers.toString()}
+                keyboardType="numeric"
+                onChangeText={(text) => setMaxPlayers(text)}
                 style={{
+                  width: 150,
                   padding: 10,
                   backgroundColor: 'white',
                   borderColor: '#D0D0D0',
                   borderWidth: 1,
-                  marginVertical: 8,
-                  borderRadius: 6,
+                  borderRadius: 7,
                 }}
-                placeholder="Add Additional Instructions"
+                placeholder="Including You"
               />
             </View>
           </View>
@@ -527,19 +509,26 @@ export default function CreateGameScreen({
               borderColor: '#E0E0E0',
               borderWidth: 0.7,
               height: 1,
-              marginVertical: 9,
+              marginVertical: 16,
             }}
           />
-
           {/*Format*/}
-          <View className="mb-4">
-            <Text>Format</Text>
+          <View className="flex-row items-center gap-2">
+            <Text style={{ fontSize: 15, fontWeight: 500 }}>Format</Text>
             <TextInput
               value={format}
               onChangeText={setFormat}
               placeholder="e.g., 5v5"
               maxLength={20}
-              className="rounded border p-2"
+              style={{
+                padding: 10,
+                backgroundColor: 'white',
+                borderColor: '#D0D0D0',
+                borderWidth: 1,
+                marginVertical: 2,
+                borderRadius: 7,
+                width: 200,
+              }}
             />
           </View>
 
@@ -548,18 +537,16 @@ export default function CreateGameScreen({
               borderColor: '#E0E0E0',
               borderWidth: 0.7,
               height: 1,
-              marginVertical: 9,
+              marginVertical: 15,
             }}
           />
 
           {/* Price */}
-          <View>
-            <Text>Price</Text>
+          <View className="flex flex-row items-center gap-2">
+            <Text style={{ fontWeight: 500, fontSize: 15 }}>Price</Text>
             <View
               style={{
-                padding: 10,
                 backgroundColor: '#F0F0F0',
-                marginTop: 10,
                 borderRadius: 6,
               }}
             >
@@ -572,7 +559,7 @@ export default function CreateGameScreen({
                   borderColor: '#D0D0D0',
                   borderWidth: 1,
                   marginVertical: 8,
-                  borderRadius: 6,
+                  borderRadius: 7,
                 }}
                 placeholder="Price for each player"
               />
@@ -584,11 +571,74 @@ export default function CreateGameScreen({
               borderColor: '#E0E0E0',
               borderWidth: 0.7,
               height: 1,
+              marginVertical: 15,
+            }}
+          />
+          {/*Instruction*/}
+          <View>
+            <Text style={{ fontSize: 15, fontWeight: 500 }}>
+              Add Instructions
+            </Text>
+            <View
+              style={{
+                paddingTop: 6,
+                backgroundColor: '#F0F0F0',
+                borderRadius: 6,
+              }}
+            >
+              <TextInput
+                onChangeText={handleInstructionChange}
+                multiline
+                value={instruction}
+                style={{
+                  padding: 10,
+                  backgroundColor: 'white',
+                  borderColor: '#D0D0D0',
+                  borderWidth: 1,
+                  marginVertical: 2,
+                  borderRadius: 7,
+                }}
+                placeholder="Add Additional Instructions"
+              />
+            </View>
+          </View>
+          <Text
+            style={{
+              borderColor: '#E0E0E0',
+              borderWidth: 0.7,
+              height: 1,
               marginVertical: 9,
+            }}
+          />
+          {/* Submit */}
+          <View className="py-5">
+            <TouchableOpacity
+              onPress={handleCreateGame}
+              disabled={isPending}
+              className={`mx-8 rounded py-4 ${isPending ? 'bg-blue-300' : 'bg-mainGreen'}`}
+            >
+              {isPending ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text className="text-center font-bold text-white">
+                  Create Game
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <Text
+            style={{
+              borderColor: '#E0E0E0',
+              borderWidth: 0.7,
+              height: 1,
+              marginTop: 9,
+              marginBottom: 12,
             }}
           />
         </ScrollView>
       </KeyboardAvoidingView>
+
       {/* Sport Sheet */}
       <BottomSheet
         ref={sportSheet}
@@ -596,20 +646,52 @@ export default function CreateGameScreen({
         snapPoints={snapPoints}
         enablePanDownToClose
       >
+        <View className="mb-3">
+          <Text className="items-center self-center text-2xl font-bold tracking-wider">
+            Select Your Game
+          </Text>
+        </View>
         <BottomSheetFlatList
           data={sports}
+          numColumns={2}
           keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => {
-                setSport(item);
-                sportSheet.current?.close();
-              }}
-            >
-              <Text>{item}</Text>
-            </TouchableOpacity>
-          )}
+          renderItem={({ item }) => {
+            const { Icon, name } = sportIcons[item];
+
+            return (
+              <TouchableOpacity
+                style={styles.item}
+                onPress={() => {
+                  setSport(item);
+                  sportSheet.current?.close();
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    borderColor: 'gray',
+                    padding: 8,
+                    width: width / 2.5,
+                    gap: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: item === sport ? '#F59E0B' : 'white',
+                    borderRadius: 7,
+                  }}
+                >
+                  <Icon name={name as any} size={24} color="#333" />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                    }}
+                  >
+                    {item}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
         />
       </BottomSheet>
 
@@ -690,23 +772,6 @@ export default function CreateGameScreen({
           )}
         />
       </BottomSheet>
-
-      {/* Submit */}
-      <View className="py-5">
-        <TouchableOpacity
-          onPress={handleCreateGame}
-          disabled={isPending}
-          className={`mx-8 rounded py-4 ${isPending ? 'bg-blue-300' : 'bg-mainGreen'}`}
-        >
-          {isPending ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text className="text-center font-bold text-white">
-              Create Game
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
     </>
   );
 }
