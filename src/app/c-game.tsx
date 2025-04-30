@@ -3,6 +3,16 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import {
+  addDays,
+  addMinutes,
+  format,
+  isBefore,
+  isEqual,
+  parse,
+  startOfDay,
+} from 'date-fns';
+import { formatInTimeZone, fromZonedTime } from 'date-fns-tz';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
@@ -18,14 +28,64 @@ import {
   View,
 } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { date } from 'zod';
 
 import { useCreateGame } from '@/api/games/create-game';
 import { type Venue } from '@/api/venues/types';
 import { useListVenues } from '@/api/venues/venues';
 import CustomHeader from '@/components/custom-header';
-import { formatKathmandu, toKathmanduISOString } from '@/lib/date-utils';
 
 const { width } = Dimensions.get('window');
+const TIMEZONE = 'Asia/Kathmandu';
+
+//
+// Helper: Generate an array of dates (today + next 10 days)
+//
+const generateDatesArray = (numDays = 10) => {
+  const dates = [];
+  const today = new Date();
+  for (let i = 0; i <= numDays; i++) {
+    const dateObj = addDays(today, i);
+    const dayStart = startOfDay(dateObj);
+    dates.push({
+      // Display day number and abbreviated day name in Kathmandu time
+      dayNum: formatInTimeZone(dayStart, TIMEZONE, 'dd'),
+      dayLabel: formatInTimeZone(dayStart, TIMEZONE, 'EEE'),
+      // Store full date as ISO string (midnight of that day)
+      fullDate: dayStart.toISOString(),
+    });
+  }
+  return dates;
+};
+
+//
+// Helper: Generate time slots in 30-minute increments between openTime and closeTime
+//
+const generateTimeSlots = (openTime = '06:00', closeTime = '21:00') => {
+  const slots = [];
+  // Parse open and close times relative to an arbitrary reference date.
+  const refDate = new Date();
+  const open = parse(openTime, 'HH:mm', refDate);
+  const close = parse(closeTime, 'HH:mm', refDate);
+
+  let current = open;
+  while (isBefore(current, close) || isEqual(current, close)) {
+    // Format the time in the desired display format, e.g., '06:00 AM'
+    const formatted = format(current, 'hh:mm aa');
+    slots.push(formatted);
+    current = addMinutes(current, 30);
+  }
+  return slots;
+};
+
+//
+// Duration options (in minutes)
+//
+const durations = [
+  { label: '1 hour', minutes: 60 },
+  { label: '1 hour 30 minutes', minutes: 90 },
+  { label: '2 hours', minutes: 120 },
+];
 
 const sports = [
   'futsal',
@@ -65,15 +125,73 @@ export default function CreateGameScreen({
   // Selection state
   const [sport, setSport] = useState<string | null>(null);
   const [venue, setVenue] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
-  const [startTime, setStartTime] = useState<string | null>(null);
-  const [endTime, setEndTime] = useState<string | null>(null);
+
+  // Default selected date: today's midnight (in ISO string)
+  const [selectedDate, setSelectedDate] = useState<string>(
+    startOfDay(new Date()).toISOString()
+  );
+  // Selected time string, e.g. '06:00 AM'
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  // Selected game duration in minutes
+  const [selectedDuration, setSelectedDuration] = useState<number>(60);
   const [visibility, setVisibility] = useState<string>(visibilityOptions[0]);
   const [gameLevel, setGameLevel] = useState<string>(gameLevels[1]);
   const [instruction, setInstruction] = useState<string>('');
   const [price, setPrice] = useState<string>('');
   const [format, setFormat] = useState<string>('');
   const [maxPlayers, setMaxPlayers] = useState<string>('');
+
+  // Arrays for date and time pickers
+  const datesArray = useMemo(() => generateDatesArray(10), []);
+  const timeArray = useMemo(
+    () => generateTimeSlots(openTime, closeTime),
+    [openTime, closeTime]
+  );
+
+  //
+  // Compute start_time as a Date (converted to UTC) from the selected date and time.
+  //
+  const startTime = useMemo(() => {
+    if (!selectedDate || !selectedTime) return null;
+
+    // Convert the stored ISO string to a Date (assumed at midnight)
+    const baseDate = new Date(selectedDate);
+    // Parse the selected time. The result will use the baseDate as reference.
+    const parsedTime = parse(selectedTime, 'hh:mm aa', baseDate);
+    // Create a Date object that combines the date and the time parts.
+    // We treat parsedTime as if it were already in the Asia/Kathmandu time zone.
+    // Convert that local Kathmandu time to UTC:
+    const utcDate = fromZonedTime(parsedTime, TIMEZONE);
+    return utcDate;
+  }, [selectedDate, selectedTime]);
+
+  //
+  // Compute end_time by adding the selected duration (in minutes) to start_time.
+  //
+  const endTime = useMemo(() => {
+    if (!startTime) return null;
+    return addMinutes(startTime, selectedDuration);
+  }, [startTime, selectedDuration]);
+
+  const handleConfirm = useCallback(() => {
+    if (!startTime || !endTime) {
+      // Optionally display an alert if selections are incomplete.
+      console.log('Please select a date and time.');
+      return;
+    }
+
+    const finalStart = startTime.toISOString();
+    const finalEnd = endTime.toISOString();
+
+    console.log('Sending to backend:', {
+      start_time: finalStart,
+      end_time: finalEnd,
+    });
+    // Example: router.push or your API call here
+
+    // Close the BottomSheet after confirmation.
+    closeAll();
+  }, [startTime, endTime]);
 
   const { data: venuesResponse, isLoading: venuesLoading } = useListVenues({
     variables: {
@@ -96,35 +214,12 @@ export default function CreateGameScreen({
   }, []);
 
   const snapPoints = useMemo(() => ['50%'], []);
-  const timeTarget = useRef<'start' | 'end'>('start');
 
-  // generate next 7 days
-  const dates = useMemo(() => {
-    const arr: Date[] = [];
-    const now = new Date();
-    for (let i = 0; i <= 7; i++) {
-      const d = new Date(now.getTime() + i * 24 * 3600_000);
-      arr.push(d);
-    }
-    return arr;
-  }, []);
+  const DateTimeSnapPoints = useMemo(() => ['80%'], []);
 
-  // generate times
-  const times = useMemo(() => {
-    const list: string[] = [];
-    const [h1, m1] = openTime.split(':').map(Number);
-    const [h2, m2] = closeTime.split(':').map(Number);
-    const base = new Date();
-    base.setHours(h1, m1, 0, 0);
-    const end = new Date();
-    end.setHours(h2, m2, 0, 0);
-    let cur = new Date(base);
-    while (cur <= end) {
-      list.push(formatKathmandu(cur, 'h:mm a'));
-      cur = new Date(cur.getTime() + 30 * 60_000);
-    }
-    return list;
-  }, [openTime, closeTime]);
+  const VenueSnapPoints = useMemo(() => {
+    return venues.length === 0 ? ['30%'] : ['80%'];
+  }, [venues.length]);
 
   // Use useCallback for better performance if this function gets passed down
   const handleInstructionChange = useCallback((text: string) => {
@@ -155,30 +250,14 @@ export default function CreateGameScreen({
     closeAll();
     if (!validateForm()) return;
     if (!sport || !venue || !date || !startTime || !endTime) return;
-    // build ISO strings
-    const dt = new Date(date);
-    const [sh, sm] = startTime
-      .match(/(\d+):(\d+)\s?(AM|PM)/i)!
-      .slice(1, 3)
-      .map(Number);
-    dt.setHours(sh + (startTime.includes('PM') && sh < 12 ? 12 : 0), sm);
-    const isoStart = toKathmanduISOString(dt);
-
-    const dt2 = new Date(date);
-    const [eh, em] = endTime
-      .match(/(\d+):(\d+)\s?(AM|PM)/i)!
-      .slice(1, 3)
-      .map(Number);
-    dt2.setHours(eh + (endTime.includes('PM') && eh < 12 ? 12 : 0), em);
-    const isoEnd = toKathmanduISOString(dt2);
 
     // Build payload matching CreateGamePayload
     const payload: any = {
       sport_type: sport,
       venue_id: venue,
       max_players: Number(maxPlayers),
-      start_time: isoStart,
-      end_time: isoEnd,
+      start_time: startTime.toISOString(),
+      end_time: endTime.toISOString(),
       visibility: visibility,
     };
     if (price) payload.price = Number(price);
@@ -257,30 +336,11 @@ export default function CreateGameScreen({
             }}
           >
             <Text>
-              {date ? formatKathmandu(date, 'dd MMM yyyy') : 'Select Date'}
+              {startTime
+                ? formatInTimeZone(startTime, TIMEZONE, 'yyyy-MM-dd HH:mm:ss')
+                : 'Select Date'}
             </Text>
           </TouchableOpacity>
-
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.input, styles.half]}
-              onPress={() => {
-                timeTarget.current = 'start';
-                timeSheet.current?.expand();
-              }}
-            >
-              <Text>{startTime || 'Start Time'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.input, styles.half]}
-              onPress={() => {
-                timeTarget.current = 'end';
-                timeSheet.current?.expand();
-              }}
-            >
-              <Text>{endTime || 'End Time'}</Text>
-            </TouchableOpacity>
-          </View>
 
           <Text
             style={{
@@ -543,26 +603,34 @@ export default function CreateGameScreen({
 
           {/* Price */}
           <View className="flex flex-row items-center gap-2">
-            <Text style={{ fontWeight: 500, fontSize: 15 }}>Price</Text>
+            <Text style={{ fontWeight: '500', fontSize: 15 }}>Price</Text>
             <View
               style={{
                 backgroundColor: '#F0F0F0',
                 borderRadius: 6,
               }}
             >
-              <TextInput
-                onChangeText={(text) => setPrice(text)}
-                value={price}
+              <View
                 style={{
-                  padding: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 10,
                   backgroundColor: 'white',
                   borderColor: '#D0D0D0',
                   borderWidth: 1,
                   marginVertical: 8,
                   borderRadius: 7,
                 }}
-                placeholder="Price for each player"
-              />
+              >
+                <Text style={{ marginRight: 6, color: '#555' }}>Nrs</Text>
+                <TextInput
+                  onChangeText={(text) => setPrice(text)}
+                  value={price}
+                  keyboardType="numeric"
+                  placeholder="Price for each player"
+                  style={{ width: 100, paddingVertical: 10 }}
+                />
+              </View>
             </View>
           </View>
 
@@ -673,7 +741,7 @@ export default function CreateGameScreen({
                     borderColor: 'gray',
                     padding: 8,
                     width: width / 2.5,
-                    gap: 12,
+                    gap: 16,
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: item === sport ? '#F59E0B' : 'white',
@@ -699,11 +767,17 @@ export default function CreateGameScreen({
       <BottomSheet
         ref={venueSheet}
         index={-1}
-        snapPoints={snapPoints}
+        snapPoints={VenueSnapPoints}
         enablePanDownToClose
       >
         {venuesLoading ? (
           <ActivityIndicator />
+        ) : venues.length === 0 ? (
+          <View className=" flex items-center justify-center">
+            <Text className="text-center text-xl font-bold text-gray-500">
+              {`No venues found for the sport ${sport}`}
+            </Text>
+          </View>
         ) : (
           <BottomSheetFlatList
             data={venues}
@@ -724,53 +798,175 @@ export default function CreateGameScreen({
         )}
       </BottomSheet>
 
-      {/* Date Sheet */}
-      <BottomSheet
-        ref={dateSheet}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-      >
-        <BottomSheetFlatList
-          data={dates}
-          keyExtractor={(d) => d.toISOString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => {
-                setDate(item);
-                dateSheet.current?.close();
-              }}
-            >
-              <Text>{formatKathmandu(item, 'dd MMM yyyy')}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </BottomSheet>
+      {/* Date and time Sheet */}
+      <BottomSheet ref={dateSheet} index={-1} snapPoints={DateTimeSnapPoints}>
+        <TouchableOpacity
+          className="mr-4  flex flex-row-reverse"
+          onPress={() => closeAll()}
+        >
+          <AntDesign name="closecircleo" size={29} color="black" />
+        </TouchableOpacity>
+        {/* Title */}
+        <View className="mb-3 mt-1">
+          <Text className="self-center text-2xl font-bold tracking-wider">
+            Pick a Date
+          </Text>
+        </View>
 
-      {/* Time Sheet */}
-      <BottomSheet
-        ref={timeSheet}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-      >
-        <BottomSheetFlatList
-          data={times}
-          keyExtractor={(t) => t}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => {
-                if (timeTarget.current === 'start') setStartTime(item);
-                else setEndTime(item);
-                timeSheet.current?.close();
-              }}
-            >
-              <Text>{item}</Text>
-            </TouchableOpacity>
-          )}
-        />
+        {/* =========== DATE PICKER =========== */}
+        <View className="mb-4">
+          <BottomSheetFlatList
+            data={datesArray}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.fullDate}
+            contentContainerStyle={{ paddingHorizontal: 12 }}
+            renderItem={({ item }) => {
+              const isSelected = item.fullDate === selectedDate;
+              return (
+                <TouchableOpacity
+                  onPress={() => setSelectedDate(item.fullDate)}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    borderRadius: 10,
+                    marginRight: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                    width: 60,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      marginBottom: 4,
+                      fontSize: 27,
+                      lineHeight: 30,
+                    }}
+                  >
+                    {item.dayNum}
+                  </Text>
+                  <Text style={{ letterSpacing: 2 }}>{item.dayLabel}</Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+
+        <View className="my-5">
+          <Text className="self-center text-2xl font-bold tracking-wider">
+            Game Start Time
+          </Text>
+        </View>
+
+        {/* =========== TIME PICKER =========== */}
+        <View className="mb-4">
+          <BottomSheetFlatList
+            data={timeArray}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, idx) => `${item}-${idx}`}
+            contentContainerStyle={{ paddingHorizontal: 18 }}
+            renderItem={({ item }) => {
+              const isSelected = item === selectedTime;
+              return (
+                <TouchableOpacity
+                  onPress={() => setSelectedTime(item)}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    borderRadius: 10,
+                    marginRight: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                    minWidth: 70,
+                  }}
+                >
+                  <Text
+                    style={{ fontWeight: 'bold', padding: 4, fontSize: 16 }}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+
+        <View className="my-5">
+          <Text className="self-center text-2xl font-bold tracking-wider">
+            Game Duration
+          </Text>
+        </View>
+
+        {/* =========== DURATION PICKER =========== */}
+        <View className="mb-4">
+          <BottomSheetFlatList
+            data={durations}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.label}
+            contentContainerStyle={{ paddingHorizontal: 12 }}
+            renderItem={({ item }) => {
+              const isSelected = item.minutes === selectedDuration;
+              return (
+                <TouchableOpacity
+                  onPress={() => setSelectedDuration(item.minutes)}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    borderRadius: 10,
+                    marginRight: 8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      paddingVertical: 4,
+                      fontSize: 17,
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+
+        {/* =========== CONFIRM BUTTON =========== */}
+        <View className="my-4 items-center">
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={{
+              backgroundColor: '#F59E0B',
+              paddingVertical: 12,
+              paddingHorizontal: 24,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ fontWeight: 'bold', color: '#fff' }}>Confirm</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Debug Info */}
+        {startTime && endTime && (
+          <View className="mb-2 px-3">
+            <Text>
+              Selected Start:{' '}
+              {formatInTimeZone(startTime, TIMEZONE, 'yyyy-MM-dd HH:mm:ss')}
+            </Text>
+            <Text>
+              Selected End:{' '}
+              {formatInTimeZone(endTime, TIMEZONE, 'yyyy-MM-dd HH:mm:ss')}
+            </Text>
+          </View>
+        )}
       </BottomSheet>
     </>
   );
@@ -790,5 +986,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnText: { color: '#FFF', fontWeight: '600' },
-  item: { padding: 12, borderBottomWidth: 1, borderColor: '#eee' },
+  item: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    marginBottom: 4,
+  },
 });
