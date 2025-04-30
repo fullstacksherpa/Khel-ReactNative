@@ -1,8 +1,46 @@
-import { format, parseISO } from 'date-fns';
+import {
+  addDays,
+  addMinutes,
+  format,
+  isBefore,
+  isEqual,
+  parse,
+  parseISO,
+  startOfDay,
+} from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { formatInTimeZone, fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 const KATHMANDU_TIMEZONE = 'Asia/Kathmandu';
+
+export const generateDatesArray = (numDays = 10) => {
+  const dates = [];
+  const today = new Date();
+  for (let i = 0; i <= numDays; i++) {
+    const dateObj = addDays(today, i);
+    const dayStart = startOfDay(dateObj);
+    dates.push({
+      dayNum: formatInTimeZone(dayStart, KATHMANDU_TIMEZONE, 'dd'),
+      dayLabel: formatInTimeZone(dayStart, KATHMANDU_TIMEZONE, 'EEE'),
+      fullDate: dayStart.toISOString(),
+    });
+  }
+  return dates;
+};
+
+export const generateTimeSlots = (openTime = '06:00', closeTime = '21:00') => {
+  const slots: string[] = [];
+  const refDate = new Date();
+  const open = parse(openTime, 'HH:mm', refDate);
+  const close = parse(closeTime, 'HH:mm', refDate);
+
+  let current = open;
+  while (isBefore(current, close) || isEqual(current, close)) {
+    slots.push(format(current, 'hh:mm aa'));
+    current = addMinutes(current, 30);
+  }
+  return slots;
+};
 
 // ======================== Core Conversions ========================
 
