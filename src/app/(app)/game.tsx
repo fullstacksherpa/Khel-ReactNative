@@ -10,21 +10,22 @@ import {
   RefreshControl,
   ScrollView,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 import { type ListGamesVariables, useInfiniteGames } from '@/api/games/games';
+import { useShortlistedGames } from '@/api/games/use-allshortlisted-game';
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
 import Game from '@/components/game/game-card';
+import ShortlistedGameCard from '@/components/game/shortlist-game-card';
 
 // eslint-disable-next-line max-lines-per-function
 export default function HomeScreen() {
   // Use these variables for filtering the games
   const variables: ListGamesVariables = {
-    limit: 2,
+    limit: 7,
   };
 
   // Get infinite pages from the API using react-query-kit hook
@@ -42,7 +43,13 @@ export default function HomeScreen() {
   // Since the API response returns an object with a top-level "data" array,
   // we flatten the pages by directly merging the arrays from each page.
   const gamesFromApi = data?.pages.flatMap((page) => page.data) ?? [];
-  console.log(gamesFromApi);
+
+  const {
+    data: shortlistedResponse,
+    isLoading: isShortlistedLoading,
+    error: shortlistedError,
+    refetch: refetchShortlisted,
+  } = useShortlistedGames();
 
   const router = useRouter();
   const [sport, setSport] = useState('Badminton');
@@ -98,7 +105,7 @@ export default function HomeScreen() {
               marginVertical: 12,
             }}
           >
-            <TouchableOpacity onPress={() => setOption('Upcoming')}>
+            <Pressable onPress={() => setOption('Upcoming')}>
               <Text
                 style={{
                   fontWeight: option === 'Upcoming' ? '900' : '500',
@@ -108,9 +115,9 @@ export default function HomeScreen() {
               >
                 Upcoming
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity onPress={() => setOption('My Sports')}>
+            <Pressable onPress={() => setOption('My Sports')}>
               <Text
                 style={{
                   fontWeight: option === 'My Sports' ? '900' : '500',
@@ -120,19 +127,19 @@ export default function HomeScreen() {
               >
                 My Sports
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity onPress={() => setOption('Other Sports')}>
+            <Pressable onPress={() => setOption('Shortlisted')}>
               <Text
                 style={{
-                  fontWeight: option === 'Other Sports' ? '900' : '500',
-                  color: option === 'Other Sports' ? '#F59E0B' : 'white',
+                  fontWeight: option === 'Shortlisted' ? '900' : '500',
+                  color: option === 'Shortlisted' ? '#F59E0B' : 'white',
                   fontSize: 17,
                 }}
               >
-                Other Sports
+                Shortlisted
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {/* Horizontal Sport Picker */}
@@ -198,38 +205,27 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Loading Indicator */}
-      {isLoading && (
+      {/* Loading & Error for My Sports */}
+      {option === 'My Sports' && isLoading && (
         <View
-          style={{
-            padding: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flex: 1,
-          }}
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
-          <ActivityIndicator />
+          <ActivityIndicator color="green" size="large" />
         </View>
       )}
-
-      {/* Error Display */}
-      {error && (
-        <View
-          style={{
-            padding: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flex: 1,
-          }}
-        >
+      {option === 'My Sports' && error && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
           <Text
             style={{ color: 'red' }}
-          >{`Failed to load venue: ${error.message}`}</Text>
+          >{`Error loading games: ${error.message}`}</Text>
+          <Pressable onPress={() => refetch()} style={{ marginTop: 8 }}>
+            <Text style={{ color: 'blue' }}>Retry</Text>
+          </Pressable>
         </View>
       )}
 
-      {/* "My Sports" Option displays games fetched from API */}
-      {option === 'My Sports' && (
+      {/* My Sports List */}
+      {option === 'My Sports' && !isLoading && !error && (
         <FlatList
           data={gamesFromApi}
           showsVerticalScrollIndicator={false}
@@ -238,20 +234,66 @@ export default function HomeScreen() {
           }
           renderItem={({ item }) => <Game item={item} />}
           keyExtractor={(item, index) => `${item.game_id}-${index}`}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) {
-              fetchNextPage();
-            }
-          }}
+          onEndReached={() =>
+            hasNextPage && !isFetchingNextPage && fetchNextPage()
+          }
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <ActivityIndicator style={{ padding: 10 }} />
+              <ActivityIndicator
+                style={{ padding: 10 }}
+                color="green"
+                size="large"
+              />
             ) : null
           }
         />
       )}
+
+      {/* Shortlisted Loading & Error */}
+      {option === 'Shortlisted' && isShortlistedLoading && (
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <ActivityIndicator color="green" size="large" />
+        </View>
+      )}
+      {option === 'Shortlisted' && shortlistedError && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
+          <Text
+            style={{ color: 'red' }}
+          >{`Error loading shortlist: ${shortlistedError.message}`}</Text>
+          <Pressable
+            onPress={() => refetchShortlisted()}
+            style={{ marginTop: 8 }}
+          >
+            <Text style={{ color: 'blue' }}>Retry</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Shortlisted List */}
+      {option === 'Shortlisted' &&
+        !isShortlistedLoading &&
+        !shortlistedError && (
+          <FlatList
+            data={shortlistedResponse?.data ?? []}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <ShortlistedGameCard {...item} />}
+            refreshControl={
+              <RefreshControl
+                refreshing={isShortlistedLoading}
+                onRefresh={refetchShortlisted}
+              />
+            }
+            contentContainerStyle={{ paddingBottom: 20 }}
+            ListEmptyComponent={
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text>No games in your shortlist.</Text>
+              </View>
+            }
+          />
+        )}
 
       <AddressBottomSheet />
     </>

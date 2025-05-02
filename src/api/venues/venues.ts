@@ -66,16 +66,10 @@ export const useInfiniteVenues = createInfiniteQuery<
         params: { ...variables, page: pageParam, limit: variables.limit ?? 10 },
       })
       .then((response) => response.data),
-  // The function used to determine the next page parameter.
-  // In this example, if the number of items returned is less than the limit, we assume there are no more pages.
   getNextPageParam: (lastPage, pages) => {
-    // You can adjust this logic depending on your backend's response.
-    // For example, if your backend returns a total count or next page cursor instead.
     const limit = pages[0]?.data?.length || 10;
-    // If the last page returned fewer items than the limit, then there are no more pages.
     if (lastPage.data.length < limit) return undefined;
-    // Otherwise, return the next page number based on the count of pages.
-    return pages.length + 1;
+    return pages.length * limit;
   },
   // Start with the first page
   initialPageParam: 1,
