@@ -1,11 +1,12 @@
-import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { Link } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 
+import { AddShortlistButton } from './add-shortlist-button';
 import FormattedDateTimeRange from './formatted-datetime-range';
+import { RemoveShortlistButton } from './remove-shortlist-button';
 
 interface GameProps {
   item: {
@@ -22,13 +23,24 @@ interface GameProps {
     max_players: number;
     current_player: number;
     player_images: string[];
+    is_booked: boolean;
+    match_full: boolean;
     venue_lat: number;
     venue_lon: number;
+    shortlisted: boolean;
   };
 }
 
 // eslint-disable-next-line max-lines-per-function
 const Game: React.FC<GameProps> = ({ item }) => {
+  const isMatchFull =
+    item?.match_full || item?.max_players === item?.current_player;
+
+  const shouldShowPrice =
+    !item?.match_full &&
+    item?.max_players !== item?.current_player &&
+    item?.price != null;
+
   const isUserInRequests = false;
   return (
     <Link href={`/games/${item.game_id}`} asChild>
@@ -51,7 +63,12 @@ const Game: React.FC<GameProps> = ({ item }) => {
           <Text style={{ color: 'gray' }}>
             {item.format ? item.format : 'Regular'}
           </Text>
-          <Feather name="bookmark" size={24} color="black" />
+
+          {item?.shortlisted ? (
+            <RemoveShortlistButton gameID={item.game_id} />
+          ) : (
+            <AddShortlistButton gameID={item.game_id} />
+          )}
         </View>
 
         <View style={{ marginTop: 10 }}>
@@ -128,7 +145,7 @@ const Game: React.FC<GameProps> = ({ item }) => {
               </Text>
             </View>
 
-            {item?.max_players === item?.current_player && (
+            {isMatchFull && (
               <Image
                 style={{ width: 100, height: 70, resizeMode: 'contain' }}
                 source={{
@@ -136,7 +153,8 @@ const Game: React.FC<GameProps> = ({ item }) => {
                 }}
               />
             )}
-            {item?.max_players !== item?.current_player && item?.price && (
+
+            {shouldShowPrice && (
               <View className="flex flex-row items-center justify-center rounded-2xl bg-[#E0E0E0] p-2">
                 <MaterialCommunityIcons
                   name="currency-inr"
@@ -201,6 +219,21 @@ const Game: React.FC<GameProps> = ({ item }) => {
               >
                 <Text style={{ textAlign: 'center', color: 'white' }}>
                   Requested
+                </Text>
+              </View>
+            )}
+            {item?.is_booked && (
+              <View
+                style={{
+                  backgroundColor: '#4ba143',
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  borderRadius: 5,
+                  marginTop: 10,
+                }}
+              >
+                <Text style={{ textAlign: 'center', color: 'white' }}>
+                  Venue Booked
                 </Text>
               </View>
             )}

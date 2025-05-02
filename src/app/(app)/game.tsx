@@ -10,7 +10,6 @@ import {
   RefreshControl,
   ScrollView,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -24,7 +23,7 @@ import Game from '@/components/game/game-card';
 export default function HomeScreen() {
   // Use these variables for filtering the games
   const variables: ListGamesVariables = {
-    limit: 2,
+    limit: 7,
   };
 
   // Get infinite pages from the API using react-query-kit hook
@@ -98,7 +97,7 @@ export default function HomeScreen() {
               marginVertical: 12,
             }}
           >
-            <TouchableOpacity onPress={() => setOption('Upcoming')}>
+            <Pressable onPress={() => setOption('Upcoming')}>
               <Text
                 style={{
                   fontWeight: option === 'Upcoming' ? '900' : '500',
@@ -108,9 +107,9 @@ export default function HomeScreen() {
               >
                 Upcoming
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity onPress={() => setOption('My Sports')}>
+            <Pressable onPress={() => setOption('My Sports')}>
               <Text
                 style={{
                   fontWeight: option === 'My Sports' ? '900' : '500',
@@ -120,9 +119,9 @@ export default function HomeScreen() {
               >
                 My Sports
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity onPress={() => setOption('Other Sports')}>
+            <Pressable onPress={() => setOption('Shortlisted')}>
               <Text
                 style={{
                   fontWeight: option === 'Other Sports' ? '900' : '500',
@@ -130,9 +129,9 @@ export default function HomeScreen() {
                   fontSize: 17,
                 }}
               >
-                Other Sports
+                Shortlisted
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {/* Horizontal Sport Picker */}
@@ -208,7 +207,7 @@ export default function HomeScreen() {
             flex: 1,
           }}
         >
-          <ActivityIndicator />
+          <ActivityIndicator color="green" size="large" />
         </View>
       )}
 
@@ -247,7 +246,11 @@ export default function HomeScreen() {
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isFetchingNextPage ? (
-              <ActivityIndicator style={{ padding: 10 }} />
+              <ActivityIndicator
+                style={{ padding: 10 }}
+                color="green"
+                size="large"
+              />
             ) : null
           }
         />

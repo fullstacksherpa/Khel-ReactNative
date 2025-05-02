@@ -11,7 +11,7 @@ import {
   useRouter,
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -25,11 +25,13 @@ import CustomHeader from '@/components/custom-header';
 import FormattedDateTimeRange from '@/components/game/formatted-datetime-range';
 import GameActions from '@/components/game/game-action';
 import { GameQAList } from '@/components/game/game-qa-list';
+import { ToggleMatchFullButton } from '@/components/game/toggle-matchfull';
 import { getUserId } from '@/lib/auth/utils';
 import { formatDateTimeRangeString } from '@/lib/date-utils';
 
 // eslint-disable-next-line max-lines-per-function
 export default function GameDetails() {
+  const [matchFull, setMatchFull] = useState(false);
   const router = useRouter();
 
   const { setOptions } = useNavigation();
@@ -439,6 +441,11 @@ export default function GameDetails() {
                     borderColor: '#E0E0E0',
                     marginVertical: 12,
                   }}
+                />
+                <ToggleMatchFullButton
+                  gameId={local?.id}
+                  matchFull={matchFull}
+                  setMatchFull={setMatchFull}
                 />
               </View>
             ) : (
