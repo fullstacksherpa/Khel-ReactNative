@@ -1,8 +1,7 @@
 import React from 'react';
-import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, Text, View } from 'react-native';
 
 import { useGetGameQA } from '@/api/games/get-game-qa';
-import { useCreateQuestion } from '@/api/games/use-create-question';
 
 type Props = {
   gameID: string;
@@ -12,22 +11,6 @@ export const GameQAList: React.FC<Props> = ({ gameID }) => {
   const { data, isLoading, error, refetch } = useGetGameQA({
     variables: { gameID },
   });
-  const createQuestion = useCreateQuestion();
-
-  const [newQuestion, setNewQuestion] = React.useState('');
-
-  const onSubmit = () => {
-    if (!newQuestion.trim()) return;
-    createQuestion.mutate(
-      { gameID, question: newQuestion },
-      {
-        onSuccess: () => {
-          setNewQuestion('');
-          refetch();
-        },
-      }
-    );
-  };
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -44,16 +27,6 @@ export const GameQAList: React.FC<Props> = ({ gameID }) => {
 
   return (
     <View className="flex-1 p-2">
-      <View className="mb-3 flex-row">
-        <TextInput
-          className="mr-2 h-10 flex-1 rounded border border-gray-300 px-2"
-          value={newQuestion}
-          placeholder="Ask a question..."
-          onChangeText={setNewQuestion}
-        />
-        <Button title="Send" onPress={onSubmit} />
-      </View>
-
       {data?.data.length === 0 ? (
         <View className="my-3">
           <Text className="text-center text-base text-gray-500">

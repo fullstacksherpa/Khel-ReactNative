@@ -1,41 +1,50 @@
 import { create } from 'zustand';
 
-import { client } from '@/api/common/client';
-
 import { createSelectors } from '../utils';
 import type { TokenType } from './utils';
-import { getToken, removeToken, setToken } from './utils';
+import {
+  getToken,
+  getUserId,
+  removeToken,
+  removeUserId,
+  setToken,
+  setUserId,
+} from './utils';
 
 interface AuthState {
+  userID: string | null;
   token: TokenType | null;
   status: 'idle' | 'signOut' | 'signIn';
-  signIn: (data: TokenType) => void;
+  signIn: (data: TokenType, userID: string) => void;
   signOut: () => void;
   hydrate: () => void;
 }
 
 const _useAuth = create<AuthState>((set, get) => ({
+  userID: null,
   status: 'idle',
   token: null,
-  signIn: (token) => {
+  signIn: (token, userID) => {
+    setUserId(userID);
     setToken(token);
-    set({ status: 'signIn', token });
+    set({ status: 'signIn', token, userID });
   },
   signOut: () => {
+    removeUserId();
     removeToken();
     set({ status: 'signOut', token: null });
   },
   hydrate: () => {
     try {
       const userToken = getToken();
-      if (userToken !== null) {
-        get().signIn(userToken);
+      const userID = getUserId();
+      if (userToken !== null && userID !== null) {
+        get().signIn(userToken, userID);
       } else {
         get().signOut();
       }
     } catch (e) {
-      // catch error here
-      // Maybe sign_out user!
+      signOut();
     }
   },
 }));
@@ -43,27 +52,6 @@ const _useAuth = create<AuthState>((set, get) => ({
 export const useAuth = createSelectors(_useAuth);
 
 export const signOut = () => _useAuth.getState().signOut();
-export const signIn = (token: TokenType) => _useAuth.getState().signIn(token);
+export const signIn = (token: TokenType, userID: string) =>
+  _useAuth.getState().signIn(token, userID);
 export const hydrateAuth = () => _useAuth.getState().hydrate();
-
-export const handleSignOut = async () => {
-  const signOut = useAuth.use.signOut();
-  const token = getToken();
-  const access = token ? token.access : null;
-  console.log(access);
-  try {
-    await client.post(
-      '/users/logout',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      }
-    );
-  } catch (error) {
-    console.error('Logout failed', error);
-  } finally {
-    signOut();
-  }
-};

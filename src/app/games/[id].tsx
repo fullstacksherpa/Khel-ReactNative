@@ -11,7 +11,7 @@ import {
   useRouter,
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -25,10 +25,13 @@ import CustomHeader from '@/components/custom-header';
 import FormattedDateTimeRange from '@/components/game/formatted-datetime-range';
 import GameActions from '@/components/game/game-action';
 import { GameQAList } from '@/components/game/game-qa-list';
+import { getUserId } from '@/lib/auth/utils';
 import { formatDateTimeRangeString } from '@/lib/date-utils';
 
 // eslint-disable-next-line max-lines-per-function
 export default function GameDetails() {
+  const router = useRouter();
+
   const { setOptions } = useNavigation();
   useLayoutEffect(() => {
     setOptions({ headerShown: false });
@@ -39,15 +42,6 @@ export default function GameDetails() {
   const { data, isLoading, isError, error, isFetching } = useGameDetails({
     variables: { gameID: gameIDNumber },
   });
-  const userRequested = false;
-  const isUserAdmin = false;
-
-  const router = useRouter();
-
-  const [requests] = useState([]);
-
-  const adminUrl =
-    'https://t3.ftcdn.net/jpg/01/65/63/94/360_F_165639425_kRh61s497pV7IOPAjwjme1btB8ICkV0L.jpg';
 
   if (isLoading) {
     return (
@@ -65,12 +59,33 @@ export default function GameDetails() {
     );
   if (isFetching)
     return (
-      <View>
-        <Text>Fetching game details…</Text>
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#28c752" />
+        <Text className="mt-2 text-gray-500">
+          Requesting to Server... hold tight
+        </Text>
       </View>
     );
+
   const game = data?.data;
-  if (!game) return <p>No game found.</p>;
+  if (!game) return <Text>No game found.</Text>;
+
+  const total_join_request = game.requested_player_ids.length;
+
+  const rawUserID = getUserId();
+
+  const userIDNumberConverted = rawUserID ? Number(rawUserID) : null;
+
+  // If game data is available, perform the checks only when userIDNumberConverted is not null
+  const userRequested =
+    userIDNumberConverted !== null &&
+    game.requested_player_ids.includes(userIDNumberConverted);
+
+  const isUserAdmin =
+    userIDNumberConverted !== null && game.admin_id === userIDNumberConverted;
+
+  const adminUrl =
+    'https://t3.ftcdn.net/jpg/01/65/63/94/360_F_165639425_kRh61s497pV7IOPAjwjme1btB8ICkV0L.jpg';
 
   return (
     <>
@@ -78,7 +93,7 @@ export default function GameDetails() {
       <StatusBar style="light" />
 
       <CustomHeader>
-        <View style={{ padding: 12 }}>
+        <View style={{ paddingHorizontal: 12, paddingVertical: 5 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -99,7 +114,7 @@ export default function GameDetails() {
 
           <View
             style={{
-              marginTop: 20,
+              marginTop: 10,
               flexDirection: 'row',
               alignItems: 'center',
               gap: 14,
@@ -144,7 +159,7 @@ export default function GameDetails() {
               <Pressable
                 style={{
                   backgroundColor: '#28c752',
-                  paddingHorizontal: 10,
+                  paddingHorizontal: 8,
                   paddingVertical: 6,
                   marginTop: 10,
                   flexDirection: 'row',
@@ -153,6 +168,7 @@ export default function GameDetails() {
                   width: '90%',
                   justifyContent: 'center',
                   borderRadius: 8,
+                  marginHorizontal: 'auto',
                 }}
               >
                 <Entypo name="location" size={24} color="white" />
@@ -191,7 +207,7 @@ export default function GameDetails() {
             <Image
               style={{
                 width: '100%',
-                height: 150,
+                height: 90,
                 borderRadius: 10,
                 resizeMode: 'cover',
               }}
@@ -237,7 +253,9 @@ export default function GameDetails() {
                     gap: 10,
                   }}
                 >
-                  <Text>{game.game_admin_name}</Text>
+                  <Text className="font-bold tracking-wide">
+                    {game.game_admin_name}
+                  </Text>
                   <View
                     style={{
                       alignSelf: 'flex-start',
@@ -262,59 +280,13 @@ export default function GameDetails() {
                     alignSelf: 'flex-start',
                   }}
                 >
-                  <Text>INTERMEDIATE</Text>
+                  <Text>{game.game_level}</Text>
                 </View>
               </View>
             </View>
 
             {isUserAdmin ? (
               <View>
-                <View
-                  style={{
-                    height: 1,
-                    borderWidth: 0.5,
-                    borderColor: '#E0E0E0',
-                    marginVertical: 12,
-                  }}
-                />
-                <Pressable
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 14,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderWidth: 1,
-                      borderColor: '#E0E0E0',
-                      borderRadius: 30,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Image
-                      style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                      source={{
-                        uri: 'https://cdn-icons-png.flaticon.com/128/343/343303.png',
-                      }}
-                    />
-                  </View>
-
-                  <Text style={{ fontSize: 15, fontWeight: '500', flex: 1 }}>
-                    Add Co-Host
-                  </Text>
-
-                  <MaterialCommunityIcons
-                    style={{ textAlign: 'center' }}
-                    name="chevron-right"
-                    size={24}
-                    color="black"
-                  />
-                </Pressable>
-
                 <View
                   style={{
                     height: 1,
@@ -331,8 +303,14 @@ export default function GameDetails() {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Pressable>
-                    <Pressable
+                  <Pressable
+                    onPress={() => {
+                      // navigation logic or function call here
+                      // Example: router.push('/yourRoute');
+                    }}
+                    style={{ alignItems: 'center' }} // you can adjust the styling as needed
+                  >
+                    <View
                       style={{
                         width: 60,
                         height: 60,
@@ -349,7 +327,7 @@ export default function GameDetails() {
                           uri: 'https://cdn-icons-png.flaticon.com/128/1474/1474545.png',
                         }}
                       />
-                    </Pressable>
+                    </View>
                     <Text
                       style={{
                         marginTop: 8,
@@ -357,13 +335,22 @@ export default function GameDetails() {
                         textAlign: 'center',
                       }}
                     >
-                      Add
+                      Game Chat
                     </Text>
                   </Pressable>
 
-                  <Pressable>
-                    <Pressable
-                      onPress={() => {}}
+                  <Pressable
+                    onPress={() => {
+                      router.push({
+                        pathname: '/game-join-requests',
+                        params: {
+                          gameID: gameIDNumber,
+                        },
+                      });
+                    }}
+                    style={{ alignItems: 'center' }} // you can adjust the styling as needed
+                  >
+                    <View
                       style={{
                         width: 60,
                         height: 60,
@@ -375,18 +362,12 @@ export default function GameDetails() {
                       }}
                     >
                       <Image
-                        style={{
-                          width: 30,
-                          height: 30,
-                          resizeMode: 'contain',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        style={{ width: 30, height: 30, resizeMode: 'contain' }}
                         source={{
                           uri: 'https://cdn-icons-png.flaticon.com/128/7928/7928637.png',
                         }}
                       />
-                    </Pressable>
+                    </View>
                     <Text
                       style={{
                         marginTop: 8,
@@ -394,12 +375,25 @@ export default function GameDetails() {
                         textAlign: 'center',
                       }}
                     >
-                      Manage ({requests?.length})
+                      Manage ({total_join_request})
                     </Text>
                   </Pressable>
 
                   <Pressable
-                    onPress={() => {}}
+                    onPress={() => {
+                      const timeRange = formatDateTimeRangeString(
+                        game.start_time,
+                        game.end_time
+                      );
+                      router.push({
+                        pathname: '/player-screen',
+                        params: {
+                          gameId: game.game_id.toString(),
+                          adminId: game.admin_id.toString(),
+                          timeRange,
+                        },
+                      });
+                    }}
                     style={{
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -446,33 +440,6 @@ export default function GameDetails() {
                     marginVertical: 12,
                   }}
                 />
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderWidth: 1,
-                      borderColor: '#E0E0E0',
-                      borderRadius: 30,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Image
-                      style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                      source={{
-                        uri: 'https://cdn-icons-png.flaticon.com/128/1511/1511847.png',
-                      }}
-                    />
-                  </View>
-                </View>
               </View>
             ) : (
               <Pressable
@@ -537,9 +504,7 @@ export default function GameDetails() {
             }}
           >
             <View>
-              <Text style={{ fontSize: 18, fontWeight: '600' }}>
-                Let's clear your doubt
-              </Text>
+              <Text style={{ fontSize: 18, fontWeight: '600' }}>QA</Text>
               <GameQAList gameID={local.id} />
             </View>
           </View>

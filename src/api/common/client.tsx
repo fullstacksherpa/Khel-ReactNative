@@ -1,11 +1,13 @@
 import { Env } from '@env';
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
+import { signOut } from '@/lib';
 import {
   getAccessToken,
   getToken,
   removeToken,
   setToken,
+  setUserId,
 } from '@/lib/auth/utils';
 
 // Extend Axios's request config type
@@ -60,16 +62,17 @@ client.interceptors.response.use(
         console.log('Refreshing token...');
 
         // ✅ Ensure you're extracting the tokens from the response correctly
-        const { access_token, refresh_token } = response.data;
+        const { access_token, refresh_token, user_id } = response.data;
 
         // Save new access & refresh tokens
         setToken({ access: access_token, refresh: refresh_token });
+        setUserId(user_id);
 
         // 🔄 Retry the original request with the new access token
         originalRequest.headers.Authorization = `Bearer ${access_token}`;
         return client(originalRequest); // Retry request
       } catch (refreshError) {
-        removeToken(); // Refresh failed → Log out user
+        signOut(); // Refresh failed → Log out user
         console.error('Token refresh failed:', refreshError); // Log the error for debugging
         return Promise.reject(refreshError);
       }
@@ -78,6 +81,7 @@ client.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 //way to use auth header
 // client.get('/public-endpoint', { requiresAuth: false });
 // client.get('/private-endpoint'); // Defaults to requiresAuth: true

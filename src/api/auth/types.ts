@@ -20,8 +20,6 @@ export type LoginResponse = {
   data: {
     access_token: string;
     refresh_token: string;
-    first_name: string;
-    profile_image: string;
-    userID: string;
+    user_id: string;
   };
 };
