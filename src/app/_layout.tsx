@@ -55,6 +55,10 @@ export default function RootLayout() {
         <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
         <Stack.Screen name="help-support" options={{ headerShown: false }} />
         <Stack.Screen
+          name="game-join-requests"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="/support/accounts"
           options={{ headerShown: false }}
         />

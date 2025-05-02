@@ -9,7 +9,6 @@ import type { LoginFormProps } from '@/components/login-form';
 import { LoginForm } from '@/components/login-form';
 import { showErrorMessage } from '@/components/ui';
 import { signIn } from '@/lib/auth';
-import { setItem } from '@/lib/storage';
 
 export default function Login() {
   const { mutate: loginUser, isPending } = useLogin();
@@ -24,15 +23,15 @@ export default function Login() {
           type: 'success',
         });
         // Call the Zustand store signIn function with the token.
-        signIn({
-          access: response.data.access_token,
-          refresh: response.data.refresh_token,
-        });
-        setItem('USERNAME', response.data.first_name);
-        setItem('USERIMAGE', response.data.profile_image);
-        setItem('USERID', response.data.userID);
+        signIn(
+          {
+            access: response.data.access_token,
+            refresh: response.data.refresh_token,
+          },
+          response.data.user_id
+        );
 
-        const timeoutId = setTimeout(() => router.push('/'), 1000);
+        const timeoutId = setTimeout(() => router.push('/'), 800);
 
         return () => clearTimeout(timeoutId);
       },

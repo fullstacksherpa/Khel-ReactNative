@@ -141,13 +141,14 @@ const VenueDetails = () => {
 
   if (isVenueLoading) {
     return (
-      <View className="flex-1 justify-center  p-3">
+      <View className="flex-1 items-center justify-center">
         <Stack.Screen options={{ title: 'Venue', headerBackTitle: 'Back' }} />
-
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#28c752" />
+        <Text className="mt-2 text-gray-500"> Fetching Venue Details...</Text>
       </View>
     );
   }
+
   if (isError) {
     return (
       <View className="flex-1 justify-center p-3">

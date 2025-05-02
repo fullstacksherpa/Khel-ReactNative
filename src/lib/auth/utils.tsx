@@ -15,3 +15,18 @@ export const getAccessToken = (): string | null => {
   const token = getToken();
   return token?.access || null;
 };
+
+const USER_ID_KEY = 'userID';
+
+export const getUserId = (): string | null => {
+  const userId = getItem<string>(USER_ID_KEY);
+  return userId || null;
+};
+
+export const removeUserId = (): void => {
+  removeItem(USER_ID_KEY);
+};
+
+export const setUserId = (value: string): void => {
+  setItem<string>(USER_ID_KEY, value);
+};

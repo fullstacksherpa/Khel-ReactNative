@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { Link } from 'expo-router';
 import React from 'react';
@@ -47,7 +48,9 @@ const Game: React.FC<GameProps> = ({ item }) => {
             justifyContent: 'space-between',
           }}
         >
-          <Text style={{ color: 'gray' }}>Regular</Text>
+          <Text style={{ color: 'gray' }}>
+            {item.format ? item.format : 'Regular'}
+          </Text>
           <Feather name="bookmark" size={24} color="black" />
         </View>
 
@@ -82,9 +85,9 @@ const Game: React.FC<GameProps> = ({ item }) => {
               </View>
             </View>
 
-            <View style={{ marginLeft: 10, flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '500' }}>
-                • {item?.current_player}/{item?.max_players} Going
+            <View style={{ marginLeft: 16, flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '500' }}>
+                {item?.current_player} /{item?.max_players} Going
               </Text>
             </View>
 
@@ -132,6 +135,18 @@ const Game: React.FC<GameProps> = ({ item }) => {
                   uri: 'https://playo.co/_next/image?url=https%3A%2F%2Fplayo-website.gumlet.io%2Fplayo-website-v3%2Fmatch_full.png&w=256&q=75',
                 }}
               />
+            )}
+            {item?.max_players !== item?.current_player && item?.price && (
+              <View className="flex flex-row items-center justify-center rounded-2xl bg-[#E0E0E0] p-2">
+                <MaterialCommunityIcons
+                  name="currency-inr"
+                  size={20}
+                  color="black"
+                />
+                <Text style={{ fontSize: 16, fontWeight: '500' }}>
+                  {item.price}
+                </Text>
+              </View>
             )}
           </View>
 

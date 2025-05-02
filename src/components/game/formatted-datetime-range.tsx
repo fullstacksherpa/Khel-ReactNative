@@ -13,14 +13,14 @@ const FormattedDateTimeRange: React.FC<DateTimeRangeProps> = ({
   ...textProps
 }) => {
   const formatDate = (date: string) =>
-    formatInTimeZone(date, 'Asia/Kathmandu', 'EEE, d MMM');
+    formatInTimeZone(date, 'Asia/Kathmandu', 'EEEE  d MMM,');
 
   const formatTime = (date: string) =>
     formatInTimeZone(date, 'Asia/Kathmandu', 'h:mm a');
 
   return (
     <Text {...textProps}>
-      {formatDate(startUtc)}, {formatTime(startUtc)} -{' '}
+      {formatDate(startUtc)} {formatTime(startUtc)} -{' '}
       {startUtc.slice(0, 10) === endUtc.slice(0, 10)
         ? formatTime(endUtc)
         : `${formatDate(endUtc)}, ${formatTime(endUtc)}`}

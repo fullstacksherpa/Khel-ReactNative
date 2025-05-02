@@ -110,9 +110,15 @@ const PlayersScreen = () => {
             <Pressable onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={30} color="white" />
             </Pressable>
-            <Text className="items-center self-center rounded-2xl border-2 border-white p-2 text-lg font-bold text-white">
-              {timeRange}
-            </Text>
+
+            <View className="items-center self-center rounded-2xl p-2">
+              <Text className="text-lg font-bold text-white">
+                {(timeRange as string)?.split(',').slice(0, 2).join(',')}
+              </Text>
+              <Text className="text-base font-semibold text-white">
+                {(timeRange as string)?.split(',')[2]?.trim()}
+              </Text>
+            </View>
           </View>
         </View>
       </CustomHeader>
