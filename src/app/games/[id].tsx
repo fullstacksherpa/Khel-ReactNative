@@ -11,7 +11,7 @@ import {
   useRouter,
 } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -22,16 +22,17 @@ import {
 
 import { useGameDetails } from '@/api/games/games';
 import CustomHeader from '@/components/custom-header';
+import { CancelGameButton } from '@/components/game/cancel-game-button';
 import FormattedDateTimeRange from '@/components/game/formatted-datetime-range';
 import GameActions from '@/components/game/game-action';
 import { GameQAList } from '@/components/game/game-qa-list';
+import { StatusBadge } from '@/components/game/game-status-badge';
 import { ToggleMatchFullButton } from '@/components/game/toggle-matchfull';
 import { getUserId } from '@/lib/auth/utils';
 import { formatDateTimeRangeString } from '@/lib/date-utils';
 
 // eslint-disable-next-line max-lines-per-function
 export default function GameDetails() {
-  const [matchFull, setMatchFull] = useState(false);
   const router = useRouter();
 
   const { setOptions } = useNavigation();
@@ -71,6 +72,9 @@ export default function GameDetails() {
 
   const game = data?.data;
   if (!game) return <Text>No game found.</Text>;
+
+  const isMatchFull =
+    game.match_full || game.max_players === game.current_player;
 
   const total_join_request = game.requested_player_ids.length;
 
@@ -203,6 +207,7 @@ export default function GameDetails() {
           )}
         </View>
       </CustomHeader>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex flex-1">
           <View style={{ marginHorizontal: 7, marginVertical: 7 }}>
@@ -235,6 +240,29 @@ export default function GameDetails() {
               <Text
                 style={{ fontSize: 16, fontWeight: '600' }}
               >{`Players (${game.current_player})`}</Text>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  backgroundColor: '#fffbde',
+                  borderRadius: 8,
+                  borderColor: '#EEDC82',
+                  borderWidth: 1,
+                  flexDirection: 'row',
+                  gap: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="currency-inr"
+                  size={20}
+                  color="black"
+                />
+                <Text style={{ fontWeight: '700', fontSize: 16 }}>
+                  {game.price}
+                </Text>
+              </View>
             </View>
 
             <View style={{ marginVertical: 12, flexDirection: 'row', gap: 10 }}>
@@ -284,7 +312,33 @@ export default function GameDetails() {
                 >
                   <Text>{game.game_level}</Text>
                 </View>
+                {game.is_booked && (
+                  <View
+                    style={{
+                      backgroundColor: '#4ba143',
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      borderRadius: 8,
+                      marginTop: 10,
+                    }}
+                  >
+                    <Text style={{ textAlign: 'center', color: 'white' }}>
+                      Venue Booked
+                    </Text>
+                  </View>
+                )}
+                <StatusBadge
+                  status={game.status as 'active' | 'cancelled' | 'completed'}
+                />
               </View>
+              {isMatchFull && (
+                <Image
+                  style={{ width: 100, height: 70, resizeMode: 'contain' }}
+                  source={{
+                    uri: 'https://playo.co/_next/image?url=https%3A%2F%2Fplayo-website.gumlet.io%2Fplayo-website-v3%2Fmatch_full.png&w=256&q=75',
+                  }}
+                />
+              )}
             </View>
 
             {isUserAdmin ? (
@@ -307,8 +361,12 @@ export default function GameDetails() {
                 >
                   <Pressable
                     onPress={() => {
-                      // navigation logic or function call here
-                      // Example: router.push('/yourRoute');
+                      router.push({
+                        pathname: '/admin-reply-screen',
+                        params: {
+                          gameID: game.game_id.toString(),
+                        },
+                      });
                     }}
                     style={{ alignItems: 'center' }} // you can adjust the styling as needed
                   >
@@ -443,9 +501,8 @@ export default function GameDetails() {
                   }}
                 />
                 <ToggleMatchFullButton
-                  gameId={local?.id}
-                  matchFull={matchFull}
-                  setMatchFull={setMatchFull}
+                  gameId={game.game_id}
+                  matchFull={game.match_full}
                 />
               </View>
             ) : (
@@ -516,27 +573,7 @@ export default function GameDetails() {
             </View>
           </View>
           {isUserAdmin ? (
-            <Pressable
-              style={{
-                backgroundColor: '#07bc0c',
-                marginTop: 'auto',
-                marginBottom: 30,
-                padding: 15,
-                marginHorizontal: 10,
-                borderRadius: 4,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: 'center',
-                  color: 'white',
-                  fontSize: 15,
-                  fontWeight: '500',
-                }}
-              >
-                GAME CHAT
-              </Text>
-            </Pressable>
+            <CancelGameButton gameID={game.game_id} />
           ) : userRequested ? (
             <Pressable
               style={{

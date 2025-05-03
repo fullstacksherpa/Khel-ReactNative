@@ -6,6 +6,7 @@ import { Image, Pressable, Text, View } from 'react-native';
 
 import { AddShortlistButton } from './add-shortlist-button';
 import FormattedDateTimeRange from './formatted-datetime-range';
+import { StatusBadge } from './game-status-badge';
 import { RemoveShortlistButton } from './remove-shortlist-button';
 
 interface GameProps {
@@ -28,6 +29,7 @@ interface GameProps {
     venue_lat: number;
     venue_lon: number;
     shortlisted: boolean;
+    status: string;
   };
 }
 
@@ -237,6 +239,11 @@ const Game: React.FC<GameProps> = ({ item }) => {
                 </Text>
               </View>
             )}
+            {['active', 'cancelled', 'completed'].includes(item.status) ? (
+              <StatusBadge
+                status={item.status as 'active' | 'cancelled' | 'completed'}
+              />
+            ) : null}
           </View>
         </View>
       </Pressable>

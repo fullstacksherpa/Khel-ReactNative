@@ -43,7 +43,7 @@ export const useListVenues = createQuery<
   // Our backend returns a response shaped as { data: Venue[] }.
   fetcher: (variables: ListVenuesVariables) =>
     client
-      .get('/list-venues', { params: variables })
+      .get('/venues/list-venues', { params: variables })
       .then((response) => response.data),
   staleTime: 5 * 60 * 1000,
 });
@@ -62,7 +62,7 @@ export const useInfiniteVenues = createInfiniteQuery<
   ): Promise<ListVenuesResponse> =>
     // Default limit if not provided; page is managed by the infinite query
     client
-      .get('/list-venues', {
+      .get('/venues/list-venues', {
         params: { ...variables, page: pageParam, limit: variables.limit ?? 10 },
       })
       .then((response) => response.data),

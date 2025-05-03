@@ -9,6 +9,7 @@ export type Venue = {
   sport: string;
   total_reviews: number;
   average_rating: number;
+  is_favorite: boolean;
 };
 
 export type ListVenuesResponse = {
