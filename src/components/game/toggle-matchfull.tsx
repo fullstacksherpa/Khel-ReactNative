@@ -1,28 +1,23 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { ActivityIndicator, Alert, Text, TouchableOpacity } from 'react-native';
 
+import { queryClient } from '@/api/common/api-provider';
 import { useToggleMatchFull } from '@/api/games/use-toggle-matchfull';
 
 type ToggleMatchFullButtonProps = {
-  gameId: string;
+  gameId: number;
   matchFull: boolean;
-  setMatchFull: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export function ToggleMatchFullButton({
   gameId,
   matchFull,
-  setMatchFull,
 }: ToggleMatchFullButtonProps) {
-  const queryClient = useQueryClient();
-
   const { mutate: toggleMatchFullMutation, isPending } = useToggleMatchFull({
     onSuccess: () => {
-      setMatchFull((prev) => !prev);
       queryClient.invalidateQueries({
-        queryKey: ['singleGame', { id: gameId }],
+        queryKey: ['game-details', { gameID: gameId }],
       });
       Alert.alert('Success', 'Match full status updated');
     },

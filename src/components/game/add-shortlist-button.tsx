@@ -14,6 +14,7 @@ export function AddShortlistButton({ gameID }: ShortlistButtonProps) {
     onSuccess: (response) => {
       Alert.alert('Success', response.data.message);
       queryClient.invalidateQueries({ queryKey: ['infinite-games'] });
+      queryClient.invalidateQueries({ queryKey: ['all-shortlisted-games'] });
     },
     onError: (error) => {
       const errorMessage =

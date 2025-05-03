@@ -5,7 +5,7 @@ import { getToken, type TokenType } from '@/lib/auth/utils';
 import { client } from '../common';
 
 type Variables = {
-  gameId: string;
+  gameId: number;
 };
 
 type Response = {

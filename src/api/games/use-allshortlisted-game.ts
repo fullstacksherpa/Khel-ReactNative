@@ -34,6 +34,6 @@ export const useShortlistedGames = createQuery<
   void,
   AxiosError<APIError>
 >({
-  queryKey: ['shortlisted-games'],
+  queryKey: ['all-shortlisted-games'],
   fetcher: () => client.get('/games/shortlist').then((res) => res.data),
 });

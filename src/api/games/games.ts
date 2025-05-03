@@ -24,6 +24,7 @@ export type Game = {
   venue_lat: number;
   venue_lon: number;
   shortlisted: boolean;
+  status: string;
 };
 
 export type GameDetails = {
@@ -36,7 +37,6 @@ export type GameDetails = {
   game_level: string;
   admin_id: number;
   game_admin_name: string;
-  is_booked: boolean;
   start_time: string;
   end_time: string;
   max_players: number;
@@ -44,6 +44,9 @@ export type GameDetails = {
   player_images: string[];
   player_ids: number[];
   requested_player_ids: number[];
+  is_booked: boolean;
+  match_full: boolean;
+  status: string;
   venue_lat: number;
   venue_lon: number;
 };
@@ -76,6 +79,7 @@ export type ListGamesVariables = {
   limit?: number;
   offset?: number;
   sort?: 'asc' | 'desc';
+  status?: 'active' | 'cancelled' | 'completed';
 };
 
 // useListGames hook
@@ -104,7 +108,7 @@ export const useInfiniteGames = createInfiniteQuery<
         params: {
           ...variables,
           offset: pageParam, // pageParam represents the offset for each page request.
-          limit: variables.limit ?? 20,
+          limit: variables.limit ?? 10,
         },
       })
       .then((response) => response.data),
@@ -121,7 +125,7 @@ export const useGameDetails = createQuery<
   GameDetailsVariables,
   AxiosError<APIError>
 >({
-  queryKey: ['game-details'], // base key; queryKey will also include the variables
+  queryKey: ['game-details'],
   fetcher: (GameDetailsVariables) =>
     client
       .get<GameDetailsResponse>(`/games/${GameDetailsVariables.gameID}`)

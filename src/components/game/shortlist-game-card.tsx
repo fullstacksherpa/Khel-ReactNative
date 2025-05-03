@@ -50,7 +50,7 @@ export default function ShortlistedGameCard({
   const removeMutation = useRemoveShortlistGame({
     onSuccess: () => {
       // Invalidate or refetch the shortlist query so removed item disappears
-      queryClient.invalidateQueries({ queryKey: ['shortlisted-games'] });
+      queryClient.invalidateQueries({ queryKey: ['all-shortlisted-games'] });
       queryClient.invalidateQueries({ queryKey: ['infinite-games'] });
     },
   });
