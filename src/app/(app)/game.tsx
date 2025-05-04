@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
-import { Stack, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -23,10 +23,27 @@ import ShortlistedGameCard from '@/components/game/shortlist-game-card';
 
 // eslint-disable-next-line max-lines-per-function
 export default function HomeScreen() {
+  const router = useRouter();
+  // Read filter query parameter from URL, if any
+  const searchParams = useLocalSearchParams<{ filters?: string }>();
+  const [filters, setFilters] = useState({});
+  useEffect(() => {
+    if (searchParams.filters) {
+      try {
+        const parsed = JSON.parse(searchParams.filters);
+        setFilters(parsed);
+      } catch (error) {
+        console.error('Invalid filters parameter', error);
+      }
+    }
+  }, [searchParams.filters]);
+
   // Use these variables for filtering the games
-  const variables: ListGamesVariables = {
-    limit: 7,
-  };
+  const variables: ListGamesVariables = filters
+    ? filters
+    : {
+        limit: 7,
+      };
 
   // Get infinite pages from the API using react-query-kit hook
   const {
@@ -51,7 +68,6 @@ export default function HomeScreen() {
     refetch: refetchShortlisted,
   } = useShortlistedGames();
 
-  const router = useRouter();
   const [sport, setSport] = useState('Badminton');
 
   // Option state to switch between "My Sports" and "Calendar" view.
@@ -196,7 +212,7 @@ export default function HomeScreen() {
           <Text style={{ fontWeight: 'bold' }}>Create Game</Text>
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
-          <Pressable>
+          <Pressable onPress={() => router.push('/game-filter')}>
             <Text style={{ fontWeight: 'bold' }}>Filter</Text>
           </Pressable>
           <Pressable>
