@@ -1,4 +1,4 @@
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
@@ -35,7 +35,6 @@ type VenueCardProps = {
 // eslint-disable-next-line max-lines-per-function
 const VenueCard = ({ item }: VenueCardProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleScroll = (event: any) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
@@ -156,17 +155,6 @@ const VenueCard = ({ item }: VenueCardProps) => {
           />
         ))}
       </View>
-
-      <Pressable
-        onPress={() => setIsFavorite(!isFavorite)}
-        style={styles.favoriteButton}
-      >
-        <MaterialIcons
-          name={isFavorite ? 'favorite' : 'favorite-border'}
-          size={24}
-          color={isFavorite ? 'red' : 'black'}
-        />
-      </Pressable>
     </View>
   );
 };
