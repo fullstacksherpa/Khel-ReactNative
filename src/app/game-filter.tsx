@@ -72,6 +72,9 @@ export default function FilterScreen() {
       pathname: '/game',
       params: { filters: JSON.stringify(filters) },
     });
+    console.log(
+      `This is final filter. ⛔️⛔️⛔️⛔️⛔️⛔️ ${JSON.stringify(filters)}`
+    );
   };
 
   return (

@@ -24,6 +24,7 @@ import ShortlistedGameCard from '@/components/game/shortlist-game-card';
 // eslint-disable-next-line max-lines-per-function
 export default function HomeScreen() {
   const router = useRouter();
+
   // Read filter query parameter from URL, if any
   const searchParams = useLocalSearchParams<{ filters?: string }>();
   const [filters, setFilters] = useState({});
@@ -42,7 +43,7 @@ export default function HomeScreen() {
   const variables: ListGamesVariables = filters
     ? filters
     : {
-        limit: 7,
+        limit: 15,
       };
 
   // Get infinite pages from the API using react-query-kit hook
@@ -211,10 +212,12 @@ export default function HomeScreen() {
         >
           <Text style={{ fontWeight: 'bold' }}>Create Game</Text>
         </Pressable>
+
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
           <Pressable onPress={() => router.push('/game-filter')}>
             <Text style={{ fontWeight: 'bold' }}>Filter</Text>
           </Pressable>
+
           <Pressable>
             <Text style={{ fontWeight: 'bold' }}>Sort</Text>
           </Pressable>

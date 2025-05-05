@@ -22,7 +22,7 @@ export default function VenueMarkers() {
   const { data, isLoading, error, isSuccess } = useListVenues({
     variables: {
       page: 1,
-      limit: 50,
+      limit: 15,
       // e.g., sport: 'Futsal',
       // e.g., lat: 27.7251,
       // e.g., lng: 85.3701,
