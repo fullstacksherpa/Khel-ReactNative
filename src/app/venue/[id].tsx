@@ -1,9 +1,10 @@
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import type BottomSheet from '@gorhom/bottom-sheet';
 import { Stack, useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -28,6 +29,7 @@ import { useCreateReview } from '@/api/venues/review';
 import { useVenue } from '@/api/venues/venues';
 import Amenities from '@/components/venue/amenities';
 import RatingBottomSheet from '@/components/venue/rating-bottomsheet'; // Adjust the import path as needed
+import UpcomingGameSheet from '@/components/venue/upcoming-game';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -36,6 +38,7 @@ const IMG_HEIGHT = 300;
 const VenueDetails = () => {
   const { mutate, isPending: isReviewSubmitting } = useCreateReview();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const scrollOffset = useScrollViewOffset(
     scrollRef.current ? scrollRef : null
   );
@@ -45,10 +48,12 @@ const VenueDetails = () => {
     data,
     isPending: isVenueLoading,
     isError,
+    refetch: refetchVenueDetails,
   } = useVenue({
     //@ts-ignore
     variables: { id: local.id },
   });
+
   const router = useRouter();
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -110,6 +115,7 @@ const VenueDetails = () => {
       },
       {
         onSuccess: () => {
+          refetchVenueDetails();
           setIsRatingSheetOpen(false);
           Alert.alert('Thank you!', 'Your review has been submitted ✅');
         },
@@ -330,6 +336,7 @@ const VenueDetails = () => {
               style={{ fontSize: 15 }}
             >{`(${data.completed_games}) games completed`}</Text>
             <Pressable
+              onPress={() => bottomSheetRef.current?.expand()}
               style={{
                 marginTop: 6,
                 width: 160,
@@ -449,6 +456,11 @@ const VenueDetails = () => {
           </Text>
         </Pressable>
       </View>
+
+      <UpcomingGameSheet
+        bottomSheetRef={bottomSheetRef}
+        venueID={Number(local.id)}
+      />
 
       {/* Rating Bottom Sheet */}
       <RatingBottomSheet

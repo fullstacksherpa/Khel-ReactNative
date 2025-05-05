@@ -17,7 +17,7 @@ export default function GameMarkers() {
 
   const { data, isLoading, error, isSuccess } = useListGames({
     variables: {
-      limit: 50,
+      limit: 12,
       // e.g., sport: 'Futsal',
       // e.g., lat: 27.7251,
       // e.g., lng: 85.3701,
