@@ -38,7 +38,9 @@ const VenueCard = ({ item }: VenueCardProps) => {
 
   const handleScroll = (event: any) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / CARD_WIDTH);
-    setActiveIndex(index);
+    if (index !== activeIndex) {
+      setActiveIndex(index);
+    }
   };
 
   return (
