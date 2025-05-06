@@ -1,72 +1,55 @@
+// VenueMarkers.tsx
 /* eslint-disable import/no-unresolved */
 import pin from '@assets/soccermarker.png';
 import { CircleLayer, Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps';
-import { type OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPressEvent';
+import type { OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPressEvent';
 import { featureCollection, point } from '@turf/helpers';
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import type { Venue as apiVenue } from '@/api/venues/types';
-// Import your react-query hook
-import { useListVenues } from '@/api/venues/venues';
-import { useGameVenue, type Venue } from '@/lib/games-venues-store';
+import type { Venue as ApiVenue } from '@/api/venues/types';
+import type { Venue } from '@/api/venues/types';
+import { useVenuesWithinBounds } from '@/api/venues/use-venues-within-bounds';
+
+type VenueMarkersProps = {
+  currentCenter: { lat: number; lng: number };
+  currentRadius: number;
+  onMarkerPress: (venue: Venue) => void;
+};
 
 // eslint-disable-next-line max-lines-per-function
-export default function VenueMarkers() {
-  const { setSelectedVenue, selectedVenue, setNearbyVenues, nearbyVenues } =
-    useGameVenue();
-  React.useEffect(() => {
-    console.log('Selected Venue Updated:', selectedVenue);
-  }, [selectedVenue]);
-  // Use react-query hook to fetch venues.
-  // Adjust or add query variables (such as lat, lng, distance, or sport) if your endpoint requires them.
-  const { data, isLoading, error, isSuccess } = useListVenues({
+export default function VenueMarkers({
+  currentCenter,
+  currentRadius,
+  onMarkerPress,
+}: VenueMarkersProps) {
+  const { data, isLoading, error } = useVenuesWithinBounds({
     variables: {
-      page: 1,
-      limit: 15,
-      // e.g., sport: 'Futsal',
-      // e.g., lat: 27.7251,
-      // e.g., lng: 85.3701,
-      // e.g., distance: 2000,
+      lat: currentCenter.lat,
+      lng: currentCenter.lng,
+      distance: currentRadius,
     },
   });
 
-  const normalizedVenues: Venue[] | undefined = data?.data.map(
-    (venue: apiVenue) => ({
-      ...venue,
-      location: [venue.location[0], venue.location[1]] as [number, number],
-    })
-  );
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      setNearbyVenues(normalizedVenues);
-      console.log('Data fetched successfully:', data);
-      console.log(`setting nearbyVenues....🔥 ${JSON.stringify(nearbyVenues)}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess, data]);
-
-  // Optionally handle loading and error states
   if (isLoading) return null;
   if (error) {
     console.error('Error fetching venues:', error);
     return null;
   }
 
-  // If your endpoint responds with { data: Venue[] }
-  // where Venue has longitude and latitude fields,
-  // then map over the data to create GeoJSON points.
-  const venues = data?.data || [];
+  // Transform the API data into an array of venues.
+  const venues: ApiVenue[] = data?.data || [];
+  // Convert venues to GeoJSON points.
   const points = venues.map((venue) =>
     point([venue.location[0], venue.location[1]], { venueData: venue })
   );
 
-  // When a user presses a marker, you may want to handle it (e.g., select the venue)
+  // When a marker is tapped, extract the venue data from the feature and pass it upward.
   const onPointPress = (event: OnPressEvent) => {
-    console.log('venue pressed');
-    const venueData = event.features?.[0]?.properties?.venueData;
-    if (venueData) {
-      setSelectedVenue(venueData);
+    const feature = event.features?.[0];
+    if (feature && feature.properties && feature.properties.venueData) {
+      // Note: ensure that your API returns the venue data in a serializable form.
+      const venueData = feature.properties.venueData as Venue;
+      onMarkerPress(venueData);
     }
   };
 

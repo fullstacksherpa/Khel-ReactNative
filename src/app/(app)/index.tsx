@@ -9,13 +9,13 @@ import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
 import Map from '@/components/map';
-import SelectedVenueSheet from '@/components/map/selected-venue-sheet';
-import TabScreen from '@/components/map/tabscreen';
 import { getAccessToken } from '@/lib/auth/utils';
 
 // eslint-disable-next-line max-lines-per-function
 const MyScreen = () => {
   const router = useRouter();
+
+  //TODO: delete later
   const access_token = getAccessToken();
   console.log(`COPY ACCESS_TOKEN${access_token}`);
 
@@ -23,7 +23,7 @@ const MyScreen = () => {
     <>
       <Stack.Screen options={{ title: 'Home', headerShown: false }} />
       <CustomHeader>
-        <View style={{ padding: 12 }}>
+        <View style={{ paddingHorizontal: 15, paddingVertical: 20 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -60,13 +60,10 @@ const MyScreen = () => {
               </Pressable>
             </View>
           </View>
-          <View className="mt-2">
-            <TabScreen />
-          </View>
         </View>
       </CustomHeader>
       <Map />
-      <SelectedVenueSheet />
+
       <AddressBottomSheet />
     </>
   );
