@@ -27,6 +27,7 @@ import Animated, {
 
 import { useCreateReview } from '@/api/venues/review';
 import { useVenue } from '@/api/venues/venues';
+import VenueReviewsSheet from '@/components/venue/all-reviews';
 import Amenities from '@/components/venue/amenities';
 import RatingBottomSheet from '@/components/venue/rating-bottomsheet'; // Adjust the import path as needed
 import UpcomingGameSheet from '@/components/venue/upcoming-game';
@@ -39,6 +40,7 @@ const VenueDetails = () => {
   const { mutate, isPending: isReviewSubmitting } = useCreateReview();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const ReviewbottomSheetRef = useRef<BottomSheet>(null);
   const scrollOffset = useScrollViewOffset(
     scrollRef.current ? scrollRef : null
   );
@@ -394,9 +396,9 @@ const VenueDetails = () => {
             marginVertical: 10,
           }}
         />
-        <View>
+        <Pressable onPress={() => ReviewbottomSheetRef.current?.expand()}>
           <Text>check all review</Text>
-        </View>
+        </Pressable>
         <View
           style={{
             height: 1,
@@ -420,6 +422,14 @@ const VenueDetails = () => {
         }}
       >
         <Pressable
+          onPress={() => {
+            router.push({
+              pathname: '/c-game',
+              params: {
+                venueID: local.id,
+              },
+            });
+          }}
           style={{
             width: '41%',
             marginTop: 10,
@@ -460,6 +470,11 @@ const VenueDetails = () => {
       <UpcomingGameSheet
         bottomSheetRef={bottomSheetRef}
         venueID={Number(local.id)}
+      />
+
+      <VenueReviewsSheet
+        venueID={Number(local.id)}
+        bottomSheetRef={ReviewbottomSheetRef}
       />
 
       {/* Rating Bottom Sheet */}

@@ -21,7 +21,6 @@ export default function UpcomingGameSheet({
   const { data, isLoading, error, refetch } = useUpcomingGamesByVenue({
     variables: { venueID },
   });
-
   const games: Gtype[] = data?.data || [];
 
   return (
@@ -69,6 +68,8 @@ export default function UpcomingGameSheet({
           keyExtractor={(item) => item.game_id.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item }) => <Game item={item} />}
+          onRefresh={() => refetch()}
+          refreshing={isLoading}
         />
       )}
     </BottomSheet>

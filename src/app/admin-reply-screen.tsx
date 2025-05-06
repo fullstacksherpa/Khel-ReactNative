@@ -58,7 +58,6 @@ export default function GameQAScreen() {
       Alert.alert('Error', 'Failed to send reply. Please try again.');
     }
   };
-
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
