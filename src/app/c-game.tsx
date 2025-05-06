@@ -3,8 +3,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import type BottomSheet from '@gorhom/bottom-sheet';
 import { addMinutes, parse, startOfDay } from 'date-fns';
 import { formatInTimeZone, fromZonedTime } from 'date-fns-tz';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -37,6 +43,8 @@ export default function CreateGameScreen({
   const router = useRouter();
   const { mutate: createGame, isPending } = useCreateGame();
 
+  const { venueID } = useLocalSearchParams();
+
   // State for selections
   const [sport, setSport] = useState<string | null>(null);
   const [venue, setVenue] = useState<number | null>(null);
@@ -51,6 +59,17 @@ export default function CreateGameScreen({
   const [price, setPrice] = useState<string>('');
   const [format, setFormat] = useState<string>('');
   const [maxPlayers, setMaxPlayers] = useState<string>('');
+
+  useEffect(() => {
+    if (venueID) {
+      const parsedId = Number(venueID);
+      if (!isNaN(parsedId)) {
+        setVenue(parsedId);
+      } else {
+        setVenue(null);
+      }
+    }
+  }, [venueID]);
 
   // BottomSheet refs
   const sportSheetRef = useRef<BottomSheet>(null);
