@@ -446,7 +446,14 @@ const VenueDetails = () => {
           <Text>Host Game</Text>
         </Pressable>
         <Pressable
-          onPress={() => {}}
+          onPress={() => {
+            router.push({
+              pathname: '/available-time-scree',
+              params: {
+                venueId: local.id,
+              },
+            });
+          }}
           style={{
             width: '41%',
             marginTop: 10,
