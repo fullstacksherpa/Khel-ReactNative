@@ -55,6 +55,10 @@ export default function RootLayout() {
         <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
         <Stack.Screen name="help-support" options={{ headerShown: false }} />
         <Stack.Screen
+          name="available-time-scree"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="admin-reply-screen"
           options={{ headerShown: false }}
         />

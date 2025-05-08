@@ -12,9 +12,17 @@ import { enUS } from 'date-fns/locale';
 import { formatInTimeZone, fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 const KATHMANDU_TIMEZONE = 'Asia/Kathmandu';
+export interface DateItem {
+  dayNum: string;
+  dayLabel: string;
+  fullDate: string;
+}
 
-export const generateDatesArray = (numDays = 10) => {
-  const dates = [];
+/**
+ * Generate an array of dates from today up to `numDays` ahead in Kathmandu timezone
+ */
+export const generateDatesArray = (numDays = 10): DateItem[] => {
+  const dates: DateItem[] = [];
   const today = new Date();
   for (let i = 0; i <= numDays; i++) {
     const dateObj = addDays(today, i);
