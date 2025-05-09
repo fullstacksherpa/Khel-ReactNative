@@ -1,38 +1,34 @@
-// Map.tsx
 import { Env } from '@env';
+import { AntDesign } from '@expo/vector-icons';
 import type BottomSheet from '@gorhom/bottom-sheet';
 import Mapbox, { Camera, LocationPuck } from '@rnmapbox/maps';
 import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import type { Venue } from '@/api/venues/types'; // assume Venue type is defined here
 import VenueDetailsBottomSheet from '@/components/map/selected-venue-sheet';
 import VenueMarkers from '@/components/map/venue-markers';
+import { useLocation } from '@/lib/location';
 
 Mapbox.setAccessToken(Env.MAPBOX_PUBLIC_TOKEN);
 
 // eslint-disable-next-line max-lines-per-function
 export default function MapScreen() {
-  const [initialLocation, setInitialLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
-  const [currentCenter, setCurrentCenter] = useState<{
+  const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
-  }>({
-    lat: 27.7172,
-    lng: 85.324,
-  });
+  } | null>(null);
+
+  // 2) pull from Zustand
+  const storeLat = useLocation((s) => s.latitude);
+  const storeLng = useLocation((s) => s.longitude);
+
   const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
 
   const mapRef = useRef<Mapbox.MapView>(null);
   const cameraRef = useRef<Camera>(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // Radius in meters for the bounds query
-  const currentRadius = 10000;
 
   // Request user's current location
   useEffect(() => {
@@ -42,52 +38,40 @@ export default function MapScreen() {
         console.warn('Location permission not granted');
         return;
       }
-      const location = await Location.getCurrentPositionAsync({});
-      setInitialLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
+      const loc = await Location.getCurrentPositionAsync({});
+      setUserLocation({ lat: loc.coords.latitude, lng: loc.coords.longitude });
     })();
   }, []);
 
   // When initial location is available, center the camera
   useEffect(() => {
-    if (initialLocation && cameraRef.current) {
+    if (userLocation && cameraRef.current) {
       cameraRef.current.setCamera({
-        centerCoordinate: [initialLocation.longitude, initialLocation.latitude],
+        centerCoordinate: [userLocation.lng, userLocation.lat],
         zoomLevel: 14,
         animationDuration: 1000,
       });
     }
-  }, [initialLocation]);
-
-  // When map region changes, recalc the center from visible bounds
-  const handleRegionDidChange = async () => {
-    if (mapRef.current) {
-      try {
-        const bounds = await mapRef.current.getVisibleBounds();
-        // bounds returns [[minLng, minLat], [maxLng, maxLat]]
-        if (bounds && bounds.length === 2) {
-          const [min, max] = bounds;
-          const centerLat = (min[1] + max[1]) / 2;
-          const centerLng = (min[0] + max[0]) / 2;
-          setCurrentCenter({ lat: centerLat, lng: centerLng });
-        }
-      } catch (error) {
-        console.error('Error fetching bounds:', error);
-      }
-    }
-  };
+  }, [userLocation]);
 
   // When a venue marker is pressed, update selected venue and open bottom sheet.
-  const handleMarkerPress = useCallback(
-    (venue: Venue) => {
-      if (venue.id === selectedVenue?.id) return;
-      setSelectedVenue(venue);
-      bottomSheetRef.current?.snapToIndex(1);
-    },
-    [selectedVenue]
-  );
+  const handleMarkerPress = useCallback((venue: Venue) => {
+    setSelectedVenue(venue);
+    bottomSheetRef.current?.snapToIndex(1);
+  }, []);
+
+  // recenter handler: prefer the store, then the local state
+  const recenter = () => {
+    const lat = storeLat ?? userLocation?.lat;
+    const lng = storeLng ?? userLocation?.lng;
+    if (lat != null && lng != null) {
+      cameraRef.current?.setCamera({
+        centerCoordinate: [lng, lat],
+        zoomLevel: 14,
+        animationDuration: 600,
+      });
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -95,7 +79,6 @@ export default function MapScreen() {
         ref={mapRef}
         style={{ flex: 1 }}
         styleURL="mapbox://styles/mapbox/streets-v12"
-        onRegionDidChange={handleRegionDidChange}
       >
         <Camera ref={cameraRef} />
         <LocationPuck
@@ -103,16 +86,51 @@ export default function MapScreen() {
           puckBearing="heading"
           pulsing={{ isEnabled: true }}
         />
-        <VenueMarkers
-          currentCenter={currentCenter}
-          currentRadius={currentRadius}
-          onMarkerPress={handleMarkerPress}
-        />
+        {userLocation ? (
+          <VenueMarkers
+            userLocation={userLocation}
+            currentRadius={10000}
+            onMarkerPress={handleMarkerPress}
+          />
+        ) : (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text>Fetching your location…</Text>
+          </View>
+        )}
       </Mapbox.MapView>
       <VenueDetailsBottomSheet
         bottomSheetRef={bottomSheetRef}
         venue={selectedVenue}
       />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={recenter}
+        className="
+          absolute 
+          bottom-6 
+          right-6 
+          rounded-full 
+          bg-white/40 
+          p-3 
+          shadow-lg
+        "
+      >
+        {userLocation ? (
+          <AntDesign name="enviroment" size={24} color="#023e8a" />
+        ) : (
+          <Text className="text-white">…</Text>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
