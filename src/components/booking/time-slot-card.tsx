@@ -23,23 +23,23 @@ export const TimeSlotCard: React.FC<TimeSlotCardProps> = ({
     <View
       className={`m-2 flex-row items-center justify-between rounded-lg border-2 p-4 ${
         slot.available
-          ? 'border-gray-800 bg-white'
-          : 'border-gray-200 bg-gray-100'
+          ? 'border-gray-800 bg-successGreen'
+          : 'border-gray-200 bg-danger-200'
       }`}
     >
       <View>
         <Text className="text-lg font-semibold text-gray-900">{timeRange}</Text>
-        <Text className="text-sm text-gray-500">{period}</Text>
+        <Text className="text-sm text-gray-900">{period}</Text>
       </View>
       <Pressable
         onPress={() => onPress(slot)}
         disabled={!slot.available}
         className={`rounded-full px-4 py-2 ${
-          slot.available ? 'bg-gray-800' : 'bg-gray-300'
+          slot.available ? 'bg-gray-800' : 'bg-gray-600'
         }`}
       >
         <Text
-          className={`text-sm font-medium ${slot.available ? 'text-white' : 'text-gray-600'}`}
+          className={`text-sm font-medium ${slot.available ? 'text-white' : 'text-white'}`}
         >
           {slot.available ? 'Book' : 'Booked'}
         </Text>

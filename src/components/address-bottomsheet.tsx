@@ -1,3 +1,4 @@
+import { AntDesign } from '@expo/vector-icons';
 import BottomSheet, {
   BottomSheetTextInput,
   BottomSheetView,
@@ -5,6 +6,7 @@ import BottomSheet, {
 import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
+import { Pressable } from 'react-native-gesture-handler';
 
 import { Button } from '@/components/ui';
 import { updateAddress, updateLocation } from '@/lib/location/index';
@@ -107,14 +109,13 @@ const AddressBottomSheet: React.FC = () => {
         >
           Update Your Address
         </Text>
-        <View className="flex flex-row gap-2">
+        <View className="flex gap-2">
           <BottomSheetTextInput
             placeholder="Enter new address"
             placeholderTextColor="#808080"
             value={newAddress}
             onChangeText={setNewAddress}
             style={{
-              width: 280,
               borderWidth: 1,
               borderColor: '#808080',
               padding: 12,
@@ -124,12 +125,13 @@ const AddressBottomSheet: React.FC = () => {
               letterSpacing: 1,
             }}
           />
-          <Button
-            className="rounded-lg bg-highlightYellow p-2"
-            textClassName="text-md font-bold"
-            label={'Locate Me'}
-            onPress={handleUseCurrentLocation}
-          />
+          <Pressable onPress={handleUseCurrentLocation}>
+            <View className="flex flex-row items-center justify-end gap-1 pr-5">
+              <AntDesign name="enviroment" size={24} color="#023e8a" />
+
+              <Text className="text-[#023e8a]">Locate Me</Text>
+            </View>
+          </Pressable>
         </View>
 
         <Button

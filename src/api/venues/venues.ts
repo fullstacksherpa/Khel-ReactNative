@@ -9,11 +9,7 @@ import type {
   VenueDetails,
 } from './types';
 
-export type IsVenueOwnerResponse = {
-  data: {
-    is_owner: boolean;
-  };
-};
+export type IsVenueOwnerResponse = { data: { is_owner: boolean } };
 
 type Variables = void;
 
@@ -60,10 +56,10 @@ export const useInfiniteVenues = createInfiniteQuery<
     variables: ListVenuesVariables,
     { pageParam }
   ): Promise<ListVenuesResponse> =>
-    // Default limit if not provided; page is managed by the infinite query
+    // Default limit(backend default 7 if not provided) if not provided; page is managed by the infinite query
     client
       .get('/venues/list-venues', {
-        params: { ...variables, page: pageParam, limit: variables.limit ?? 10 },
+        params: { ...variables, page: pageParam, limit: variables.limit ?? 7 },
       })
       .then((response) => response.data),
   getNextPageParam: (lastPage, pages) => {

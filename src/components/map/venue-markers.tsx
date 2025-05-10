@@ -10,22 +10,22 @@ import type { Venue as ApiVenue } from '@/api/venues/types';
 import type { Venue } from '@/api/venues/types';
 import { useVenuesWithinBounds } from '@/api/venues/use-venues-within-bounds';
 
-type VenueMarkersProps = {
-  currentCenter: { lat: number; lng: number };
+type Props = {
+  userLocation: { lat: number; lng: number };
   currentRadius: number;
-  onMarkerPress: (venue: Venue) => void;
+  onMarkerPress: (venue: any) => void;
 };
 
 // eslint-disable-next-line max-lines-per-function
 export default function VenueMarkers({
-  currentCenter,
+  userLocation,
   currentRadius,
   onMarkerPress,
-}: VenueMarkersProps) {
+}: Props) {
   const { data, isLoading, error } = useVenuesWithinBounds({
     variables: {
-      lat: currentCenter.lat,
-      lng: currentCenter.lng,
+      lat: userLocation.lat,
+      lng: userLocation.lng,
       distance: currentRadius,
     },
   });

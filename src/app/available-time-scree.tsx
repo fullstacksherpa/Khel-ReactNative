@@ -61,9 +61,7 @@ export default function AvailableTimesScreen() {
               {
                 onSuccess: () => {
                   // Navigate to review/confirmation screen
-                  router.push({
-                    pathname: '/',
-                  });
+                  router.push({ pathname: '/' });
                 },
                 onError: (err) => {
                   const status = err.response?.status;
@@ -93,13 +91,7 @@ export default function AvailableTimesScreen() {
     <>
       <CustomHeader>
         <View style={{ paddingHorizontal: 12, paddingVertical: 15 }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 30,
-            }}
-          >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
             <Pressable onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={30} color="white" />
             </Pressable>
@@ -113,7 +105,7 @@ export default function AvailableTimesScreen() {
         </View>
       </CustomHeader>
 
-      <View className="flex-1 bg-white">
+      <View className="mb-20 flex bg-white pb-64">
         <DateSelector
           dates={dates}
           selectedDate={selectedDate}
@@ -128,16 +120,21 @@ export default function AvailableTimesScreen() {
           <ActivityIndicator size="large" className="mt-8" color="#22C55E" />
         ) : error ? (
           <View className="mt-8 items-center">
-            <Text className="text-red-500">Failed to load slots.</Text>
+            <Text className="text-red-500">{`Failed to load slots. ${error}`}</Text>
           </View>
         ) : (
           <FlatList
             data={slots}
-            keyExtractor={(item) => item.start_time}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, i) => `${item}_${i}`}
             renderItem={({ item }) => (
               <TimeSlotCard slot={item} onPress={handleBook} />
             )}
-            contentContainerStyle={{ paddingBottom: 32 }}
+            contentContainerStyle={{
+              paddingBottom: 32,
+              marginBottom: 50,
+              flexGrow: 1,
+            }}
           />
         )}
       </View>

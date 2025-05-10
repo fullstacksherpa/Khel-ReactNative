@@ -51,10 +51,7 @@ const VenueDetails = () => {
     isPending: isVenueLoading,
     isError,
     refetch: refetchVenueDetails,
-  } = useVenue({
-    //@ts-ignore
-    variables: { id: local.id },
-  });
+  } = useVenue({ variables: { id: local.id } });
 
   const router = useRouter();
 
@@ -92,9 +89,7 @@ const VenueDetails = () => {
       ['#d3d3d3', '#15803D']
     );
 
-    return {
-      backgroundColor,
-    };
+    return { backgroundColor };
   });
 
   const handleImageScroll = (e: any) => {
@@ -108,13 +103,7 @@ const VenueDetails = () => {
     if (!local.id) return;
 
     mutate(
-      {
-        venueID: local.id,
-        data: {
-          rating,
-          comment: review,
-        },
-      },
+      { venueID: local.id, data: { rating, comment: review } },
       {
         onSuccess: () => {
           refetchVenueDetails();
@@ -423,12 +412,7 @@ const VenueDetails = () => {
       >
         <Pressable
           onPress={() => {
-            router.push({
-              pathname: '/c-game',
-              params: {
-                venueID: local.id,
-              },
-            });
+            router.push({ pathname: '/c-game', params: { venueID: local.id } });
           }}
           style={{
             width: '41%',
@@ -449,9 +433,7 @@ const VenueDetails = () => {
           onPress={() => {
             router.push({
               pathname: '/available-time-scree',
-              params: {
-                venueId: local.id,
-              },
+              params: { venueId: local.id },
             });
           }}
           style={{
