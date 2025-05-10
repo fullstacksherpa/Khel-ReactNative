@@ -58,4 +58,5 @@ export const useAvailableTimes = createQuery<
    * switches between date or revisits the page shortly after.
    */
   staleTime: 1 * 60 * 1000,
+  refetchInterval: 30 * 1000,
 });

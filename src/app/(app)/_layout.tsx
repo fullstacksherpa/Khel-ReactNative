@@ -64,7 +64,6 @@ export default function TabLayout() {
           tabBarButtonTestID: 'style-tab',
         }}
       />
-
       <Tabs.Screen
         name="venues"
         options={{
@@ -73,16 +72,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <AntDesign
               name="creditcard"
-              size={focused ? 30 : 24} // Increase size when focused
+              size={focused ? 30 : 24}
               color={color}
             />
           ),
           tabBarActiveTintColor: '#74c365',
           tabBarInactiveTintColor: 'gray',
-          tabBarButtonTestID: 'style-tab',
         }}
       />
-
       <Tabs.Screen
         name="settings"
         options={{
