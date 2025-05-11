@@ -22,8 +22,10 @@ interface AuthState {
 
 const _useAuth = create<AuthState>((set, get) => ({
   userID: null,
+
   status: 'idle',
   token: null,
+
   signIn: (token, userID) => {
     setUserId(userID);
     setToken(token);
