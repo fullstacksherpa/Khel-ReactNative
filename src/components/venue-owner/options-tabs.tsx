@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { type useRouter } from 'expo-router';
 import React from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+
+import { UserAvatar } from '@/components/profile/user-avatar';
 
 interface Props {
   selected: string;
@@ -28,12 +30,7 @@ const OptionTabs: React.FC<Props> = ({ selected, onSelect, router }) => {
           <Ionicons name="chatbox-outline" size={24} color="white" />
           <Ionicons name="notifications-outline" size={24} color="white" />
           <Pressable onPress={() => router.push('/view-profile')}>
-            <Image
-              source={{
-                uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
-              }}
-              style={{ width: 30, height: 30, borderRadius: 15 }}
-            />
+            <UserAvatar />
           </Pressable>
         </View>
       </View>

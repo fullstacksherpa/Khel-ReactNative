@@ -1,8 +1,7 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import LottieView from 'lottie-react-native';
-import React, { useRef } from 'react';
+import React from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { SafeAreaView, TouchableOpacity } from 'react-native';
@@ -38,7 +37,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
     resolver: zodResolver(schema),
   });
   const router = useRouter();
-  const animation = useRef<LottieView>(null);
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -47,7 +46,7 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
     >
       <View className="flex-1 bg-green-500 p-1">
         <SafeAreaView className="flex">
-          <View className="flex-row justify-start">
+          <View className="mb-8 flex-row justify-start">
             <TouchableOpacity
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
@@ -58,22 +57,8 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <View className="flex-row justify-center">
-            <LottieView
-              autoPlay
-              loop
-              ref={animation}
-              style={{
-                width: '100%',
-                height: 200,
-              }}
-              source={require('../../assets/animation/login.json')}
-            />
-          </View>
-          <View
-            className="flex-col bg-white px-8 pb-80 pt-8"
-            style={{ borderTopLeftRadius: 70, borderTopRightRadius: 70 }}
-          >
+
+          <View className="flex-col bg-white p-8" style={{ borderRadius: 70 }}>
             <View className="items-center justify-center pb-5">
               <Text
                 testID="form-title"
@@ -130,6 +115,11 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                 <Text className="font-semibold text-green-800">Register</Text>
               </TouchableOpacity>
             </View>
+          </View>
+          <View className="items-center pt-14">
+            <Text className="text-6xl font-semibold italic text-white">
+              Khel
+            </Text>
           </View>
         </SafeAreaView>
       </View>
