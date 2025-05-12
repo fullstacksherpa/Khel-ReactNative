@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   Pressable,
   ScrollView,
   Text,
@@ -19,6 +18,7 @@ import { useInfiniteVenues } from '@/api/venues/venues';
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
+import { UserAvatar } from '@/components/profile/user-avatar';
 import VenueCard from '@/components/venue/venue-card';
 import { useLocation } from '@/lib/location/index';
 
@@ -103,12 +103,7 @@ const VenueScreen = () => {
             <Ionicons name="notifications-outline" size={24} color="white" />
 
             <Pressable onPress={() => router.push('/view-profile')}>
-              <Image
-                style={{ width: 30, height: 30, borderRadius: 15 }}
-                source={{
-                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
-                }}
-              />
+              <UserAvatar />
             </Pressable>
           </View>
         </View>

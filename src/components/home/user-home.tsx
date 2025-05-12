@@ -2,12 +2,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Stack, useRouter } from 'expo-router';
 import React from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
 import Map from '@/components/map';
+import { UserAvatar } from '@/components/profile/user-avatar';
 
 const UserHome = () => {
   const router = useRouter();
@@ -43,12 +44,7 @@ const UserHome = () => {
               <Ionicons name="chatbox-outline" size={24} color="white" />
               <Ionicons name="notifications-outline" size={24} color="white" />
               <Pressable onPress={() => router.push('/view-profile')}>
-                <Image
-                  style={{ width: 30, height: 30, borderRadius: 15 }}
-                  source={{
-                    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
-                  }}
-                />
+                <UserAvatar />
               </Pressable>
             </View>
           </View>

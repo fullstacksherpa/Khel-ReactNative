@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
+  ActivityIndicator,
   Image,
   Platform,
   Pressable,
@@ -12,18 +13,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { KeyboardAvoidingView } from 'react-native';
 import * as z from 'zod';
 
+import { useCurrentUser } from '@/api/auth/use-current-user';
+import { useEditProfile } from '@/api/auth/use-edit-profile';
 import CustomHeader from '@/components/custom-header';
-import { ControlledInput } from '@/components/ui'; // your ControlledInput component
+import { ControlledInput } from '@/components/ui';
 
 // Validation schema
 const schema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
   lastName: z.string().min(1, { message: 'Last name is required' }),
-  email: z.string().email({ message: 'Invalid email address' }),
   phone: z.string().min(7, { message: 'Phone number is required' }),
+  skillLevel: z.enum(['beginner', 'intermediate', 'advanced'], {
+    required_error: 'Skill level is required',
+  }),
 });
 
 type FormType = z.infer<typeof schema>;
@@ -31,21 +36,35 @@ type FormType = z.infer<typeof schema>;
 // eslint-disable-next-line max-lines-per-function
 export default function EditProfile() {
   const router = useRouter();
+  const { data: user, isLoading: queryLoading, refetch } = useCurrentUser();
+  const { mutate, isPending: mutationLoading } = useEditProfile();
 
-  const initialValues: FormType = {
-    firstName: 'Ongcheb',
-    lastName: 'Dccff',
-    email: 'ongchen10sherpa@gmail.com',
-    phone: '7788834225',
-  };
-
-  const [initialImageUri] = useState<string | null>(null);
+  const [initialImageUri, setInitialImageUri] = useState<string | null>(null);
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  const { control, handleSubmit, getValues } = useForm<FormType>({
+  const { control, handleSubmit, reset, getValues } = useForm<FormType>({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      skillLevel: 'beginner',
+    },
   });
+
+  // Populate form when user data arrives
+  useEffect(() => {
+    if (user) {
+      reset({
+        firstName: user.first_name,
+        lastName: user.last_name,
+        phone: user.phone,
+        skillLevel: user.skill_level,
+      });
+      setInitialImageUri(user.profile_picture_url);
+      setImageUri(user.profile_picture_url);
+    }
+  }, [user, reset]);
 
   useEffect(() => {
     (async () => {
@@ -60,7 +79,7 @@ export default function EditProfile() {
   }, []);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
@@ -72,26 +91,37 @@ export default function EditProfile() {
   };
 
   const submitEditProfile = () => {
-    const data = getValues();
-    const payload: Partial<FormType & { imageUri: string }> = {};
+    if (!user) return;
+    const values = getValues();
+    const payload: any = {};
 
-    // Compare form fields
-    for (const key in initialValues) {
-      const typedKey = key as keyof FormType;
-      if (data[typedKey] !== initialValues[typedKey]) {
-        payload[typedKey] = data[typedKey];
-      }
-    }
+    // Compare fields against fetched user
+    if (values.firstName !== user.first_name)
+      payload.first_name = values.firstName;
+    if (values.lastName !== user.last_name) payload.last_name = values.lastName;
+    if (values.phone !== user.phone) payload.phone = values.phone;
+    if (values.skillLevel !== user.skill_level)
+      payload.skill_level = values.skillLevel;
 
-    // Compare image
     if (imageUri && imageUri !== initialImageUri) {
       payload.imageUri = imageUri;
     }
 
-    console.log('submitEditProfile: Payload with changes only:', payload);
-
-    router.back();
+    mutate(payload, {
+      onSuccess: () => {
+        refetch();
+        router.back();
+      },
+    });
   };
+
+  if (queryLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -110,7 +140,7 @@ export default function EditProfile() {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior="padding"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={10}
       >
         <View className="flex-1 px-4">
@@ -137,54 +167,47 @@ export default function EditProfile() {
 
           {/* Form Fields */}
           <View className="space-y-4">
-            <View>
-              <ControlledInput
-                control={control}
-                label="First Name"
-                name="firstName"
-              />
-            </View>
-
-            <View className="py-3">
-              <ControlledInput
-                label="Last Name"
-                control={control}
-                name="lastName"
-              />
-            </View>
-
+            <ControlledInput
+              control={control}
+              label="First Name"
+              name="firstName"
+            />
+            <ControlledInput
+              control={control}
+              label="Last Name"
+              name="lastName"
+            />
+            <ControlledInput
+              control={control}
+              label="Skill Level"
+              name="skillLevel"
+              placeholder="Select skill"
+            />
             <View className="mt-6 bg-gray-100 py-2">
               <Text className="text-center font-semibold text-gray-700">
                 Contact Details
               </Text>
             </View>
 
-            <View className="py-3">
-              <ControlledInput
-                control={control}
-                name="email"
-                label="Email"
-                keyboardType="email-address"
-              />
-            </View>
-
-            <View className="py-3">
-              <ControlledInput
-                label="Phone Number"
-                control={control}
-                name="phone"
-                keyboardType="phone-pad"
-              />
-            </View>
+            <ControlledInput
+              control={control}
+              label="Phone Number"
+              name="phone"
+            />
           </View>
         </View>
 
         {/* Save Button */}
         <TouchableOpacity
           onPress={handleSubmit(submitEditProfile)}
+          disabled={mutationLoading}
           className="mx-9 mb-9 items-center rounded-lg bg-green-500 py-3"
         >
-          <Text className="font-semibold text-white">SAVE</Text>
+          {mutationLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text className="font-semibold text-white">SAVE</Text>
+          )}
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </>

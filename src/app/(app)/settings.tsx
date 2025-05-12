@@ -2,7 +2,6 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StatusBar,
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 
 import { client } from '@/api';
+import { UserAvatar } from '@/components/profile/user-avatar';
 import { useAuth } from '@/lib/auth/index';
 
 // Reusable list item component
@@ -90,13 +90,7 @@ const ProfileScreen: React.FC = () => {
         onPress={() => router.push('/view-profile')}
         className="flex-row items-center bg-white p-4"
       >
-        {/* TODO: make image dynamic */}
-        <Image
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
-          }}
-          className="mr-4 size-12 rounded-full"
-        />
+        <UserAvatar />
         <View>
           <Text className="text-xl font-bold text-gray-800">
             Ongchen Sherpa

@@ -6,7 +6,7 @@ import React, { useRef } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { SafeAreaView, TouchableOpacity } from 'react-native';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import * as z from 'zod';
 
 import { Button, ControlledInput, Text, View } from '@/components/ui';
@@ -50,36 +50,30 @@ export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior="padding"
-      keyboardVerticalOffset={10}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
       <View className="flex-1 bg-green-500 p-1">
         <SafeAreaView className="flex">
-          <View className="flex-row justify-start">
+          <View className="mb-1 flex-row justify-start">
             <TouchableOpacity
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
-                router.push('/onboarding');
+                router.back();
               }}
             >
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <View className="flex-row justify-center">
-            <LottieView
-              autoPlay
-              loop
-              ref={animation}
-              style={{
-                width: '100%',
-                height: 160,
-              }}
-              source={require('../../assets/animation/football.json')}
-            />
-          </View>
+
           <View
-            className="flex-col bg-white px-8 pb-80 pt-12"
-            style={{ borderTopLeftRadius: 70, borderTopRightRadius: 70 }}
+            className="flex-col bg-white px-8 pb-9 pt-12"
+            style={{
+              borderTopLeftRadius: 70,
+              borderTopRightRadius: 70,
+              borderBottomLeftRadius: 70,
+              borderBottomRightRadius: 70,
+            }}
           >
             <View className="mb-4">
               <ControlledInput
@@ -138,6 +132,18 @@ export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
                 <Text className="font-semibold text-green-800">Log In</Text>
               </TouchableOpacity>
             </View>
+          </View>
+          <View className="flex-row justify-center">
+            <LottieView
+              autoPlay
+              loop
+              ref={animation}
+              style={{
+                width: '100%',
+                height: 160,
+              }}
+              source={require('../../assets/animation/football.json')}
+            />
           </View>
         </SafeAreaView>
       </View>
