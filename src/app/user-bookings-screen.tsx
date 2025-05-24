@@ -42,6 +42,7 @@ export default function BookingsScreen() {
       />
       <FlatList<Booking>
         data={bookings}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.bookingId.toString()}
         renderItem={({ item }) => <BookingCard booking={item} />}
         contentContainerStyle={{ paddingBottom: 16 }}

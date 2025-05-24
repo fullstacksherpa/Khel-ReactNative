@@ -129,7 +129,7 @@ const ProfileScreen: React.FC = () => {
             icon={<MaterialIcons name="group" size={24} color="#00A86B" />}
             title="Playpals"
             subtitle="View & Manage Players"
-            onPress={() => router.push('/user-bookings-screen')}
+            onPress={() => router.push('/coming-soon-screen')}
           />
           <View className="my-2 h-px bg-gray-200" />
           <ListItem
@@ -139,14 +139,6 @@ const ProfileScreen: React.FC = () => {
             onPress={() => router.push('/feedback')}
           />
           <View className="my-2 h-px bg-gray-200" />
-          <ListItem
-            icon={
-              <Ionicons name="shield-checkmark" size={24} color="#00A86B" />
-            }
-            title="Preference & Privacy"
-            subtitle="Sports, Locations, Notifications, etc"
-            onPress={() => router.push('/preferences')}
-          />
         </View>
 
         {/* Section 2 */}

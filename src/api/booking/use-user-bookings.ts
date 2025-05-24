@@ -64,5 +64,5 @@ export const useUserBookings = createQuery<
 
     return { data: bookings };
   },
-  staleTime: 2 * 60 * 1000, // cache for 2 minutes
+  staleTime: 9 * 60 * 1000, // cache for 9 minutes
 });
