@@ -26,10 +26,11 @@ export default function VenueSheet({
   snapPoints = ['80%'],
   sport,
 }: VenueSheetProps) {
+  console.log('venues', venues);
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={-1}
+      index={0}
       snapPoints={snapPoints}
       enablePanDownToClose
     >

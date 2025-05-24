@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { client } from '@/api';
+import { useCurrentUser } from '@/api/auth/use-current-user';
 import { UserAvatar } from '@/components/profile/user-avatar';
 import { useAuth } from '@/lib/auth/index';
 
@@ -57,6 +58,8 @@ const ListItem: React.FC<ListItemProps> = ({
 const ProfileScreen: React.FC = () => {
   const router = useRouter();
 
+  const { data: user, isLoading } = useCurrentUser();
+
   const signOut = useAuth.use.signOut();
   const signOutHandler = async () => {
     try {
@@ -88,12 +91,16 @@ const ProfileScreen: React.FC = () => {
       {/* Header */}
       <TouchableOpacity
         onPress={() => router.push('/view-profile')}
-        className="flex-row items-center bg-white p-4"
+        className="flex-row items-center gap-4 bg-white p-4"
       >
         <UserAvatar />
         <View>
           <Text className="text-xl font-bold text-gray-800">
-            Ongchen Sherpa
+            {isLoading
+              ? 'Loading...'
+              : user?.first_name || user?.last_name
+                ? `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim()
+                : 'Guest'}
           </Text>
           <Text className="text-sm text-gray-500">View your full profile</Text>
         </View>
@@ -114,15 +121,15 @@ const ProfileScreen: React.FC = () => {
               <MaterialIcons name="book-online" size={24} color="#00A86B" />
             }
             title="My Bookings"
-            subtitle="View Transactions & Receipts"
-            onPress={() => router.push('/bookings')}
+            subtitle="View All Bookings Done"
+            onPress={() => router.push('/user-bookings-screen')}
           />
           <View className="my-2 h-px bg-gray-200" />
           <ListItem
             icon={<MaterialIcons name="group" size={24} color="#00A86B" />}
             title="Playpals"
             subtitle="View & Manage Players"
-            onPress={() => router.push('/playpals')}
+            onPress={() => router.push('/user-bookings-screen')}
           />
           <View className="my-2 h-px bg-gray-200" />
           <ListItem

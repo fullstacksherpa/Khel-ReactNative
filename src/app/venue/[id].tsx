@@ -111,14 +111,13 @@ const VenueDetails = () => {
           Alert.alert('Thank you!', 'Your review has been submitted ✅');
         },
         onError: (error) => {
-          console.error('Failed to submit review', error);
-
           const apiError = error.response?.data;
 
           if (apiError?.status === 409) {
             Alert.alert(
               'Already Reviewed',
-              apiError.message || 'You have already reviewed this venue.'
+              apiError.message ||
+                'You have already reviewed this venue. Delete previous rating and rate again'
             );
           } else if (apiError?.status === 500) {
             Alert.alert(
@@ -303,7 +302,7 @@ const VenueDetails = () => {
                 />
               ))}
               <Text style={{ fontSize: 10 }}>
-                {data.average_rating} ({data.total_reviews})
+                {data.average_rating?.toFixed(1)} ({data.total_reviews})
               </Text>
             </View>
             <Pressable

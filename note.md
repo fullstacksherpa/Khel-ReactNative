@@ -1,78 +1,11 @@
-setItem('USERNAME', response.data.first_name);
-setItem('USERIMAGE', response.data.profile_image);
-setItem('USERID', response.data.userID);
+### TODO:
 
-{data.map(qa => (
-<View key={qa.id} style={styles.questionContainer}>
-<Text style={styles.question}>[Q]: {qa.question}</Text>
-{qa.replies.map(reply => (
-<View key={reply.id} style={styles.replyContainer}>
-<Text style={styles.reply}>[A] Admin: {reply.reply}</Text>
-</View>
-))}
-</View>
-))}
-
-import React, { useCallback } from 'react';
-import { View } from 'react-native';
-import GameActions from './GameActions';
-
-/\*\*
-
-- Parent screen/component that shows game details
-- and integrates the Join-Game & Ask-Question bottom sheets.
-  \*/
-  const GameDetailScreen = ({ route }) => {
-  const { gameID } = route.params;
-
-/\*\*
-
-- Callback when user submits a join request.
-- Implement your API call here.
-  \*/
-  const handleJoin = useCallback(async (gameID, message) => {
-  try {
-  // Example API call:
-  // await api.post(`/games/${gameID}/request`, { message });
-  console.log(`Join request for game ${gameID}: ${message}`);
-  // Show feedback (toast/alert)
-  } catch (error) {
-  console.error(error);
-  // Show error
-  }
-  }, []);
-
-/\*\*
-
-- Callback when user sends a question.
-- Implement your API call here.
-  \*/
-  const handleQuery = useCallback(async (gameID, question) => {
-  try {
-  // Example API call:
-  // await api.post(`/games/${gameID}/questions`, { question });
-  console.log(`Question for game ${gameID}: ${question}`);
-  // Show feedback (toast/alert)
-  } catch (error) {
-  console.error(error);
-  // Show error
-  }
-  }, []);
-
-return (
-<View style={{ flex: 1 }}>
-{/_ Your game detail UI here _/}
-{/_ ... _/}
-
-      {/* Bottom sheets for join and query */}
-      <GameActions
-        gameID={gameID}
-        onSubmitJoin={handleJoin}
-        onSubmitQuery={handleQuery}
-      />
-    </View>
-
-);
-};
-
-export default GameDetailScreen;
+1. Accept role in jwt
+2. error at map upcoming game, change it to different page or modal
+3. Planning to remove Home screen since it is difficult to put refetch with map, try refetching else remove.
+4. All filter functionality work fine, now change the design and remove sort since it is over features.
+5. remove sports selection form game
+6. Apply fetching venue near user location by default
+7. Implement upcoming game features
+8. Create game bottom sheet for venue not working. investigate that.
+9. Apply my bookings features where user can see all the past booking .

@@ -88,7 +88,9 @@ export default function CreateGameScreen({
       sport: sport ? sport.charAt(0).toUpperCase() + sport.slice(1) : 'Futsal',
     },
   });
+
   const venues: Venue[] = venuesResponse?.data || [];
+  console.log(venues);
 
   // Compute start_time and end_time (converting from Kathmandu to UTC)
   const startTime = useMemo(() => {

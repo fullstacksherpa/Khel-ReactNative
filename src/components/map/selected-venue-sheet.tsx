@@ -68,7 +68,10 @@ export default function VenueDetailsBottomSheet({
       below = (
         <View style={styles.centeredView}>
           <Text style={styles.errorText}>Failed to load upcoming games.</Text>
-          <TouchableOpacity onPress={() => refetch} style={styles.retryButton}>
+          <TouchableOpacity
+            onPress={() => refetch()}
+            style={styles.retryButton}
+          >
             <Text style={styles.retryText}>Tap to retry</Text>
           </TouchableOpacity>
         </View>
