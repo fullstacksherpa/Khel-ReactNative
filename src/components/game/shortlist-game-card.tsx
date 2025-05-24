@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import React from 'react';
@@ -16,6 +16,7 @@ import type { ShortlistedGame } from '@/api/games/use-allshortlisted-game';
 import { useRemoveShortlistGame } from '@/api/games/use-remove-shortlist';
 
 import FormattedDateTimeRange from './formatted-datetime-range';
+import { StatusBadge } from './game-status-badge';
 
 // Props matching the API's ShortlistedGame
 export type ShortlistedGameProps = Pick<
@@ -31,21 +32,25 @@ export type ShortlistedGameProps = Pick<
   | 'max_players'
   | 'is_booked'
   | 'match_full'
+  | 'venue_name'
+  | 'venue_address'
+  | 'status'
 >;
 
 // eslint-disable-next-line max-lines-per-function
 export default function ShortlistedGameCard({
   id,
-  sport_type,
   price,
   format,
-  venue_id,
   game_level,
   start_time,
   end_time,
   max_players,
   is_booked,
   match_full,
+  venue_name,
+  venue_address,
+  status,
 }: ShortlistedGameProps) {
   const removeMutation = useRemoveShortlistGame({
     onSuccess: () => {
@@ -91,13 +96,12 @@ export default function ShortlistedGameCard({
 
         <View style={styles.body}>
           <View style={styles.row}>
-            <SimpleLineIcons name="game-controller" size={20} color="#555" />
-            <Text style={styles.text}>{sport_type}</Text>
+            <Text style={styles.text}>{venue_name}</Text>
           </View>
 
           <View style={styles.row}>
             <MaterialCommunityIcons name="map-marker" size={20} color="#555" />
-            <Text style={styles.text}>Venue #{venue_id}</Text>
+            <Text style={styles.text}>{venue_address}</Text>
           </View>
 
           <View style={styles.dateRow}>
@@ -119,6 +123,11 @@ export default function ShortlistedGameCard({
         <View style={styles.footer}>
           <Text style={styles.level}>{game_level}</Text>
           {is_booked && <Text style={styles.booked}>Booked</Text>}
+          {['active', 'cancelled', 'completed'].includes(status) ? (
+            <StatusBadge
+              status={status as 'active' | 'cancelled' | 'completed'}
+            />
+          ) : null}
         </View>
       </Pressable>
     </Link>
@@ -185,8 +194,9 @@ const styles = StyleSheet.create({
   },
   text: {
     marginLeft: 8,
-    fontSize: 14,
+    fontSize: 16,
     color: '#555',
+    fontWeight: 700,
   },
   dateRow: {
     marginTop: 4,

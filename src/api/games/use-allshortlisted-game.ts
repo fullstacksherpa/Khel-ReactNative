@@ -4,7 +4,6 @@ import { createQuery } from 'react-query-kit';
 import { client } from '../common';
 import type { APIError } from '../types';
 
-// Define a separate type for shortlisted games if it's different from the general Game type
 export type ShortlistedGame = {
   id: number;
   sport_type: string;
@@ -23,6 +22,8 @@ export type ShortlistedGame = {
   match_full: boolean;
   created_at: string;
   updated_at: string;
+  venue_name: string;
+  venue_address: string;
 };
 
 export type ShortlistedGamesResponse = {

@@ -7,7 +7,6 @@ import {
   FlatList,
   Pressable,
   RefreshControl,
-  ScrollView,
   Text,
   View,
 } from 'react-native';
@@ -69,10 +68,7 @@ export default function HomeScreen() {
     refetch: refetchShortlisted,
   } = useShortlistedGames();
 
-  const [sport, setSport] = useState('Badminton');
-
-  // Option state to switch between "My Sports" and "Calendar" view.
-  const initialOption = 'My Sports';
+  const initialOption = 'All Games';
   const [option, setOption] = useState(initialOption);
 
   return (
@@ -117,74 +113,56 @@ export default function HomeScreen() {
               marginVertical: 12,
             }}
           >
-            <Pressable onPress={() => setOption('Upcoming')}>
-              <Text
-                style={{
-                  fontWeight: option === 'Upcoming' ? '900' : '500',
-                  color: option === 'Upcoming' ? '#F59E0B' : 'white',
-                  fontSize: 17,
-                }}
-              >
-                Upcoming
+            <Pressable
+              onPress={() => setOption('My Upcoming')}
+              style={{
+                padding: 10,
+                borderColor: 'white',
+                borderWidth: option === ' My Upcoming' ? 0 : 1,
+                marginRight: 10,
+                borderRadius: 8,
+                backgroundColor:
+                  option === 'My Upcoming' ? '#1dbf22' : 'transparent',
+              }}
+            >
+              <Text style={{ color: 'white', fontWeight: '600', fontSize: 15 }}>
+                My Upcoming
               </Text>
             </Pressable>
 
-            <Pressable onPress={() => setOption('My Sports')}>
-              <Text
-                style={{
-                  fontWeight: option === 'My Sports' ? '900' : '500',
-                  color: option === 'My Sports' ? '#F59E0B' : 'white',
-                  fontSize: 17,
-                }}
-              >
-                My Sports
+            <Pressable
+              onPress={() => setOption('All Games')}
+              style={{
+                padding: 10,
+                borderColor: 'white',
+                borderWidth: option === 'All Games' ? 0 : 1,
+                marginRight: 10,
+                borderRadius: 8,
+                backgroundColor:
+                  option === 'All Games' ? '#1dbf22' : 'transparent',
+              }}
+            >
+              <Text style={{ color: 'white', fontWeight: '600', fontSize: 15 }}>
+                All Games
               </Text>
             </Pressable>
 
-            <Pressable onPress={() => setOption('Shortlisted')}>
-              <Text
-                style={{
-                  fontWeight: option === 'Shortlisted' ? '900' : '500',
-                  color: option === 'Shortlisted' ? '#F59E0B' : 'white',
-                  fontSize: 17,
-                }}
-              >
+            <Pressable
+              onPress={() => setOption('Shortlisted')}
+              style={{
+                padding: 10,
+                borderColor: 'white',
+                borderWidth: option === 'Shortlisted' ? 0 : 1,
+                marginRight: 10,
+                borderRadius: 8,
+                backgroundColor:
+                  option === 'Shortlisted' ? '#1dbf22' : 'transparent',
+              }}
+            >
+              <Text style={{ color: 'white', fontWeight: '600', fontSize: 15 }}>
                 Shortlisted
               </Text>
             </Pressable>
-          </View>
-
-          {/* Horizontal Sport Picker */}
-          <View style={{ marginVertical: 7 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {[
-                'futsal',
-                'basketball',
-                'badminton',
-                'e-sport',
-                'cricket',
-                'tennis',
-              ].map((s) => (
-                <Pressable
-                  key={s}
-                  onPress={() => setSport(s)}
-                  style={{
-                    padding: 10,
-                    borderColor: 'white',
-                    borderWidth: sport === s ? 0 : 1,
-                    marginRight: 10,
-                    borderRadius: 8,
-                    backgroundColor: sport === s ? '#1dbf22' : 'transparent',
-                  }}
-                >
-                  <Text
-                    style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
-                  >
-                    {s}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
           </View>
         </View>
       </CustomHeader>
@@ -213,21 +191,25 @@ export default function HomeScreen() {
             <Text style={{ fontWeight: 'bold' }}>Filter</Text>
           </Pressable>
 
-          <Pressable>
-            <Text style={{ fontWeight: 'bold' }}>Sort</Text>
+          <Pressable
+            onPress={() => {
+              setFilters({});
+            }}
+          >
+            <Text style={{ fontWeight: 'bold' }}>Reset</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Loading & Error for My Sports */}
-      {option === 'My Sports' && isLoading && (
+      {option === 'All Games' && isLoading && (
         <View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         >
           <ActivityIndicator color="green" size="large" />
         </View>
       )}
-      {option === 'My Sports' && error && (
+      {option === 'All Games' && error && (
         <View style={{ padding: 16, alignItems: 'center' }}>
           <Text
             style={{ color: 'red' }}
@@ -239,7 +221,7 @@ export default function HomeScreen() {
       )}
 
       {/* My Sports List */}
-      {option === 'My Sports' && !isLoading && !error && (
+      {option === 'All Games' && !isLoading && !error && (
         <FlatList
           data={gamesFromApi}
           showsVerticalScrollIndicator={false}

@@ -1,32 +1,31 @@
 import type { AxiosError } from 'axios';
-import { createQuery } from 'react-query-kit';
+import { createInfiniteQuery } from 'react-query-kit';
 
 import { client } from '../common';
 import type { APIError } from '../types';
 
-type BookingRaw = {
+export type BookingRaw = {
   booking_id: number;
   venue_id: number;
   venue_name: string;
   venue_address: string;
-  start_time: string; // ISO timestamp
-  end_time: string; // ISO timestamp
+  start_time: string;
+  end_time: string;
   total_price: number;
   status: string;
-  created_at: string; // ISO timestamp
+  created_at: string;
 };
 
-type BookingsRawResponse = {
+export type BookingsRawResponse = {
   data: BookingRaw[];
 };
 
-// --- Shape you expose to your components ---
 export type Booking = {
   bookingId: number;
   venueId: number;
   venueName: string;
   venueAddress: string;
-  startTime: string; // still ISO; parse to Date in your UI if needed
+  startTime: string;
   endTime: string;
   totalPrice: number;
   status: string;
@@ -35,34 +34,53 @@ export type Booking = {
 
 export type BookingsResponse = {
   data: Booking[];
+  nextPage?: number; // if undefined → no more pages
 };
 
-// no variables needed since we infer user from token
-export type BookingsVariables = void;
+export type InfiniteBookingsVariables = {
+  limit?: number;
+  status?: string;
+};
 
-export const useUserBookings = createQuery<
+export const useInfiniteUserBookings = createInfiniteQuery<
   BookingsResponse,
-  BookingsVariables,
+  InfiniteBookingsVariables,
   AxiosError<APIError>
 >({
-  queryKey: ['user-bookings'],
-  // no variables, so fetcher signature is empty
-  fetcher: async () => {
-    const res = await client.get<BookingsRawResponse>('/users/bookings');
+  queryKey: ['infinite-user-bookings'],
+  fetcher: (variables, { pageParam }) => {
+    const limit = variables.limit ?? 7;
+    return client
+      .get<BookingsRawResponse>('/users/bookings', {
+        params: {
+          page: pageParam,
+          limit,
+          ...(variables.status ? { status: variables.status } : {}),
+        },
+      })
+      .then((res) => {
+        const bookings: Booking[] = res.data.data.map((b) => ({
+          bookingId: b.booking_id,
+          venueId: b.venue_id,
+          venueName: b.venue_name,
+          venueAddress: b.venue_address,
+          startTime: b.start_time,
+          endTime: b.end_time,
+          totalPrice: b.total_price,
+          status: b.status,
+          createdAt: b.created_at,
+        }));
 
-    const bookings: Booking[] = res.data.data.map((b) => ({
-      bookingId: b.booking_id,
-      venueId: b.venue_id,
-      venueName: b.venue_name,
-      venueAddress: b.venue_address,
-      startTime: b.start_time,
-      endTime: b.end_time,
-      totalPrice: b.total_price,
-      status: b.status,
-      createdAt: b.created_at,
-    }));
+        // decide nextPage: only if we got a full page back
+        const nextPage =
+          bookings.length < limit ? undefined : (pageParam as number) + 1;
 
-    return { data: bookings };
+        return { data: bookings, nextPage };
+      });
   },
-  staleTime: 9 * 60 * 1000, // cache for 9 minutes
+  getNextPageParam: (lastPage) => {
+    // TS-safe: lastPage.nextPage is typed as number|undefined
+    return lastPage.nextPage;
+  },
+  initialPageParam: 1,
 });
