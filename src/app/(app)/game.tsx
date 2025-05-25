@@ -13,6 +13,7 @@ import {
 
 import { type ListGamesVariables, useInfiniteGames } from '@/api/games/games';
 import { useShortlistedGames } from '@/api/games/use-allshortlisted-game';
+import { useUpcomingGamesByUser } from '@/api/games/use-user-upcoming-game';
 import Address from '@/components/address';
 import AddressBottomSheet from '@/components/address-bottomsheet';
 import CustomHeader from '@/components/custom-header';
@@ -68,6 +69,13 @@ export default function HomeScreen() {
     refetch: refetchShortlisted,
   } = useShortlistedGames();
 
+  const {
+    data: UpcomingGamesByUserResponse,
+    isLoading: isUpcomingGamesByUserLoading,
+    error: UpcomingGamesByUserError,
+    refetch: refetchUpcomingGamesByUser,
+  } = useUpcomingGamesByUser();
+
   const initialOption = 'All Games';
   const [option, setOption] = useState(initialOption);
 
@@ -118,7 +126,7 @@ export default function HomeScreen() {
               style={{
                 padding: 10,
                 borderColor: 'white',
-                borderWidth: option === ' My Upcoming' ? 0 : 1,
+                borderWidth: option === ' ' ? 0 : 1,
                 marginRight: 10,
                 borderRadius: 8,
                 backgroundColor:
@@ -285,6 +293,51 @@ export default function HomeScreen() {
             ListEmptyComponent={
               <View style={{ padding: 20, alignItems: 'center' }}>
                 <Text>No games in your shortlist.</Text>
+              </View>
+            }
+          />
+        )}
+
+      {/* UpcomingGamesByUser Loading & Error */}
+      {option === 'My Upcoming' && isUpcomingGamesByUserLoading && (
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <ActivityIndicator color="green" size="large" />
+        </View>
+      )}
+      {option === 'My Upcoming' && UpcomingGamesByUserError && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
+          <Text
+            style={{ color: 'red' }}
+          >{`Error loading shortlist: ${UpcomingGamesByUserError.message}`}</Text>
+          <Pressable
+            onPress={() => refetchUpcomingGamesByUser()}
+            style={{ marginTop: 8 }}
+          >
+            <Text style={{ color: 'blue' }}>Retry</Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* UpcomingGamesByUser List */}
+      {option === 'My Upcoming' &&
+        !isUpcomingGamesByUserLoading &&
+        !UpcomingGamesByUserError && (
+          <FlatList
+            data={UpcomingGamesByUserResponse?.data ?? []}
+            renderItem={({ item }) => <Game item={item} />}
+            keyExtractor={(item, index) => `${item.game_id}-${index}`}
+            refreshControl={
+              <RefreshControl
+                refreshing={isUpcomingGamesByUserLoading}
+                onRefresh={refetchUpcomingGamesByUser}
+              />
+            }
+            contentContainerStyle={{ paddingBottom: 20 }}
+            ListEmptyComponent={
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text>No games in Upcoming list.</Text>
               </View>
             }
           />

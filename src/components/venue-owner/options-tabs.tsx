@@ -23,8 +23,8 @@ const OptionTabs: React.FC<Props> = ({ selected, onSelect, router }) => {
           alignItems: 'center',
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: '500', color: 'white' }}>
-          Next
+        <Text style={{ fontSize: 16, fontWeight: '500', color: 'green' }}>
+          .
         </Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Ionicons name="chatbox-outline" size={24} color="white" />
