@@ -85,7 +85,7 @@ export default function CreateGameScreen({
   // API: Fetch venues based on selected sport
   const { data: venuesResponse, isLoading: venuesLoading } = useListVenues({
     variables: {
-      sport: sport ? sport.charAt(0).toUpperCase() + sport.slice(1) : 'Futsal',
+      sport: sport ? sport : 'futsal',
     },
   });
 
@@ -207,7 +207,9 @@ export default function CreateGameScreen({
           {/* Venue */}
           <TouchableOpacity
             className="mb-3 rounded border p-4"
-            onPress={() => venueSheetRef.current?.expand()}
+            onPress={() => {
+              venueSheetRef.current?.expand();
+            }}
           >
             <Text>
               {venue

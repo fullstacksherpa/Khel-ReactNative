@@ -179,7 +179,6 @@ export default function HomeScreen() {
       >
         <Pressable
           onPress={() => {
-            console.log('createnew bottom pressed ⚙️');
             router.push('/c-game');
           }}
         >

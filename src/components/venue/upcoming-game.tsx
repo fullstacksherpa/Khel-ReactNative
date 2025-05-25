@@ -1,4 +1,7 @@
-import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import { type BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -13,7 +16,6 @@ export type UpcomingGameSheetProps = {
   venueID: number;
 };
 
-// eslint-disable-next-line max-lines-per-function
 export default function UpcomingGameSheet({
   bottomSheetRef,
   venueID,
@@ -31,47 +33,52 @@ export default function UpcomingGameSheet({
       enablePanDownToClose
       backgroundStyle={{ backgroundColor: '#efefef' }}
     >
-      {isLoading ? (
-        <ActivityIndicator size="large" style={{ marginTop: 20 }} />
-      ) : error ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'red' }}>
-            Failed to load upcoming games.
-          </Text>
-          <TouchableOpacity onPress={() => refetch()} style={{ marginTop: 8 }}>
-            <Text style={{ color: 'blue' }}>Tap to retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : games.length === 0 ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'gray' }}>
-            No upcoming games found.
-          </Text>
-        </View>
-      ) : (
-        <BottomSheetFlatList
-          data={games}
-          keyExtractor={(item) => item.game_id.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          renderItem={({ item }) => <Game item={item} />}
-          onRefresh={() => refetch()}
-          refreshing={isLoading}
-        />
-      )}
+      <BottomSheetView style={{ flex: 1 }}>
+        {isLoading ? (
+          <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+        ) : error ? (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 16,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'red' }}>
+              Failed to load upcoming games.
+            </Text>
+            <TouchableOpacity
+              onPress={() => refetch()}
+              style={{ marginTop: 8 }}
+            >
+              <Text style={{ color: 'blue' }}>Tap to retry</Text>
+            </TouchableOpacity>
+          </View>
+        ) : games.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 16,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'gray' }}>
+              No upcoming games found.
+            </Text>
+          </View>
+        ) : (
+          <BottomSheetFlatList
+            data={games}
+            keyExtractor={(item) => item.game_id.toString()}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            renderItem={({ item }) => <Game item={item} />}
+            onRefresh={() => refetch()}
+            refreshing={isLoading}
+          />
+        )}
+      </BottomSheetView>
     </BottomSheet>
   );
 }

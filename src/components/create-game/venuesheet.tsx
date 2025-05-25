@@ -1,4 +1,7 @@
-import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator } from 'react-native';
@@ -30,37 +33,39 @@ export default function VenueSheet({
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={0}
+      index={-1}
       snapPoints={snapPoints}
       enablePanDownToClose
     >
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : venues.length === 0 ? (
-        <View className="flex-1 items-center justify-center p-4">
-          <Text className="text-xl font-bold text-gray-500">
-            {`No venues found for the sport ${sport}`}
-          </Text>
-        </View>
-      ) : (
-        <BottomSheetFlatList
-          data={venues}
-          keyExtractor={(v) => v.id.toString()}
-          contentContainerClassName="mb-5"
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              className="border-b border-gray-200 p-3 pl-6"
-              onPress={() => {
-                onSelect(item.id);
-                bottomSheetRef.current?.close();
-              }}
-            >
-              <Text className="font-medium">{item.name}</Text>
-              <Text className="text-sm text-gray-500">{item.address}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      )}
+      <BottomSheetView style={{ flex: 1 }}>
+        {loading ? (
+          <ActivityIndicator size="large" />
+        ) : venues.length === 0 ? (
+          <View className="flex-1 items-center justify-center p-4">
+            <Text className="text-xl font-bold text-gray-500">
+              {`No venues found for the sport ${sport}`}
+            </Text>
+          </View>
+        ) : (
+          <BottomSheetFlatList
+            data={venues}
+            keyExtractor={(v) => v.id.toString()}
+            contentContainerClassName="mb-5"
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                className="border-b border-gray-200 p-3 pl-6"
+                onPress={() => {
+                  onSelect(item.id);
+                  bottomSheetRef.current?.close();
+                }}
+              >
+                <Text className="font-medium">{item.name}</Text>
+                <Text className="text-sm text-gray-500">{item.address}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </BottomSheetView>
     </BottomSheet>
   );
 }
