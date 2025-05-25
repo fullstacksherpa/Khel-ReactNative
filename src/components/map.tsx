@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import type { Venue } from '@/api/venues/types'; // assume Venue type is defined here
+import type { Venue } from '@/api/venues/types';
 import VenueDetailsBottomSheet from '@/components/map/selected-venue-sheet';
 import VenueMarkers from '@/components/map/venue-markers';
 import { useLocation } from '@/lib/location';
@@ -19,6 +19,7 @@ export default function MapScreen() {
     lat: number;
     lng: number;
   } | null>(null);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   // 2) pull from Zustand
   const storeLat = useLocation((s) => s.latitude);
@@ -111,26 +112,29 @@ export default function MapScreen() {
       <VenueDetailsBottomSheet
         bottomSheetRef={bottomSheetRef}
         venue={selectedVenue}
+        onChange={(index: number) => setIsBottomSheetOpen(index > 0)}
       />
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={recenter}
-        className="
-          absolute 
-          bottom-6 
-          right-6 
-          rounded-full 
-          bg-white/40 
-          p-3 
-          shadow-lg
-        "
-      >
-        {userLocation ? (
-          <AntDesign name="enviroment" size={24} color="#023e8a" />
-        ) : (
-          <Text className="text-white">…</Text>
-        )}
-      </TouchableOpacity>
+      {!isBottomSheetOpen && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={recenter}
+          className="
+      absolute 
+      bottom-6 
+      right-6 
+      rounded-full 
+      bg-white/40 
+      p-3 
+      shadow-lg
+    "
+        >
+          {userLocation ? (
+            <AntDesign name="enviroment" size={24} color="#023e8a" />
+          ) : (
+            <Text className="text-white">…</Text>
+          )}
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
