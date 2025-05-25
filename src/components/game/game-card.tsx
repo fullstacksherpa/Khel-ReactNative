@@ -76,12 +76,6 @@ const Game: React.FC<GameProps> = ({ item }) => {
         <View style={{ marginTop: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row' }}>
-              <Image
-                style={{ width: 56, height: 56, borderRadius: 28 }}
-                source={{
-                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqcSD_2qz834cW2RuNWmvAbOMwcZdWSf81Q&s',
-                }}
-              />
               <View
                 style={{
                   flexDirection: 'row',
@@ -89,18 +83,41 @@ const Game: React.FC<GameProps> = ({ item }) => {
                   marginLeft: -7,
                 }}
               >
-                {item?.player_images?.map((imageUrl, index) => (
-                  <Image
-                    key={index}
+                {item?.player_images?.length > 0 ? (
+                  item.player_images.map((imageUrl, index) => (
+                    <Image
+                      key={index}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 22,
+                        marginLeft: index === 0 ? 0 : -7,
+                      }}
+                      source={{ uri: imageUrl }}
+                    />
+                  ))
+                ) : (
+                  <View
                     style={{
                       width: 44,
                       height: 44,
                       borderRadius: 22,
-                      marginLeft: -7,
+                      backgroundColor: '#ccc',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
-                    source={{ uri: imageUrl }}
-                  />
-                ))}
+                  >
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                      }}
+                    >
+                      {item?.game_admin_name?.charAt(0)?.toUpperCase()}
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
 
