@@ -1,17 +1,11 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import {
-  Platform,
-  ScrollView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { client } from '@/api';
 import { useCurrentUser } from '@/api/auth/use-current-user';
+import CustomHeader from '@/components/custom-header';
 import { UserAvatar } from '@/components/profile/user-avatar';
 import { useAuth } from '@/lib/auth/index';
 
@@ -82,87 +76,89 @@ const ProfileScreen: React.FC = () => {
   };
 
   return (
-    <View
-      className="flex-1 bg-gray-50"
-      style={{
-        paddingTop: Platform.OS === 'ios' ? 50 : StatusBar.currentHeight || 0,
-      }}
-    >
-      {/* Header */}
-      <TouchableOpacity
-        onPress={() => router.push('/view-profile')}
-        className="flex-row items-center gap-4 bg-white p-4"
-      >
-        <UserAvatar />
-        <View>
-          <Text className="text-xl font-bold text-gray-800">
-            {isLoading
-              ? 'Loading...'
-              : user?.first_name || user?.last_name
-                ? `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim()
-                : 'Guest'}
-          </Text>
-          <Text className="text-sm text-gray-500">View your full profile</Text>
-        </View>
-        <Ionicons
-          name="chevron-forward"
-          size={24}
-          color="#999"
-          className="ml-auto"
-        />
-      </TouchableOpacity>
+    <>
+      <CustomHeader>
+        {/* Header */}
+        <TouchableOpacity
+          onPress={() => router.push('/view-profile')}
+          className="flex-row items-center gap-4  p-4"
+        >
+          <UserAvatar />
+          <View>
+            <Text className="text-2xl font-bold tracking-widest text-white">
+              {isLoading
+                ? 'Loading...'
+                : user?.first_name || user?.last_name
+                  ? `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim()
+                  : 'Guest'}
+            </Text>
+            <Text className="text-md tracking-wider text-white">
+              View your full profile
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color="#fff"
+            className="ml-auto"
+          />
+        </TouchableOpacity>
+      </CustomHeader>
+      <View className="flex-1 bg-gray-50">
+        {/* Content */}
+        <ScrollView className="mt-4 px-1">
+          {/* Section 1 */}
+          <View className="mb-6 rounded-xl bg-white px-1 py-2">
+            <ListItem
+              icon={
+                <MaterialIcons name="book-online" size={24} color="#00A86B" />
+              }
+              title="My Bookings"
+              subtitle="View All Bookings Done"
+              onPress={() => router.push('/user-bookings-screen')}
+            />
+            <View className="my-2 h-px bg-gray-200" />
+            <ListItem
+              icon={<MaterialIcons name="group" size={24} color="#00A86B" />}
+              title="Playpals"
+              subtitle="View & Manage Players"
+              onPress={() => router.push('/coming-soon-screen')}
+            />
+            <View className="my-2 h-px bg-gray-200" />
+            <ListItem
+              icon={<MaterialIcons name="feedback" size={24} color="#00A86B" />}
+              title="Feedback"
+              subtitle="Help us improve with your thoughts"
+              onPress={() => router.push('/feedback')}
+            />
+            <View className="my-2 h-px bg-gray-200" />
+          </View>
 
-      {/* Content */}
-      <ScrollView className="mt-4 px-1">
-        {/* Section 1 */}
-        <View className="mb-6 rounded-xl bg-white px-1 py-2">
-          <ListItem
-            icon={
-              <MaterialIcons name="book-online" size={24} color="#00A86B" />
-            }
-            title="My Bookings"
-            subtitle="View All Bookings Done"
-            onPress={() => router.push('/user-bookings-screen')}
-          />
-          <View className="my-2 h-px bg-gray-200" />
-          <ListItem
-            icon={<MaterialIcons name="group" size={24} color="#00A86B" />}
-            title="Playpals"
-            subtitle="View & Manage Players"
-            onPress={() => router.push('/coming-soon-screen')}
-          />
-          <View className="my-2 h-px bg-gray-200" />
-          <ListItem
-            icon={<MaterialIcons name="feedback" size={24} color="#00A86B" />}
-            title="Feedback"
-            subtitle="Help us improve with your thoughts"
-            onPress={() => router.push('/feedback')}
-          />
-          <View className="my-2 h-px bg-gray-200" />
-        </View>
-
-        {/* Section 2 */}
-        <View className="rounded-xl bg-white px-1 py-2">
-          <ListItem
-            icon={<MaterialIcons name="local-offer" size={24} color="#888" />}
-            title="Offers"
-            onPress={() => router.push('/link')}
-          />
-          <View className="my-2 h-px bg-gray-200" />
-          <ListItem
-            icon={<MaterialIcons name="support-agent" size={24} color="#888" />}
-            title="Help & Support"
-            onPress={() => router.push('/help-support')}
-          />
-          <View className="my-2 h-px bg-gray-200" />
-          <ListItem
-            icon={<MaterialIcons name="logout" size={24} color="#888" />}
-            title="Logout"
-            onPress={signOutHandler}
-          />
-        </View>
-      </ScrollView>
-    </View>
+          {/* Section 2 */}
+          <View className="rounded-xl bg-white px-1 py-2">
+            <ListItem
+              icon={<MaterialIcons name="local-offer" size={24} color="#888" />}
+              title="Offers"
+              onPress={() => router.push('/link')}
+            />
+            <View className="my-2 h-px bg-gray-200" />
+            <ListItem
+              icon={
+                <MaterialIcons name="support-agent" size={24} color="#888" />
+              }
+              title="Help & Support"
+              onPress={() => router.push('/help-support')}
+            />
+            <View className="my-2 h-px bg-gray-200" />
+            <ListItem
+              icon={<MaterialIcons name="logout" size={24} color="#888" />}
+              title="Logout"
+              onPress={signOutHandler}
+            />
+          </View>
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
