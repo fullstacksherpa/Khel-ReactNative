@@ -41,9 +41,9 @@ export default function HelpAndSupport() {
       screen: 'support/cancellation',
     },
     {
-      title: 'Khel Stats & Player Ratings',
-      subtitle: 'Change Self Rating of Skill, Rate Players & more',
-      screen: 'support/ratings',
+      title: 'Venue Registration',
+      subtitle: 'Request to register your venue at our platform',
+      screen: 'support/venue-register',
     },
   ];
 

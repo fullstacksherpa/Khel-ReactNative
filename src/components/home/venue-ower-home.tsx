@@ -32,7 +32,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
     'requests'
   );
   const [option, setOption] = useState<
-    'Home' | 'Update Venue' | 'Analytics' | 'Pricing' | 'Set Offer'
+    'Home' | 'Update Venue' | 'Update Images' | 'Pricing' | 'Set Offer'
   >('Home');
 
   return (
@@ -64,7 +64,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
       {option === 'Update Venue' && (
         <UpdateVenueScreen venueID={venueID} setOption={setOption} />
       )}
-      {option === 'Analytics' && <Text>Analytics</Text>}
+      {option === 'Update Images' && <Text>Update image</Text>}
       {option === 'Pricing' && <Text>Pricing</Text>}
     </>
   );

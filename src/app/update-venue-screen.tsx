@@ -15,7 +15,7 @@ type Props = {
   venueID: number | string;
   setOption: React.Dispatch<
     React.SetStateAction<
-      'Home' | 'Update Venue' | 'Analytics' | 'Pricing' | 'Set Offer'
+      'Home' | 'Update Venue' | 'Update Images' | 'Pricing' | 'Set Offer'
     >
   >;
 };
@@ -147,7 +147,7 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           Amenities
         </Text>
         <TextInput
-          className="mb-3 rounded-full border border-gray-300 p-2"
+          className="mb-3 rounded border border-gray-300 p-2"
           value={amenitiesInput}
           onChangeText={setAmenitiesInput}
           placeholder="Comma-separated amenities"
