@@ -70,6 +70,10 @@ export default function RootLayout() {
           name="/support/accounts"
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="/support/venue-register"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </Providers>
   );

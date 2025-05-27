@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import UpdateVenueScreen from '@/app/update-venue-screen';
 import { DateSelector } from '@/components/booking/date-selector';
 import CustomHeader from '@/components/custom-header';
 import OptionTabs from '@/components/venue-owner/options-tabs';
@@ -20,6 +21,10 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
   console.log(`VenueID from venueOwnerHome ⛔️ : ${venueID}`);
   const router = useRouter();
 
+  useEffect(() => {
+    setOption('Home');
+  }, []);
+
   const dates = useMemo(() => generateDatesArray(10), []);
   const [selectedDate, setSelectedDate] = useState(dates[0].fullDate);
   const isoDate = selectedDate.slice(0, 10);
@@ -27,7 +32,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
     'requests'
   );
   const [option, setOption] = useState<
-    'Home' | 'Update Venue' | 'Analytics' | 'Pricing' | 'Set Offer'
+    'Home' | 'Update Venue' | 'Update Images' | 'Pricing' | 'Set Offer'
   >('Home');
 
   return (
@@ -56,8 +61,10 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
         </>
       )}
 
-      {option === 'Update Venue' && <Text>Update Venue</Text>}
-      {option === 'Analytics' && <Text>Analytics</Text>}
+      {option === 'Update Venue' && (
+        <UpdateVenueScreen venueID={venueID} setOption={setOption} />
+      )}
+      {option === 'Update Images' && <Text>Update image</Text>}
       {option === 'Pricing' && <Text>Pricing</Text>}
     </>
   );

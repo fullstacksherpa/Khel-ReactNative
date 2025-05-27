@@ -9,7 +9,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -106,21 +105,6 @@ const VenueScreen = () => {
               <UserAvatar />
             </Pressable>
           </View>
-        </View>
-
-        <View
-          style={{
-            marginHorizontal: 12,
-            backgroundColor: '#E8E8E8',
-            padding: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderRadius: 25,
-          }}
-        >
-          <TextInput placeholder="Search For Venues" />
-          <Ionicons name="search" size={24} color="gray" />
         </View>
 
         {/* Horizontal Sport Picker */}

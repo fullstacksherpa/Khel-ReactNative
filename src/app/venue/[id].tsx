@@ -363,6 +363,30 @@ const VenueDetails = () => {
             marginVertical: 10,
           }}
         />
+        <Pressable
+          style={{
+            marginTop: 6,
+            width: 160,
+            borderColor: '#686868',
+            borderWidth: 1,
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10,
+            marginLeft: 12,
+          }}
+          onPress={() => ReviewbottomSheetRef.current?.expand()}
+        >
+          <Text>check all review</Text>
+        </Pressable>
+        <View
+          style={{
+            height: 1,
+            borderWidth: 0.7,
+            borderColor: '#E0E0E0',
+            marginVertical: 10,
+          }}
+        />
         <View style={{ marginHorizontal: 16, marginTop: 20 }}>
           <Text style={{ marginBottom: 10, fontSize: 20, fontWeight: '600' }}>
             Description
@@ -379,6 +403,7 @@ const VenueDetails = () => {
             </Text>
           </Text>
         </View>
+
         <View
           style={{
             height: 1,
@@ -387,22 +412,6 @@ const VenueDetails = () => {
             marginVertical: 10,
           }}
         />
-        <Pressable onPress={() => ReviewbottomSheetRef.current?.expand()}>
-          <Text>check all review</Text>
-        </Pressable>
-        <View
-          style={{
-            height: 1,
-            borderWidth: 0.7,
-            borderColor: '#E0E0E0',
-            marginVertical: 10,
-          }}
-        />
-        <View style={{ alignItems: 'center', marginVertical: 20 }}>
-          <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>
-            View Cancellation Policy
-          </Text>
-        </View>
       </Animated.ScrollView>
 
       <View
