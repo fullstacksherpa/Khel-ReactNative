@@ -11,6 +11,7 @@ import { generateDatesArray } from '@/lib/date-utils';
 
 import { PendingTab } from '../venue-owner/pending-tab';
 import { ScheduledTab } from '../venue-owner/scheduled-tabs';
+import VenuePhotosScreen from '../venue-owner/venue-photo-screen';
 
 type props = {
   venueID: number;
@@ -64,7 +65,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
       {option === 'Update Venue' && (
         <UpdateVenueScreen venueID={venueID} setOption={setOption} />
       )}
-      {option === 'Update Images' && <Text>Update image</Text>}
+      {option === 'Update Images' && <VenuePhotosScreen venueID={venueID} />}
       {option === 'Pricing' && <Text>Pricing</Text>}
     </>
   );
