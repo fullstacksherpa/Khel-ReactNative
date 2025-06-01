@@ -22,6 +22,7 @@ import {
 } from '@/api/owner-features/use-create-venue';
 import CustomHeader from '@/components/custom-header';
 import { ControlledInput } from '@/components/ui';
+import { useVenueStore } from '@/lib/store/venue';
 
 // ---------------------
 // Zod Schema for Form
@@ -48,6 +49,9 @@ export default function CreateVenueScreen() {
   const router = useRouter();
   const { mutate, isPending } = useCreateVenue();
   const [images, setImages] = useState<string[]>([]);
+  const setLastCreatedVenueID = useVenueStore(
+    (state) => state.setLastCreatedVenueID
+  );
 
   const {
     control,
@@ -126,8 +130,10 @@ export default function CreateVenueScreen() {
     }
 
     mutate(formData, {
-      onSuccess: () => {
-        router.back();
+      onSuccess: (data) => {
+        setLastCreatedVenueID(data.id);
+        console.log(`💰💰💰💰💰💰💰${data.id}`);
+        router.push('/support/create-pricing');
       },
       onError: () => {
         alert('Failed to create venue.');
