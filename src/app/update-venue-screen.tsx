@@ -16,9 +16,7 @@ import { useVenueInfo } from '@/api/owner-features/use-venue-info';
 type Props = {
   venueID: number | string;
   setOption: React.Dispatch<
-    React.SetStateAction<
-      'Home' | 'Update Venue' | 'Update Images' | 'Pricing' | 'Set Offer'
-    >
+    React.SetStateAction<'Home' | 'Update Venue' | 'Update Images' | 'Pricing'>
   >;
 };
 

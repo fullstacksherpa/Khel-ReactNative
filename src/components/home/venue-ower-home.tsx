@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import VenuePricingScreen from '@/app/support/venue-pricing';
 import UpdateVenueScreen from '@/app/update-venue-screen';
 import { DateSelector } from '@/components/booking/date-selector';
 import CustomHeader from '@/components/custom-header';
@@ -33,7 +34,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
     'requests'
   );
   const [option, setOption] = useState<
-    'Home' | 'Update Venue' | 'Update Images' | 'Pricing' | 'Set Offer'
+    'Home' | 'Update Venue' | 'Update Images' | 'Pricing'
   >('Home');
 
   return (
@@ -66,7 +67,7 @@ const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
         <UpdateVenueScreen venueID={venueID} setOption={setOption} />
       )}
       {option === 'Update Images' && <VenuePhotosScreen venueID={venueID} />}
-      {option === 'Pricing' && <Text>Pricing</Text>}
+      {option === 'Pricing' && <VenuePricingScreen venueID={venueID} />}
     </>
   );
 };

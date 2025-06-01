@@ -12,13 +12,7 @@ interface Props {
 }
 
 const OptionTabs: React.FC<Props> = ({ selected, onSelect, router }) => {
-  const options = [
-    'Home',
-    'Update Venue',
-    'Update Images',
-    'Pricing',
-    'Set Offer',
-  ];
+  const options = ['Home', 'Update Venue', 'Update Images', 'Pricing'];
 
   return (
     <View style={{ padding: 12 }}>
