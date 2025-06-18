@@ -26,11 +26,6 @@ export default function HelpAndSupport() {
       screen: 'support/venues',
     },
     {
-      title: 'Booking Venues & Experiences',
-      subtitle: 'On-Demand Booking of Venues, Events, Tournaments …',
-      screen: 'support/booking',
-    },
-    {
       title: 'Rescheduling',
       subtitle: 'Rescheduling Game Slots, Rescheduling Policies, Charges…',
       screen: 'support/rescheduling',

@@ -12,29 +12,19 @@ type FAQItem = {
 
 const data: FAQItem[] = [
   {
-    question: 'Can I log-in with 2 numbers/Accounts at the same time?',
+    question: 'Can I reschedule the game?',
     answer:
-      'Yes, but you would typically need to sign out of one account before signing in to another.',
+      'You cannot directly reschedule a game once it’s created. However, you can cancel the existing game and create a new one with the correct date. Alternatively, you may update the new date in the "Q&A" section of the game if you choose to keep it active.',
   },
   {
-    question: 'How do I Reset/Delete my account?',
+    question: 'What happens after I cancel a game?',
     answer:
-      'Navigate to the account settings and look for the “Delete Account” or “Reset Account” option. Please note, you may require an email confirmation or additional verification steps.',
+      'Once a game is cancelled, it will no longer appear on the active games screen.',
   },
   {
-    question: 'How to change mobile number without losing my data?',
+    question: 'Will rescheduling my game affect my venue booking?',
     answer:
-      'Within the profile settings, there should be a section to update phone number. Make sure you have verified your email or other credentials so data remains synced to your account.',
-  },
-  {
-    question: 'How to change my profile picture?',
-    answer:
-      'Open your profile page, tap on the existing profile picture, and select a new image from your device.',
-  },
-  {
-    question: 'How to edit profile Information?',
-    answer:
-      'Go to your profile settings where you can edit personal information such as first name, last name, bio, contact info, etc.',
+      'No. Games and bookings are separate entities. You can book a venue without creating a game, and you can host a game without booking a venue.',
   },
 ];
 

@@ -33,7 +33,7 @@ export function BookingCard({ booking }: Props) {
   } = booking;
 
   return (
-    <View className="border-1 mb-4 rounded-2xl border bg-gray-100 p-3">
+    <View className="border-1 mb-4 rounded-2xl border bg-white p-3">
       {/* Header */}
       <View className="mb-2 flex-row items-center justify-between">
         <View>

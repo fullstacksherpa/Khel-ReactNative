@@ -12,29 +12,30 @@ type FAQItem = {
 
 const data: FAQItem[] = [
   {
-    question: 'Can I log-in with 2 numbers/Accounts at the same time?',
+    question: 'Can I join any game that I like?',
     answer:
-      'Yes, but you would typically need to sign out of one account before signing in to another.',
+      'Yes, but the game admin has the privilege to accept or reject your request.',
   },
   {
-    question: 'How do I Reset/Delete my account?',
+    question: 'Can I host a game?',
     answer:
-      'Navigate to the account settings and look for the “Delete Account” or “Reset Account” option. Please note, you may require an email confirmation or additional verification steps.',
+      'Of course! You can host a game and let others join. You can also book a venue to ensure your game has a place to play.',
   },
   {
-    question: 'How to change mobile number without losing my data?',
+    question: 'What should I do if a player doesn’t show up?',
     answer:
-      'Within the profile settings, there should be a section to update phone number. Make sure you have verified your email or other credentials so data remains synced to your account.',
+      'It’s up to the game admin to manage the players. We aim to keep Khel open and fair for everyone. One way we maintain quality is by giving admins the ability to accept or reject players.',
   },
   {
-    question: 'How to change my profile picture?',
+    question:
+      'What should I do if the game admin cancels the game at the last minute?',
     answer:
-      'Open your profile page, tap on the existing profile picture, and select a new image from your device.',
+      'Life can be unpredictable and emergencies happen. We encourage players to be understanding and either join another nearby game or create one themselves.',
   },
   {
-    question: 'How to edit profile Information?',
+    question: 'What should I do if no venues are available?',
     answer:
-      'Go to your profile settings where you can edit personal information such as first name, last name, bio, contact info, etc.',
+      'We recommend checking nearby venues or booking earlier next time to secure your preferred slot.',
   },
 ];
 

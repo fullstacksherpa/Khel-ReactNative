@@ -16,12 +16,16 @@ const RequestResetPasswordScreen = () => {
     requestReset(data, {
       onSuccess: (response) => {
         const message = response.data.message;
-        router.push('/');
         showMessage({
           message,
           type: 'success',
         });
-        // Optionally, navigate or reset the form
+        const timeoutId = setTimeout(
+          () => router.push('/email-verification'),
+          1000
+        );
+
+        return () => clearTimeout(timeoutId);
       },
       onError: (error) => {
         const errorMessage =

@@ -197,20 +197,20 @@ export default function CreateVenueScreen() {
               name="address"
               error={errors.address?.message}
             />
-            <View className="flex-row gap-2 space-x-2">
+            <View className="w-screen flex-row gap-3">
               <ControlledInput
                 control={control}
                 label="Latitude"
                 name="latitude"
                 error={errors.latitude?.message}
-                className="flex-1"
+                className="flex-1 rounded-xl border border-gray-300 bg-white/60 p-2"
               />
               <ControlledInput
                 control={control}
                 label="Longitude"
                 name="longitude"
                 error={errors.longitude?.message}
-                className="flex-1"
+                className="flex-1 rounded-xl border border-gray-300 bg-white/60 p-2"
               />
             </View>
             <ControlledInput

@@ -12,29 +12,14 @@ type FAQItem = {
 
 const data: FAQItem[] = [
   {
-    question: 'Can I log-in with 2 numbers/Accounts at the same time?',
+    question: 'Can I cancel my venue booking?',
     answer:
-      'Yes, but you would typically need to sign out of one account before signing in to another.',
+      'Yes, you can cancel your booking. However, please avoid frequent cancellations, as venue owners may choose not to accept your booking requests in the future.',
   },
   {
-    question: 'How do I Reset/Delete my account?',
+    question: 'Will I get a full refund after cancelling a booking?',
     answer:
-      'Navigate to the account settings and look for the “Delete Account” or “Reset Account” option. Please note, you may require an email confirmation or additional verification steps.',
-  },
-  {
-    question: 'How to change mobile number without losing my data?',
-    answer:
-      'Within the profile settings, there should be a section to update phone number. Make sure you have verified your email or other credentials so data remains synced to your account.',
-  },
-  {
-    question: 'How to change my profile picture?',
-    answer:
-      'Open your profile page, tap on the existing profile picture, and select a new image from your device.',
-  },
-  {
-    question: 'How to edit profile Information?',
-    answer:
-      'Go to your profile settings where you can edit personal information such as first name, last name, bio, contact info, etc.',
+      'It depends on the venue’s cancellation policy. Please review the policy details before cancelling.',
   },
 ];
 

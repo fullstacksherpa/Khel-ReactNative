@@ -73,7 +73,9 @@ export const useInfiniteUserBookings = createInfiniteQuery<
 
         // decide nextPage: only if we got a full page back
         const nextPage =
-          bookings.length < limit ? undefined : (pageParam as number) + 1;
+          bookings.length === 0 || bookings.length < limit
+            ? undefined
+            : (pageParam as number) + 1;
 
         return { data: bookings, nextPage };
       });
