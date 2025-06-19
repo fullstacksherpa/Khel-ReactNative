@@ -47,7 +47,7 @@ export default function RootLayout() {
           name="reset-password-screen"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="owner-dashboard" options={{ headerShown: false }} />
+
         <Stack.Screen name="player-screen" options={{ headerShown: false }} />
         <Stack.Screen name="c-game" options={{ headerShown: false }} />
         <Stack.Screen name="feedback" options={{ headerShown: false }} />
@@ -67,11 +67,11 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="/support/accounts"
+          name="support/accounts"
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="/support/venue-register"
+          name="support/venue-register"
           options={{ headerShown: false }}
         />
       </Stack>

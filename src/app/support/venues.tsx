@@ -12,29 +12,29 @@ type FAQItem = {
 
 const data: FAQItem[] = [
   {
-    question: 'Can I log-in with 2 numbers/Accounts at the same time?',
+    question: 'Can I list my venue here?',
     answer:
-      'Yes, but you would typically need to sign out of one account before signing in to another.',
+      'Yes, but your venue will only be displayed after verification, which typically takes around 5 hours.',
   },
   {
-    question: 'How do I Reset/Delete my account?',
+    question: 'How will I know if my venue is verified?',
     answer:
-      'Navigate to the account settings and look for the “Delete Account” or “Reset Account” option. Please note, you may require an email confirmation or additional verification steps.',
+      'We’ll notify you via email once your venue has been successfully verified.',
   },
   {
-    question: 'How to change mobile number without losing my data?',
+    question: 'How do I book a venue for a game?',
     answer:
-      'Within the profile settings, there should be a section to update phone number. Make sure you have verified your email or other credentials so data remains synced to your account.',
+      'Booking a venue is straightforward. Simply go to the "Venues" tab, select the venue you’d like to book, tap the "Book" button, and follow the instructions.',
   },
   {
-    question: 'How to change my profile picture?',
+    question: 'Is the booking confirmed immediately?',
     answer:
-      'Open your profile page, tap on the existing profile picture, and select a new image from your device.',
+      'Not immediately. The venue owner has the right to accept or reject your booking request. This helps prevent false or spam bookings.',
   },
   {
-    question: 'How to edit profile Information?',
+    question: 'Do I have to pay before placing a booking?',
     answer:
-      'Go to your profile settings where you can edit personal information such as first name, last name, bio, contact info, etc.',
+      'No, you can request a booking without upfront payment. Expect a call from the venue owner to confirm the details, or you can message them directly through the app.',
   },
 ];
 

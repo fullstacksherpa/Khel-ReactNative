@@ -48,15 +48,6 @@ export default function BookingsScreen() {
     []
   );
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-gray-50">
-        <ActivityIndicator size="large" />
-        <Text className="mt-2 text-gray-500">Loading bookings…</Text>
-      </View>
-    );
-  }
-
   return (
     <View className="flex-1 bg-gray-50">
       <StatusBar style="dark" />
@@ -84,10 +75,21 @@ export default function BookingsScreen() {
         ))}
       </View>
 
+      {isLoading && (
+        <View className="flex-1 items-center justify-center bg-gray-50">
+          <ActivityIndicator size="large" color="#22C55E" />
+          <Text className="mt-3 font-bold tracking-widest text-gray-500">
+            Stay hydrated while we load your data...
+          </Text>
+        </View>
+      )}
+
       {/* Empty state */}
-      {bookings.length === 0 && (
+      {!isLoading && bookings.length === 0 && (
         <View className="flex-1 items-center justify-center p-4">
-          <Text className="text-gray-500">No bookings found.</Text>
+          <Text className="font-bold tracking-widest text-gray-500">
+            No bookings found.
+          </Text>
         </View>
       )}
 
@@ -99,9 +101,9 @@ export default function BookingsScreen() {
         showsVerticalScrollIndicator={false}
         onMomentumScrollBegin={() => setMomentumLock(false)}
         onEndReached={() => {
-          if (!momentumLock && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
+          if (!momentumLock && !isFetchingNextPage && hasNextPage) {
             setMomentumLock(true);
+            fetchNextPage().catch((e) => console.error('Fetch error:', e));
           }
         }}
         onEndReachedThreshold={0.5}

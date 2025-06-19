@@ -436,7 +436,7 @@ export default function CreateGameScreen({
             <TouchableOpacity
               onPress={handleCreateGame}
               disabled={isPending}
-              className={`mx-8 rounded-xl py-4 ${isPending ? 'bg-blue-300' : 'bg-green-700'}`}
+              className={`mx-8 rounded-xl py-4 ${isPending ? 'bg-green-500' : 'bg-green-700'}`}
             >
               {isPending ? (
                 <ActivityIndicator color="#fff" />

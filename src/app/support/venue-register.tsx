@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 import { Stack, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -56,6 +58,7 @@ export default function CreateVenueScreen() {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
     getValues,
   } = useForm<VenueFormType>({
@@ -197,22 +200,52 @@ export default function CreateVenueScreen() {
               name="address"
               error={errors.address?.message}
             />
-            <View className="flex-row gap-2 space-x-2">
+            <View className="w-screen flex-row gap-3">
               <ControlledInput
                 control={control}
                 label="Latitude"
                 name="latitude"
                 error={errors.latitude?.message}
-                className="flex-1"
+                className="flex-1 rounded-xl border border-gray-300 bg-white/60 p-2"
               />
               <ControlledInput
                 control={control}
                 label="Longitude"
                 name="longitude"
                 error={errors.longitude?.message}
-                className="flex-1"
+                className="flex-1 rounded-xl border border-gray-300 bg-white/60 p-2"
               />
             </View>
+            <Pressable
+              onPress={async () => {
+                const { status } =
+                  await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                  Alert.alert(
+                    'Permission Denied',
+                    'Allow the app to access your location to autofill coordinates.'
+                  );
+                  return;
+                }
+
+                try {
+                  const { coords } = await Location.getCurrentPositionAsync({});
+                  setValue('latitude', coords.latitude.toString());
+                  setValue('longitude', coords.longitude.toString());
+                } catch (error) {
+                  Alert.alert(
+                    'Location Error',
+                    'Could not fetch your current location.'
+                  );
+                }
+              }}
+              className="my-2 self-start rounded-2xl bg-blue-400 px-4 py-2"
+            >
+              <Text className="font-medium text-white">
+                Use My Current Location
+              </Text>
+            </Pressable>
+
             <ControlledInput
               control={control}
               label="Description"
@@ -224,23 +257,27 @@ export default function CreateVenueScreen() {
               control={control}
               label="Amenities (comma separated)"
               name="amenities"
+              placeholder="washroom, changing room, parking"
             />
             <ControlledInput
               control={control}
               label="Phone Number"
               name="phone_number"
+              placeholder="9851******"
               keyboardType="phone-pad"
               error={errors.phone_number?.message}
             />
             <ControlledInput
               control={control}
               label="Open Time"
+              placeholder="08:00 AM - 10:00 PM"
               name="open_time"
             />
             <ControlledInput
               control={control}
               label="Sport"
               name="sport"
+              placeholder="futsal"
               error={errors.sport?.message}
             />
           </View>
@@ -249,12 +286,14 @@ export default function CreateVenueScreen() {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             disabled={isPending}
-            className="mt-6 items-center rounded-lg bg-blue-500 py-3"
+            className="mt-6  items-center rounded-lg bg-green-600 py-3"
           >
             {isPending ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text className="font-semibold text-white">Create Venue</Text>
+              <Text className="font-semibold text-white">
+                Register My Venue
+              </Text>
             )}
           </TouchableOpacity>
         </ScrollView>

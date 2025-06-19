@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -39,8 +39,16 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
   const [lon, setLon] = useState('');
   const [lat, setLat] = useState('');
 
-  // Dirty flag
-  const [isDirty, setIsDirty] = useState(false);
+  // Keep a ref to the original values so we can diff against them
+  const original = useRef<{
+    name: string;
+    address: string;
+    phone_number: string;
+    open_time: string;
+    description: string;
+    amenities: string[];
+    location: [number, number];
+  } | null>(null);
 
   // Populate form with fetched data
   useEffect(() => {
@@ -54,7 +62,17 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
       setAmenitiesInput(v.amenities.join(', '));
       setLon(String(v.location[0]));
       setLat(String(v.location[1]));
-      setIsDirty(false); // reset dirty after load
+
+      // Store originals
+      original.current = {
+        name: v.name,
+        address: v.address,
+        phone_number: v.phone_number,
+        open_time: v.open_time,
+        description: v.description,
+        amenities: v.amenities,
+        location: [v.location[0], v.location[1]],
+      };
     }
   }, [venueInfoResp]);
 
@@ -71,34 +89,48 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
 
   // Submit handler
   const handleSubmit = async () => {
-    if (!isDirty) {
+    if (!original.current) return;
+
+    const updateData: Record<string, any> = {};
+    // Compare each field to the original; only include if different:
+    if (name !== original.current.name) updateData.name = name;
+    if (address !== original.current.address) updateData.address = address;
+    if (phoneNumber !== original.current.phone_number)
+      updateData.phone_number = phoneNumber;
+    if (openTime !== original.current.open_time)
+      updateData.open_time = openTime;
+    if (description !== original.current.description)
+      updateData.description = description;
+
+    // Amenities: compare comma‑joined strings
+    const originalAmenitiesString = original.current.amenities.join(', ');
+    if (amenitiesInput !== originalAmenitiesString) {
+      // transform back to array
+      updateData.amenities = amenitiesInput
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
+    // Location: parse and compare numbers
+    const lngNum = parseFloat(lon);
+    const latNum = parseFloat(lat);
+    if (
+      !isNaN(lngNum) &&
+      !isNaN(latNum) &&
+      (lngNum !== original.current.location[0] ||
+        latNum !== original.current.location[1])
+    ) {
+      updateData.location = [lngNum, latNum];
+    }
+
+    if (Object.keys(updateData).length === 0) {
       Alert.alert(
         'No changes',
         'Please modify at least one field before updating.'
       );
       return;
     }
-
-    const updateData: Record<string, any> = {};
-    if (name) updateData.name = name;
-    if (address) updateData.address = address;
-    if (phoneNumber) updateData.phone_number = phoneNumber;
-    if (openTime) updateData.open_time = openTime;
-    if (description) updateData.description = description;
-    if (amenitiesInput) {
-      updateData.amenities = amenitiesInput
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-    }
-    if (lon && lat) {
-      const lngNum = parseFloat(lon);
-      const latNum = parseFloat(lat);
-      if (!isNaN(lngNum) && !isNaN(latNum)) {
-        updateData.location = [lngNum, latNum];
-      }
-    }
-
     await mutateAsync({ venueID, updateData });
   };
 
@@ -142,7 +174,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={name}
           onChangeText={(v) => {
             setName(v);
-            setIsDirty(true);
           }}
           placeholder="Venue Name"
         />
@@ -156,7 +187,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={address}
           onChangeText={(v) => {
             setAddress(v);
-            setIsDirty(true);
           }}
           placeholder="Venue Address"
         />
@@ -170,7 +200,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={phoneNumber}
           onChangeText={(v) => {
             setPhoneNumber(v);
-            setIsDirty(true);
           }}
           placeholder="Phone Number"
           keyboardType="phone-pad"
@@ -185,7 +214,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={openTime}
           onChangeText={(v) => {
             setOpenTime(v);
-            setIsDirty(true);
           }}
           placeholder="Operating Hours (e.g. 9am - 9pm)"
         />
@@ -199,7 +227,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={description}
           onChangeText={(v) => {
             setDescription(v);
-            setIsDirty(true);
           }}
           placeholder="Venue Description"
           multiline
@@ -214,7 +241,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
           value={amenitiesInput}
           onChangeText={(v) => {
             setAmenitiesInput(v);
-            setIsDirty(true);
           }}
           placeholder="Comma-separated amenities"
         />
@@ -229,7 +255,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
             value={lon}
             onChangeText={(v) => {
               setLon(v);
-              setIsDirty(true);
             }}
             placeholder="Longitude"
             keyboardType="numeric"
@@ -239,7 +264,6 @@ export default function UpdateVenueScreen({ venueID, setOption }: Props) {
             value={lat}
             onChangeText={(v) => {
               setLat(v);
-              setIsDirty(true);
             }}
             placeholder="Latitude"
             keyboardType="numeric"

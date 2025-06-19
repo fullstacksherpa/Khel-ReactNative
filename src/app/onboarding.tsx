@@ -1,134 +1,82 @@
-import { BlurView } from 'expo-blur';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import Animated, {
-  FadeIn,
-  FadeInUp,
-  FadeOut,
-  SlideInUp,
-} from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack, useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import LottieView from 'lottie-react-native';
+import React, { useRef } from 'react';
+import { SafeAreaView } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import EventCard from '@/components/welcome/event-card';
-import Marquee from '@/components/welcome/marquee';
+import { Button, Text, View } from '@/components/ui';
+import { ArrowRight } from '@/components/ui/icons';
 import { useIsFirstTime } from '@/lib/hooks';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-const events = [
-  {
-    id: 1,
-    image: require('./../../assets/images/1.jpg'),
-    text: 'Join any available game instantly',
-  },
-  {
-    id: 2,
-    image: require('./../../assets/images/2.jpg'),
-    text: 'Host your own game and invite players',
-  },
-  {
-    id: 3,
-    image: require('./../../assets/images/3.jpg'),
-    text: 'Book sports venues with ease',
-  },
-  {
-    id: 4,
-    image: require('./../../assets/images/4.jpg'),
-    text: 'Explore and join upcoming games',
-  },
-  {
-    id: 5,
-    image: require('./../../assets/images/5.jpg'),
-    text: 'Chat directly with venue staff',
-  },
-  {
-    id: 6,
-    image: require('./../../assets/images/6.jpg'),
-    text: 'Rate and review venues for others',
-  },
-  {
-    id: 7,
-    image: require('./../../assets/images/7.jpg'),
-    text: 'Find venues easily with map view',
-  },
-  {
-    id: 8,
-    image: require('./../../assets/images/8.jpg'),
-    text: 'See who’s playing in your game',
-  },
-];
-
 // eslint-disable-next-line max-lines-per-function
-export default function WelcomeScreen() {
+export default function Onboarding() {
+  const animation = useRef<LottieView>(null);
   const [_, setIsFirstTime] = useIsFirstTime();
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const onButtonPress = () => {
-    setIsFirstTime(false);
-    router.replace('/');
-  };
-
   return (
-    <View className="flex-1 bg-yellow-950 ">
-      <Animated.Image
-        key={events[activeIndex].image}
-        source={events[activeIndex].image}
-        className="absolute left-0 top-0 size-full"
-        resizeMode="cover"
-        entering={FadeIn.duration(1000)}
-        exiting={FadeOut.duration(1000)}
-      />
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View className="flex  items-center justify-center gap-4 bg-white p-1">
+        <StatusBar style="dark" />
+        <SafeAreaView className="flex">
+          <View className="w-full">
+            <View>
+              <LottieView
+                autoPlay
+                loop
+                ref={animation}
+                style={{
+                  width: 300,
+                  height: 300,
+                }}
+                source={require('../../assets/animation/sport.json')}
+              />
+            </View>
+          </View>
 
-      <View className="absolute left-0 top-0 size-full bg-black/70" />
-
-      <BlurView intensity={70} className="flex-1">
-        {/* This is a quick fix of the SlideInUp bug not taking safe area padding in consideration */}
-        <SafeAreaView edges={['bottom']} className="flex-1">
-          {/* Top part of the screen */}
-          <Animated.View
-            className="mt-20 h-1/2 w-full"
-            entering={SlideInUp.springify().mass(1).damping(30)}
+          <View
+            className="flex-col bg-green-500 px-8 pb-80 pt-10"
+            style={{ borderTopLeftRadius: 70, borderTopRightRadius: 70 }}
           >
-            <Marquee
-              items={events}
-              renderItem={({ item }) => <EventCard event={item} />}
-              onIndexChange={setActiveIndex}
-            />
-          </Animated.View>
+            <Animated.View
+              className="mb-5 w-full"
+              entering={FadeInDown.duration(300).delay(200).springify()}
+            >
+              <Text className="text-center text-6xl font-bold leading-[3.5rem] tracking-widest text-green-700">
+                Khel
+              </Text>
+            </Animated.View>
 
-          <View className="flex-1 justify-center gap-4  p-4">
-            <Animated.Text
-              className="text-center text-2xl font-bold text-white/60"
-              entering={FadeInUp.springify().mass(1).damping(30).delay(500)}
+            <Animated.View
+              className="mb-5 mt-3 w-full"
+              entering={FadeInDown.duration(300).delay(400).springify()}
             >
-              Welcome to
-            </Animated.Text>
-            <Animated.Text
-              className="text-center text-5xl font-bold tracking-widest text-green-700"
-              entering={FadeIn.duration(500).delay(500)}
+              <Text className="text-center text-3xl font-medium leading-9 tracking-wider text-gray-800">
+                Book a venue, create or join a game, and connect with players
+                who vibe like you — all in one spot.
+              </Text>
+            </Animated.View>
+            <Animated.View
+              className="mt-10 w-full items-center justify-center"
+              entering={FadeInDown.duration(300).delay(600).springify()}
             >
-              Khel
-            </Animated.Text>
-            <Animated.Text
-              className="mb-5 text-center text-lg text-white/60"
-              entering={FadeInUp.springify().mass(1).damping(30).delay(500)}
-            >
-              Find and join games, book venues, and connect with players—all in
-              one place.{' '}
-            </Animated.Text>
-
-            <AnimatedPressable
-              onPress={onButtonPress}
-              className="items-center self-center rounded-full bg-white px-10 py-4"
-              entering={FadeInUp.springify().mass(1).damping(30).delay(500)}
-            >
-              <Text className="text-lg">Start Playing</Text>
-            </AnimatedPressable>
+              <Button
+                label="Let's Get Started "
+                className=" w-3/4 items-center justify-center rounded-3xl bg-green-900 py-3"
+                textClassName="text-2xl"
+                trailingIcon={
+                  <ArrowRight stroke="white" width={24} height={24} />
+                }
+                onPress={() => {
+                  setIsFirstTime(false);
+                  router.push('/login');
+                }}
+              />
+            </Animated.View>
           </View>
         </SafeAreaView>
-      </BlurView>
-    </View>
+      </View>
+    </>
   );
 }

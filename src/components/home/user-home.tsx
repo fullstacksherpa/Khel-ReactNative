@@ -1,4 +1,3 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Stack, useRouter } from 'expo-router';
 import React from 'react';
@@ -41,8 +40,6 @@ const UserHome = () => {
                 gap: 10,
               }}
             >
-              <Ionicons name="chatbox-outline" size={24} color="white" />
-              <Ionicons name="notifications-outline" size={24} color="white" />
               <Pressable onPress={() => router.push('/view-profile')}>
                 <UserAvatar />
               </Pressable>

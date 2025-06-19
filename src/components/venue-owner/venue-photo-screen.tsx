@@ -19,6 +19,7 @@ import { useVenuePhotos } from '@/api/venues/use-venue-photos';
 type Props = {
   venueID: number | string;
 };
+
 // eslint-disable-next-line max-lines-per-function
 export default function VenuePhotosScreen({ venueID }: Props) {
   const [deletingPhotoURL, setDeletingPhotoURL] = React.useState<string | null>(
@@ -101,7 +102,7 @@ export default function VenuePhotosScreen({ venueID }: Props) {
                 Alert.alert('Delete Failed', 'Failed to delete photo');
               },
               onSettled: () => {
-                setDeletingPhotoURL(null); // Clear it when done
+                setDeletingPhotoURL(null);
               },
             }
           );

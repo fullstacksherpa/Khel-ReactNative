@@ -57,12 +57,12 @@ export const RegisterForm = ({ onSubmit, isPending }: RegisterFormProps) => {
         <SafeAreaView className="flex">
           <View className="mb-1 flex-row justify-start">
             <TouchableOpacity
-              className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
+              className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-transparent p-3"
               onPress={() => {
                 router.back();
               }}
             >
-              <AntDesign name="arrowleft" size={24} color="black" />
+              <AntDesign name="arrowleft" size={30} color="white" />
             </TouchableOpacity>
           </View>
 

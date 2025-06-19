@@ -139,7 +139,7 @@ const ProfileScreen: React.FC = () => {
             <ListItem
               icon={<MaterialIcons name="local-offer" size={24} color="#888" />}
               title="Offers"
-              onPress={() => router.push('/link')}
+              onPress={() => router.push('/offer-screen')}
             />
             <View className="my-2 h-px bg-gray-200" />
             <ListItem
