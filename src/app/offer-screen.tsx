@@ -24,7 +24,20 @@ export default function ComingSoonScreen() {
         className="bg-green-600"
         onPress={() => {
           router.push('/onboarding');
-          console.log('button pressed');
+        }}
+      />
+      <Button
+        label="email-verification"
+        className="bg-green-600"
+        onPress={() => {
+          router.push('/email-verification');
+        }}
+      />
+      <Button
+        label="create-Pricing"
+        className="bg-green-600"
+        onPress={() => {
+          router.push('/support/create-pricing');
         }}
       />
     </View>

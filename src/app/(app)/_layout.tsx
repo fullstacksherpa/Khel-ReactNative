@@ -36,11 +36,7 @@ export default function TabLayout() {
           title: 'Home',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign
-              name="home"
-              size={focused ? 30 : 24} // Increase size when focused
-              color={color}
-            />
+            <AntDesign name="home" size={focused ? 30 : 24} color={color} />
           ),
           tabBarActiveTintColor: '#74c365',
           tabBarInactiveTintColor: 'gray',
@@ -55,7 +51,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <AntDesign
               name="addusergroup"
-              size={focused ? 30 : 24} // Increase size when focused
+              size={focused ? 30 : 24}
               color={color}
             />
           ),
@@ -86,11 +82,7 @@ export default function TabLayout() {
           title: 'Settings',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign
-              name="setting"
-              size={focused ? 30 : 24} // Increase size when focused
-              color={color}
-            />
+            <AntDesign name="setting" size={focused ? 30 : 24} color={color} />
           ),
           tabBarActiveTintColor: '#74c365',
           tabBarInactiveTintColor: 'gray',

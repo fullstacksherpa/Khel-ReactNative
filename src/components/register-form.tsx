@@ -12,6 +12,7 @@ import * as z from 'zod';
 import { Button, ControlledInput, Text, View } from '@/components/ui';
 import { ArrowRight } from '@/components/ui/icons';
 
+// this screen is not used currently, we are using web to reset password currently
 const schema = z.object({
   email: z
     .string({

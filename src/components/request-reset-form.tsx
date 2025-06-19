@@ -59,13 +59,6 @@ export const RequestResetForm = ({
     // Reset the timer
     setCountdown(40);
     setIsResendDisabled(true);
-
-    // Implement your resend email logic here
-    console.log('Resend email clicked');
-    // Call your API to resend verification email
-
-    // Show success message (you might want to use a toast instead)
-    alert('Verification email has been resent!');
   };
 
   return (
@@ -80,7 +73,6 @@ export const RequestResetForm = ({
             <TouchableOpacity
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
-                //TODO: sometime there might be no back, will cause error router.back()
                 router.push('/login');
               }}
             >
@@ -124,28 +116,37 @@ export const RequestResetForm = ({
               testID="request-reset-button"
               className="mt-6 rounded-3xl bg-green-500"
               textClassName="text-2xl"
-              label={isPending ? 'Requesting...' : 'Request reset'}
+              label={
+                isPending
+                  ? 'Requesting...'
+                  : isResendDisabled
+                    ? `Let's wait ${countdown}s`
+                    : 'Request reset'
+              }
               trailingIcon={
                 !isPending && (
                   <ArrowRight stroke="white" width={24} height={24} />
                 )
               }
               loading={isPending} // Pass the isPending value to show the loading spinner
-              disabled={isPending} // Disable the button to prevent duplicate requests
-              onPress={handleSubmit(onSubmit)}
+              disabled={isPending || isResendDisabled} // Disable the button to prevent duplicate requests
+              onPress={() => {
+                handleResendEmail(); // Your custom logic
+                handleSubmit(onSubmit)(); // Important: call it as a function!
+              }}
             />
             <View className="mt-6 flex-row justify-center gap-2">
               <Text className="text-lg font-semibold text-gray-700">
                 Didn't receive the email?
               </Text>
               {isResendDisabled ? (
-                <Text className="text-lg font-bold text-gray-700 ">
-                  Resend in {countdown}s
+                <Text className="text-lg  text-gray-700 ">
+                  Retry after timer
                 </Text>
               ) : (
-                <TouchableOpacity onPress={handleResendEmail}>
+                <TouchableOpacity>
                   <Text className="text-lg font-bold text-gray-700 ">
-                    Resend Email
+                    Request again
                   </Text>
                 </TouchableOpacity>
               )}

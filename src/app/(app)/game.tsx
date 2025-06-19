@@ -45,7 +45,6 @@ export default function HomeScreen() {
         limit: 15,
       };
 
-  // Get infinite pages from the API using react-query-kit hook
   const {
     data,
     isLoading,
@@ -189,6 +188,11 @@ export default function HomeScreen() {
         >
           <Text style={{ fontWeight: 'bold' }}>Create Game</Text>
         </Pressable>
+        <View>
+          <Text className="text-sm italic text-gray-500">
+            Pull down to refresh
+          </Text>
+        </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }}>
           <Pressable onPress={() => router.push('/game-filter')}>

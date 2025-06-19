@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import * as z from 'zod';
 
 import {
@@ -113,7 +114,7 @@ export default function CreateVenueScreen() {
         : [],
       phone_number: values.phone_number,
       open_time: values.open_time || undefined,
-      sport: values.sport,
+      sport: values.sport.toLowerCase(),
     };
 
     const formData = new FormData() as CreateVenueVariables;
@@ -135,11 +136,19 @@ export default function CreateVenueScreen() {
     mutate(formData, {
       onSuccess: (data) => {
         setLastCreatedVenueID(data.id);
-        console.log(`💰💰💰💰💰💰💰${data.id}`);
-        router.push('/support/create-pricing');
+        showMessage({
+          message: 'Venue created successfully, wait for approval.',
+          type: 'success',
+        });
+        setTimeout(() => {
+          router.push('/support/create-pricing');
+        }, 1500);
       },
       onError: () => {
-        alert('Failed to create venue.');
+        showMessage({
+          message: 'failed to create venue. Please try again.',
+          type: 'danger',
+        });
       },
     });
   };
@@ -233,10 +242,12 @@ export default function CreateVenueScreen() {
                   setValue('latitude', coords.latitude.toString());
                   setValue('longitude', coords.longitude.toString());
                 } catch (error) {
-                  Alert.alert(
-                    'Location Error',
-                    'Could not fetch your current location.'
-                  );
+                  showMessage({
+                    message: 'Location Error',
+                    description: 'Could not fetch your current location.',
+                    type: 'danger',
+                    duration: 3000, // optional: auto-dismiss in 3s
+                  });
                 }
               }}
               className="my-2 self-start rounded-2xl bg-blue-400 px-4 py-2"

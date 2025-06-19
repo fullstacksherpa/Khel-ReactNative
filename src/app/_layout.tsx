@@ -44,6 +44,10 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="reset-password-email-verify"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="reset-password-screen"
           options={{ headerShown: false }}
         />
@@ -72,6 +76,14 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="support/venue-register"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="support/create-pricing"
+          options={{ title: 'Create Venue Pricing' }}
+        />
+        <Stack.Screen
+          name="support/venue-pricing"
           options={{ headerShown: false }}
         />
       </Stack>

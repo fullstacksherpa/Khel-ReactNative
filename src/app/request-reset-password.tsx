@@ -21,7 +21,7 @@ const RequestResetPasswordScreen = () => {
           type: 'success',
         });
         const timeoutId = setTimeout(
-          () => router.push('/email-verification'),
+          () => router.push('/reset-password-email-verify'),
           1000
         );
 

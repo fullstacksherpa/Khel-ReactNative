@@ -2,11 +2,13 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import { useCreateVenuePricing } from '@/api/owner-features/use-create-pricing';
 import { PricingSlotItem } from '@/components/venue-owner/pricing-slot-item';
@@ -55,10 +57,15 @@ export default function CreateVenuePricingScreen() {
   };
 
   // Handler: submit all slots
+  // eslint-disable-next-line max-lines-per-function
   const handleSubmit = async () => {
     // 1) Basic client‐side validation
     if (!venueID) {
-      Alert.alert('Error', 'Missing venue ID in route.');
+      showMessage({
+        message: 'Missing venue ID in route.',
+        type: 'danger',
+        duration: 3000,
+      });
       return;
     }
 
@@ -66,36 +73,45 @@ export default function CreateVenuePricingScreen() {
     for (let i = 0; i < slots.length; i++) {
       const s = slots[i];
       if (!s.day_of_week || !s.start_time || !s.end_time || !s.price) {
-        Alert.alert(
-          'Validation',
-          `All fields are required for slot #${i + 1}.`
-        );
+        showMessage({
+          message: `Slot #${i + 1} is incomplete.`,
+          description: 'Please fill all fields before submitting.',
+          type: 'danger',
+          icon: 'auto',
+          duration: 3000,
+        });
         return;
       }
       // Check price is a positive integer
       const numPrice = parseInt(s.price, 10);
       if (isNaN(numPrice) || numPrice <= 0) {
-        Alert.alert(
-          'Validation',
-          `Price must be a positive number at slot #${i + 1}.`
-        );
+        showMessage({
+          message: `Invalid price at slot #${i + 1}`,
+          description: 'Price must be a positive number.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
       // Optional: validate time format matches HH:MM:SS
       const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
       if (!timeRegex.test(s.start_time) || !timeRegex.test(s.end_time)) {
-        Alert.alert(
-          'Validation',
-          `Time format must be HH:MM:SS at slot #${i + 1}.`
-        );
+        showMessage({
+          message: `Invalid time format at slot #${i + 1}`,
+          description: 'Time must be in HH:MM:SS format.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
       // Ensure start < end
       if (s.start_time >= s.end_time) {
-        Alert.alert(
-          'Validation',
-          `Start time must be before end time at slot #${i + 1}.`
-        );
+        showMessage({
+          message: `Invalid time range at slot #${i + 1}`,
+          description: 'Start time must be before end time.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
     }
@@ -113,55 +129,67 @@ export default function CreateVenuePricingScreen() {
         venueID: typeof venueID === 'string' ? parseInt(venueID, 10) : venueID,
         slots: payloadSlots,
       });
-      Alert.alert('Success', 'Pricing slots created successfully.');
-      // Optionally navigate back or to a “details” screen:
-      router.back();
+      showMessage({
+        message: 'Success',
+        description: 'Pricing slots created successfully.',
+        type: 'success',
+        duration: 3000,
+      });
+
+      router.push('/');
     } catch (e: any) {
       console.error(e);
-      Alert.alert('Error', e.message || 'Failed to create pricing slots.');
+      showMessage({
+        message: 'Error',
+        description: e.message || 'Failed to create pricing slots.',
+        type: 'danger',
+        duration: 3000,
+      });
     }
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-100 p-4">
-      <Text className="mb-4 text-center text-2xl font-bold">
-        Create Venue Pricing
-      </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={10}
+    >
+      <ScrollView className="flex-1 bg-gray-100 p-4">
+        {slots.map((slot, idx) => (
+          <PricingSlotItem
+            key={idx}
+            index={idx}
+            slot={slot}
+            onChange={handleSlotChange}
+            onRemove={handleSlotRemove}
+          />
+        ))}
 
-      {slots.map((slot, idx) => (
-        <PricingSlotItem
-          key={idx}
-          index={idx}
-          slot={slot}
-          onChange={handleSlotChange}
-          onRemove={handleSlotRemove}
-        />
-      ))}
-
-      {/* Add‐slot button */}
-      <TouchableOpacity
-        onPress={handleAddSlot}
-        className="mb-6 flex-row items-center justify-center rounded-md bg-green-500 py-3"
-      >
-        <Text className="text-lg font-semibold text-white">
-          + Add Another Slot
-        </Text>
-      </TouchableOpacity>
-
-      {/* Submit button */}
-      <TouchableOpacity
-        onPress={handleSubmit}
-        className="items-center rounded-md bg-blue-600 py-4"
-        disabled={isPending}
-      >
-        {isPending ? (
-          <ActivityIndicator color="#FFFFFF" />
-        ) : (
+        {/* Add‐slot button */}
+        <TouchableOpacity
+          onPress={handleAddSlot}
+          className="mb-6 flex-row items-center justify-center rounded-md bg-green-500 py-3"
+        >
           <Text className="text-lg font-semibold text-white">
-            Submit All Slots
+            + Add Another Slot
           </Text>
-        )}
-      </TouchableOpacity>
-    </ScrollView>
+        </TouchableOpacity>
+
+        {/* Submit button */}
+        <TouchableOpacity
+          onPress={handleSubmit}
+          className="mb-28 items-center rounded-md bg-blue-600 py-4"
+          disabled={isPending}
+        >
+          {isPending ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <Text className="text-lg font-semibold text-white">
+              Submit All Slots
+            </Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

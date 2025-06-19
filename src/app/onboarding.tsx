@@ -70,7 +70,7 @@ export default function Onboarding() {
                 }
                 onPress={() => {
                   setIsFirstTime(false);
-                  router.push('/login');
+                  router.push('/register');
                 }}
               />
             </Animated.View>

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import { useUpdateVenuePricing } from '@/api/owner-features/update-venue-pricing';
 import { useVenuePricing } from '@/api/owner-features/use-venue-pricing';
@@ -34,6 +35,8 @@ const weekdays = [
 type Props = {
   venueID: string | number;
 };
+
+//This screen is for venue owner to modify their venue pricing
 
 // eslint-disable-next-line max-lines-per-function
 export default function VenuePricingScreen({ venueID }: Props) {
@@ -97,6 +100,7 @@ export default function VenuePricingScreen({ venueID }: Props) {
     useUpdateVenuePricing();
 
   // 7) Save Changes: loop through editableSlots and send PUTs
+  // eslint-disable-next-line max-lines-per-function
   const handleSaveChanges = async () => {
     if (editableSlots.length === 0) {
       Alert.alert('No slots to save.');
@@ -108,25 +112,31 @@ export default function VenuePricingScreen({ venueID }: Props) {
       const { start_time, end_time, price } = editableSlots[i];
       const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
       if (!timeRegex.test(start_time) || !timeRegex.test(end_time)) {
-        Alert.alert(
-          'Validation Error',
-          `Slot #${i + 1}: Times must be HH:MM:SS`
-        );
+        showMessage({
+          message: `Invalid time format at slot #${i + 1}`,
+          description: 'Time must be in HH:MM:SS format.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
       if (start_time >= end_time) {
-        Alert.alert(
-          'Validation Error',
-          `Slot #${i + 1}: Start must be before end`
-        );
+        showMessage({
+          message: `Invalid time range at slot #${i + 1}`,
+          description: 'Start time must be before end time.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
       const numPrice = parseInt(price, 10);
       if (isNaN(numPrice) || numPrice <= 0) {
-        Alert.alert(
-          'Validation Error',
-          `Slot #${i + 1}: Price must be positive`
-        );
+        showMessage({
+          message: `Invalid price at slot #${i + 1}`,
+          description: 'Price must be a positive number.',
+          type: 'danger',
+          duration: 3000,
+        });
         return;
       }
     }
@@ -149,14 +159,20 @@ export default function VenuePricingScreen({ venueID }: Props) {
           });
         })
       );
-      Alert.alert('Success', 'All slots updated.');
-      // Optionally re‐fetch fresh data:
+      showMessage({
+        message: 'Success',
+        description: 'Pricing slots updated successfully.',
+        type: 'success',
+        duration: 3000,
+      });
       refetch();
     } catch (err: any) {
-      Alert.alert(
-        'Error',
-        err.message || 'Failed to update one or more slots.'
-      );
+      showMessage({
+        message: 'Error',
+        description: err.message || 'Failed to Update pricing slots.',
+        type: 'danger',
+        duration: 3000,
+      });
     }
   };
 

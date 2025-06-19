@@ -46,7 +46,7 @@ const EmailVerificationScreen = () => {
     setCountdown(40);
     setIsResendDisabled(true);
 
-    router.push('/register');
+    router.push('/request-reset-password');
   };
 
   return (
@@ -56,7 +56,7 @@ const EmailVerificationScreen = () => {
           <TouchableOpacity
             className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
             onPress={() => {
-              router.push('/register');
+              router.push('/login');
             }}
           >
             <AntDesign name="arrowleft" size={24} color="black" />
@@ -84,7 +84,7 @@ const EmailVerificationScreen = () => {
 
           <Text className="mb-4 text-center text-xl leading-6">
             We've sent a verification link to your email address. Please check
-            your inbox and click the link to verify your account.
+            your inbox and click the link to change your password.
           </Text>
 
           <Button
@@ -112,7 +112,7 @@ const EmailVerificationScreen = () => {
           </View>
           <View className="mt-20 flex-row justify-center gap-2">
             <Text className="text-lg font-semibold text-gray-700">
-              Already verified?
+              Already Changed your password?
             </Text>
 
             <TouchableOpacity onPress={() => router.push('/login')}>
