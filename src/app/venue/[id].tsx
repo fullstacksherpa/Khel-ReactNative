@@ -54,6 +54,8 @@ const VenueDetails = () => {
     refetch: refetchVenueDetails,
   } = useVenue({ variables: { id: local.id } });
 
+  console.log(`🔥 ${data?.amenities}`);
+
   const router = useRouter();
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -354,7 +356,7 @@ const VenueDetails = () => {
             marginVertical: 10,
           }}
         />
-        <Amenities />
+        <Amenities data={data.amenities} />
         <View
           style={{
             height: 1,

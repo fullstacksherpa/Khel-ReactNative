@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -40,6 +41,7 @@ type Props = {
 
 // eslint-disable-next-line max-lines-per-function
 export default function VenuePricingScreen({ venueID }: Props) {
+  const router = useRouter();
   // 1) Initialize selectedDay immediately so hook can fire on first render
   const getTodaysDay = () =>
     new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
@@ -241,10 +243,26 @@ export default function VenuePricingScreen({ venueID }: Props) {
           showsVerticalScrollIndicator={false}
         >
           {editableSlots.length === 0 ? (
-            <Text className="mt-8 text-center text-gray-500">
-              No pricing slots found for{' '}
-              {selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1)}.
-            </Text>
+            <View className="mt-12 items-center">
+              <Text className="mb-4 text-center text-gray-500">
+                No pricing slots found for{' '}
+                {selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1)}.
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: '/support/create-pricing',
+                    params: { venueID, day: selectedDay },
+                  })
+                }
+                className="rounded-md bg-green-600 px-6 py-3"
+              >
+                <Text className="text-lg font-semibold text-white">
+                  Create Pricing for{' '}
+                  {selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             editableSlots.map((slot, idx) => (
               <View
@@ -292,26 +310,30 @@ export default function VenuePricingScreen({ venueID }: Props) {
           )}
 
           {/* Save Changes Button */}
-          <TouchableOpacity
-            onPress={handleSaveChanges}
-            disabled={isUpdating}
-            className={`
-              mb-6 
-              mt-8 
-              items-center 
-              rounded-md 
-              ${isUpdating ? 'bg-gray-400' : 'bg-green-600'} 
-              py-4
-            `}
-          >
-            {isUpdating ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text className="text-lg font-semibold text-white">
-                Save Changes
-              </Text>
-            )}
-          </TouchableOpacity>
+          {editableSlots.length > 1 ? (
+            <TouchableOpacity
+              onPress={handleSaveChanges}
+              disabled={isUpdating}
+              className={`
+   mb-6 
+   mt-8 
+   items-center 
+   rounded-md 
+   ${isUpdating ? 'bg-gray-400' : 'bg-green-600'} 
+   py-4
+ `}
+            >
+              {isUpdating ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <Text className="text-lg font-semibold text-white">
+                  Save Changes
+                </Text>
+              )}
+            </TouchableOpacity>
+          ) : (
+            <View></View>
+          )}
         </ScrollView>
       )}
     </KeyboardAvoidingView>

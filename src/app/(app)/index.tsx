@@ -4,16 +4,26 @@ import { ActivityIndicator, View } from 'react-native';
 import { useIsVenueOwner } from '@/api/auth/use-is-venue-owner';
 import UserHome from '@/components/home/user-home';
 import VenueOwnerHome from '@/components/home/venue-ower-home';
+import { useVenueStore } from '@/lib/store/venue';
 
 export default function Home() {
   const { data, isLoading, isError } = useIsVenueOwner();
   const [venueID, setVenueID] = useState<number | null>(null);
 
+  const setLastCreatedVenueID = useVenueStore(
+    (state) => state.setLastCreatedVenueID
+  );
+
   useEffect(() => {
-    if (data?.isOwner && data.venueIDs.length > 0) {
+    if (
+      data?.isOwner &&
+      Array.isArray(data.venueIDs) &&
+      data.venueIDs.length > 0
+    ) {
       setVenueID(data.venueIDs[0]);
+      setLastCreatedVenueID(data.venueIDs[0]);
     }
-  }, [data]);
+  }, [data, setLastCreatedVenueID]);
 
   if (isLoading) {
     return (

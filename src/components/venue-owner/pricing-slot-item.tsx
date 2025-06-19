@@ -15,6 +15,8 @@ type Props = {
   slot: PricingSlotInput;
   onChange: (index: number, newSlot: PricingSlotInput) => void;
   onRemove: (index: number) => void;
+  disableDaySelect?: boolean;
+  passedDay?: string;
 };
 
 const weekdays = [
@@ -27,42 +29,54 @@ const weekdays = [
   'saturday',
 ];
 
+// eslint-disable-next-line max-lines-per-function
 export const PricingSlotItem: React.FC<Props> = ({
   index,
   slot,
   onChange,
   onRemove,
+  disableDaySelect,
+  passedDay,
 }) => {
   return (
     <View className="mb-4 rounded-lg border border-gray-300 bg-white p-4">
       {/* Header with index and remove button */}
       <View className="mb-2 flex-row items-center justify-between">
         <Text className="text-lg font-semibold">Slot #{index + 1}</Text>
+        {passedDay && (
+          <Text className="text-2xl tracking-widest text-gray-700 ">
+            {passedDay.toUpperCase()}
+          </Text>
+        )}
         <TouchableOpacity onPress={() => onRemove(index)}>
           <XCircle size={24} color="#EF4444" />
         </TouchableOpacity>
       </View>
 
-      {/* Day of Week Picker */}
-      <Text className="mb-1 text-sm font-medium">Day of Week</Text>
-      <View className="mb-3 rounded-md border border-gray-300">
-        <Picker
-          selectedValue={slot.day_of_week}
-          onValueChange={(val) =>
-            onChange(index, { ...slot, day_of_week: val })
-          }
-          className="h-10"
-        >
-          <Picker.Item label="Select day" value="" />
-          {weekdays.map((day) => (
-            <Picker.Item
-              key={day}
-              label={day.charAt(0).toUpperCase() + day.slice(1)}
-              value={day}
-            />
-          ))}
-        </Picker>
-      </View>
+      {/* Day of Week Picker render based on conditions*/}
+      {!disableDaySelect && (
+        <>
+          <Text className="mb-1 text-sm font-medium">Day of Week</Text>
+          <View className="mb-3 rounded-md border border-gray-300">
+            <Picker
+              selectedValue={slot.day_of_week}
+              onValueChange={(val) =>
+                onChange(index, { ...slot, day_of_week: val })
+              }
+              className="h-10"
+            >
+              <Picker.Item label="Select day" value="" />
+              {weekdays.map((day) => (
+                <Picker.Item
+                  key={day}
+                  label={day.charAt(0).toUpperCase() + day.slice(1)}
+                  value={day}
+                />
+              ))}
+            </Picker>
+          </View>
+        </>
+      )}
 
       {/* Start Time */}
       <Text className="mb-1 text-sm font-medium">Start Time (HH:MM:SS)</Text>

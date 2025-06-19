@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { type useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -19,43 +18,38 @@ const OptionTabs: React.FC<Props> = ({ selected, onSelect, router }) => {
       <View
         style={{
           flexDirection: 'row',
-          justifyContent: 'space-between',
+          gap: 2,
           alignItems: 'center',
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: '500', color: 'green' }}>
-          .
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Ionicons name="chatbox-outline" size={24} color="white" />
-          <Ionicons name="notifications-outline" size={24} color="white" />
-          <Pressable onPress={() => router.push('/view-profile')}>
-            <UserAvatar />
-          </Pressable>
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={{ marginVertical: 7, flexDirection: 'row' }}>
+            {options.map((s) => (
+              <Pressable
+                key={s}
+                onPress={() => onSelect(s)}
+                style={{
+                  padding: 10,
+                  borderColor: 'white',
+                  borderWidth: selected === s ? 0 : 1,
+                  marginRight: 10,
+                  borderRadius: 8,
+                  backgroundColor: selected === s ? '#1dbf22' : 'transparent',
+                }}
+              >
+                <Text
+                  style={{ color: 'white', fontWeight: '600', fontSize: 15 }}
+                >
+                  {s}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </ScrollView>
+        <Pressable onPress={() => router.push('/view-profile')}>
+          <UserAvatar />
+        </Pressable>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ marginVertical: 7, flexDirection: 'row' }}>
-          {options.map((s) => (
-            <Pressable
-              key={s}
-              onPress={() => onSelect(s)}
-              style={{
-                padding: 10,
-                borderColor: 'white',
-                borderWidth: selected === s ? 0 : 1,
-                marginRight: 10,
-                borderRadius: 8,
-                backgroundColor: selected === s ? '#1dbf22' : 'transparent',
-              }}
-            >
-              <Text style={{ color: 'white', fontWeight: '600', fontSize: 15 }}>
-                {s}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-      </ScrollView>
     </View>
   );
 };
