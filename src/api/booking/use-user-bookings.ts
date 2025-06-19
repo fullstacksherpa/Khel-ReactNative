@@ -48,8 +48,9 @@ export const useInfiniteUserBookings = createInfiniteQuery<
   AxiosError<APIError>
 >({
   queryKey: ['infinite-user-bookings'],
-  fetcher: (variables, { pageParam }) => {
+  fetcher: (variables, { pageParam = 1 }) => {
     const limit = variables.limit ?? 7;
+
     return client
       .get<BookingsRawResponse>('/users/bookings', {
         params: {
@@ -59,7 +60,8 @@ export const useInfiniteUserBookings = createInfiniteQuery<
         },
       })
       .then((res) => {
-        const bookings: Booking[] = res.data.data.map((b) => ({
+        const rawData = res.data.data ?? []; // if null, fallback to []
+        const bookings: Booking[] = rawData.map((b) => ({
           bookingId: b.booking_id,
           venueId: b.venue_id,
           venueName: b.venue_name,
@@ -71,15 +73,12 @@ export const useInfiniteUserBookings = createInfiniteQuery<
           createdAt: b.created_at,
         }));
 
-        // decide nextPage: only if we got a full page back
-        const nextPage =
-          bookings.length === 0 || bookings.length < limit
-            ? undefined
-            : (pageParam as number) + 1;
+        const nextPage = bookings.length < limit ? undefined : pageParam + 1;
 
         return { data: bookings, nextPage };
       });
   },
+
   getNextPageParam: (lastPage) => {
     // TS-safe: lastPage.nextPage is typed as number|undefined
     return lastPage.nextPage;

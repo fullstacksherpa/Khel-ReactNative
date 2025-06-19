@@ -1,5 +1,4 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -104,8 +103,6 @@ export default function HomeScreen() {
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}
             >
-              <Ionicons name="chatbox-outline" size={24} color="white" />
-              <Ionicons name="notifications-outline" size={24} color="white" />
               <Pressable onPress={() => router.push('/view-profile')}>
                 <UserAvatar />
               </Pressable>

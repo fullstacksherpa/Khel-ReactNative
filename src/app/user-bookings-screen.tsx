@@ -101,14 +101,9 @@ export default function BookingsScreen() {
         showsVerticalScrollIndicator={false}
         onMomentumScrollBegin={() => setMomentumLock(false)}
         onEndReached={() => {
-          if (
-            !momentumLock &&
-            hasNextPage &&
-            !isFetchingNextPage &&
-            bookings.length > 0
-          ) {
-            fetchNextPage();
+          if (!momentumLock && !isFetchingNextPage && hasNextPage) {
             setMomentumLock(true);
+            fetchNextPage().catch((e) => console.error('Fetch error:', e));
           }
         }}
         onEndReachedThreshold={0.5}

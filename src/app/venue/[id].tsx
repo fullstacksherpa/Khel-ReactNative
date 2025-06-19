@@ -373,7 +373,7 @@ const VenueDetails = () => {
             justifyContent: 'center',
             alignItems: 'center',
             padding: 10,
-            marginLeft: 12,
+            marginLeft: 20,
           }}
           onPress={() => ReviewbottomSheetRef.current?.expand()}
         >
