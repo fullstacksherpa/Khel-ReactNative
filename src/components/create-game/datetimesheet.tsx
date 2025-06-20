@@ -4,6 +4,8 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 import { generateDatesArray, generateTimeSlots } from '@/lib/date-utils';
 
+import { Button } from '../ui';
+
 type DateTimeSheetProps = {
   bottomSheetRef: React.RefObject<BottomSheet>;
   selectedDate: string;
@@ -57,7 +59,7 @@ export default function DateTimeSheet({
         <Text className=" text-4xl">✕</Text>
       </TouchableOpacity>
       <View className="mb-3 mt-1">
-        <Text className="text-center text-2xl font-bold tracking-wider">
+        <Text className="ml-5 text-2xl font-bold tracking-widest text-gray-500">
           Pick a Date
         </Text>
       </View>
@@ -80,7 +82,7 @@ export default function DateTimeSheet({
                 marginRight: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                backgroundColor: isSelected ? '#22c55e' : '#F0F0F0',
                 width: 60,
               }}
             >
@@ -100,7 +102,7 @@ export default function DateTimeSheet({
         }}
       />
       <View className="my-5">
-        <Text className="text-center text-2xl font-bold tracking-wider">
+        <Text className="ml-5 text-2xl font-bold tracking-widest text-gray-500">
           Game Start Time
         </Text>
       </View>
@@ -123,7 +125,7 @@ export default function DateTimeSheet({
                 marginRight: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                backgroundColor: isSelected ? '#22c55e' : '#F0F0F0',
                 minWidth: 70,
               }}
             >
@@ -135,7 +137,7 @@ export default function DateTimeSheet({
         }}
       />
       <View className="my-5">
-        <Text className="text-center text-2xl font-bold tracking-wider">
+        <Text className="ml-5 text-2xl font-bold tracking-widest text-gray-500">
           Game Duration
         </Text>
       </View>
@@ -158,7 +160,7 @@ export default function DateTimeSheet({
                 marginRight: 8,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: isSelected ? '#F59E0B' : '#F0F0F0',
+                backgroundColor: isSelected ? '#22c55e' : '#F0F0F0',
               }}
             >
               <Text
@@ -175,12 +177,11 @@ export default function DateTimeSheet({
         }}
       />
       <View className="mb-8 mt-4 items-center">
-        <TouchableOpacity
+        <Button
           onPress={handleConfirm}
-          className="rounded-3xl bg-highlightYellow px-6 py-3"
-        >
-          <Text className="font-bold text-white">Confirm</Text>
-        </TouchableOpacity>
+          label="Confirm"
+          className="rounded-2xl bg-green-700 px-8"
+        />
       </View>
     </BottomSheet>
   );

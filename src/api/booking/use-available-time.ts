@@ -54,9 +54,9 @@ export const useAvailableTimes = createQuery<
       })
       .then((res) => res.data),
   /**
-   * Cache the availability for 1 minutes to reduce refetching when user
+   * Cache the availability for 40 second to reduce refetching when user
    * switches between date or revisits the page shortly after.
    */
-  staleTime: 1 * 60 * 1000,
+  staleTime: 40 * 1000,
   refetchInterval: 30 * 1000,
 });

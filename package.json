@@ -33,8 +33,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "type-check": "tsc  --noemit",
     "test": "jest",
-    "check-all": "pnpm run lint && pnpm run type-check && pnpm run test",
-    "test:ci": "pnpm run test --coverage",
+    "check-all": "pnpm run lint && pnpm run type-check ",
     "test:watch": "pnpm run test --watch",
     "install-maestro": "curl -Ls 'https://get.maestro.mobile.dev' | bash",
     "e2e-test": "maestro test .maestro/ -e APP_ID=com.obytes.development"

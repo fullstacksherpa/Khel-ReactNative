@@ -9,6 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 
 import { useAvailableTimes } from '@/api/booking/use-available-time';
 import { useBookVenue } from '@/api/booking/use-book-venue';
@@ -33,11 +34,7 @@ export default function AvailableTimesScreen() {
   const slots = data?.data ?? [];
 
   // booking mutation hook
-  const {
-    mutate: bookVenue,
-    isPending: isBooking,
-    error: bookingError,
-  } = useBookVenue();
+  const { mutate: bookVenue, isPending: isBooking } = useBookVenue();
 
   const handleBook = (slot: (typeof slots)[number]) => {
     const start = new Date(slot.start_time);
@@ -45,7 +42,7 @@ export default function AvailableTimesScreen() {
     const timeRange = `${start.toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric' })} - ${end.toLocaleTimeString(undefined, { hour: 'numeric', minute: 'numeric' })}`;
 
     Alert.alert(
-      'Confirm Booking',
+      'Confirm Booking Request',
       `Do you want to book the slot ${timeRange}?`,
       [
         { text: 'Cancel', style: 'cancel' },
@@ -60,22 +57,40 @@ export default function AvailableTimesScreen() {
               },
               {
                 onSuccess: () => {
-                  // Navigate to review/confirmation screen
-                  router.push({ pathname: '/' });
+                  // Show flash message
+                  showMessage({
+                    message: 'Booking Request Send!',
+                    description:
+                      'Your booking Request has been successfully send. Final booking decision is made by the venue owner',
+                    type: 'success',
+                    duration: 3000, // 3 seconds
+                  });
+
+                  // Delay navigation until after message is shown
+                  setTimeout(() => {
+                    router.back();
+                  }, 3000);
                 },
                 onError: (err) => {
                   const status = err.response?.status;
-                  console.log(bookingError);
+
                   if (status === 409) {
-                    Alert.alert(
-                      'Conflict',
-                      'This time slot is already booked.'
-                    );
+                    showMessage({
+                      message: 'Conflict',
+                      description: 'This time slot is already booked.',
+                      type: 'danger',
+                      icon: 'auto',
+                      duration: 3000,
+                    });
                   } else {
-                    Alert.alert(
-                      'Error',
-                      'Failed to create booking. Please try again.'
-                    );
+                    showMessage({
+                      message: 'Error',
+                      description:
+                        'Failed to create booking. Please try again.',
+                      type: 'danger',
+                      icon: 'auto',
+                      duration: 3000,
+                    });
                   }
                 },
               }
@@ -88,7 +103,7 @@ export default function AvailableTimesScreen() {
   };
 
   return (
-    <>
+    <View className="flex-1 bg-white">
       <CustomHeader>
         <View style={{ paddingHorizontal: 12, paddingVertical: 15 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
@@ -96,27 +111,28 @@ export default function AvailableTimesScreen() {
               <Ionicons name="arrow-back" size={30} color="white" />
             </Pressable>
 
-            <View className="items-center self-center rounded-2xl pl-9">
+            <View className="flex-row items-center gap-2 self-center rounded-2xl pl-9">
               <Text className="text-xl font-bold text-white">
                 Check Availability
               </Text>
+              {isBooking && <ActivityIndicator size="large" color="white" />}
             </View>
           </View>
         </View>
       </CustomHeader>
 
-      <View className="mb-20 flex bg-white pb-64">
-        <DateSelector
-          dates={dates}
-          selectedDate={selectedDate}
-          onSelect={setSelectedDate}
-        />
-
-        <View className="px-4 py-2">
-          <Text className="text-xl font-bold">Available Time Slots</Text>
+      <View className="mb-20 flex bg-white pb-48">
+        <View>
+          <DateSelector
+            dates={dates}
+            selectedDate={selectedDate}
+            onSelect={setSelectedDate}
+          />
         </View>
 
-        {isLoading || isBooking ? (
+        <View className="mx-6 mb-3 h-px bg-gray-300" />
+
+        {isLoading ? (
           <ActivityIndicator size="large" className="mt-8" color="#22C55E" />
         ) : error ? (
           <View className="mt-8 items-center">
@@ -138,6 +154,6 @@ export default function AvailableTimesScreen() {
           />
         )}
       </View>
-    </>
+    </View>
   );
 }

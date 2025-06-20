@@ -128,11 +128,6 @@ export default function CreateVenueScreen() {
       } as any);
     });
 
-    // DEBUG: log all FormData entries to console
-    for (const [key, value] of formData.entries()) {
-      console.log('FormData entry:', key, value);
-    }
-
     mutate(formData, {
       onSuccess: (data) => {
         setLastCreatedVenueID(data.id);

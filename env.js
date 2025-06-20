@@ -32,8 +32,6 @@ require('dotenv').config({
  * for example: if the APP_ENV is staging, the bundle id will be com.khel.staging
  */
 
-// TODO: Replace these values with your own
-
 const BUNDLE_ID = 'com.devSherpa.khel'; // ios bundle id
 const PACKAGE = 'com.devSherpa.khel'; // android package name
 const NAME = 'khel'; // app name

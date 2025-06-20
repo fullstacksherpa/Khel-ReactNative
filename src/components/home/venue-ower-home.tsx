@@ -20,7 +20,6 @@ type props = {
 
 // eslint-disable-next-line max-lines-per-function
 const VenueOwnerHomeScreen: React.FC<props> = ({ venueID }) => {
-  console.log(`VenueID from venueOwnerHome ⛔️ : ${venueID}`);
   const router = useRouter();
 
   useEffect(() => {

@@ -16,12 +16,11 @@ export default function Register() {
 
   const onSubmit: RegisterFormProps['onSubmit'] = (data) => {
     registerUser(data, {
-      onSuccess: (response) => {
+      onSuccess: () => {
         showMessage({
           message: 'Check Gmail for Verification Link',
           type: 'success',
         });
-        console.log(response);
 
         const timeoutId = setTimeout(
           () => router.push('/email-verification'),

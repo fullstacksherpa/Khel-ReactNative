@@ -53,7 +53,6 @@ export default function CreateVenuePricingScreen() {
     // Priority 1: Store
     if (lastCreatedVenueID) {
       setResolvedVenueID(lastCreatedVenueID);
-      console.log('💰 getting venueID from lastCreatedVenueID');
       return;
     }
 
@@ -61,7 +60,6 @@ export default function CreateVenuePricingScreen() {
     if (passedVenueID) {
       const parsed = parseInt(passedVenueID, 10);
       if (!isNaN(parsed)) {
-        console.log('💰 getting venueID from parsed');
         setLastCreatedVenueID(parsed);
         setResolvedVenueID(parsed);
         return;
@@ -71,7 +69,6 @@ export default function CreateVenuePricingScreen() {
     // Priority 3: From API if owner
     if (data?.isOwner && data.venueIDs?.length > 0) {
       const firstVenue = data.venueIDs[0];
-      console.log('💰 getting venueID from API');
       setLastCreatedVenueID(firstVenue);
       setResolvedVenueID(firstVenue);
     }

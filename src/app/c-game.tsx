@@ -21,8 +21,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { showMessage } from 'react-native-flash-message';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
+import { queryClient } from '@/api';
 import { useCreateGame } from '@/api/games/create-game';
 import { useListVenues } from '@/api/venues/venues';
 import DateTimeSheet from '@/components/create-game/datetimesheet';
@@ -90,7 +92,6 @@ export default function CreateGameScreen({
   });
 
   const venues: Venue[] = venuesResponse?.data || [];
-  console.log(venues);
 
   // Compute start_time and end_time (converting from Kathmandu to UTC)
   const startTime = useMemo(() => {
@@ -111,11 +112,6 @@ export default function CreateGameScreen({
       Alert.alert('Error', 'Please select both date and time.');
       return;
     }
-    console.log(
-      'Date Time Selected: ',
-      startTime.toISOString(),
-      endTime.toISOString()
-    );
     closeAll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startTime, endTime]);
@@ -160,14 +156,29 @@ export default function CreateGameScreen({
 
     createGame(payload, {
       onSuccess: () => {
-        Alert.alert('Success', 'Game created successfully');
-        router.back();
+        queryClient.invalidateQueries({
+          queryKey: [
+            'infinite-games',
+            {
+              limit: 15,
+            },
+          ],
+        });
+        showMessage({
+          message: 'Success',
+          description: 'Game created successfully',
+          type: 'success',
+          duration: 3000,
+        });
+        setTimeout(() => router.back(), 3000);
       },
       onError: (error: any) => {
-        Alert.alert(
-          'Error',
-          error.response?.data?.message || 'Failed to create game'
-        );
+        showMessage({
+          message: 'Error',
+          description: error.response?.data?.message || 'Failed to create game',
+          type: 'danger',
+          duration: 3000,
+        });
       },
     });
   };
