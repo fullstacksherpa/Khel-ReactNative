@@ -60,7 +60,6 @@ const AddressBottomSheet: React.FC = () => {
 
       try {
         const geoResults = await Location.geocodeAsync(`${newAddress}, Nepal`);
-        console.log(geoResults);
         if (geoResults.length > 0) {
           latitude = geoResults[0].latitude;
           longitude = geoResults[0].longitude;
@@ -75,11 +74,7 @@ const AddressBottomSheet: React.FC = () => {
 
       if (latitude !== null && longitude !== null) {
         updateLocation(latitude, longitude);
-        console.log('updateLocation trigger');
       }
-      console.log(
-        `New longitude and latitude of ${newAddress} is ${longitude}:${latitude}`
-      );
 
       updateAddress(newAddress);
       closeSheet();

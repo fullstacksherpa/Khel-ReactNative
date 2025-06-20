@@ -50,7 +50,6 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
             <TouchableOpacity
               className="ml-4 rounded-bl-2xl rounded-tr-2xl bg-white p-3"
               onPress={() => {
-                //TODO: sometime there might be no back, will cause error router.back()
                 router.push('/register');
               }}
             >
@@ -103,8 +102,8 @@ export const LoginForm = ({ onSubmit, isPending }: LoginFormProps) => {
                   <ArrowRight stroke="white" width={24} height={24} />
                 )
               }
-              loading={isPending} // Pass the isPending value to show the loading spinner
-              disabled={isPending} // Disable the button to prevent duplicate requests
+              loading={isPending}
+              disabled={isPending}
               onPress={handleSubmit(onSubmit)}
             />
             <View className="mt-6 flex-row justify-center gap-2">

@@ -29,7 +29,7 @@ const ManageRequests = () => {
         gameId: gameId,
         userId: userId,
       };
-      console.log(user);
+
       const response = await axios.post(
         'http://localhost:8000/game/accept',
         user
@@ -63,7 +63,6 @@ const ManageRequests = () => {
     }
   };
 
-  console.log(`This is requests fetch ${requests}`);
   const [players, setPlayers] = useState<IPlayer[]>([]);
 
   useEffect(() => {

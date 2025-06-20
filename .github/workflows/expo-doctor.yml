@@ -62,10 +62,3 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
           MAPBOX_PUBLIC_TOKEN: ${{ secrets.MAPBOX_PUBLIC_TOKEN }}
-
-      - name: Add doctor report as comment on PR
-        if: github.event_name == 'pull_request' && always()
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: expo-doctor
-          path: .expo/expo-doctor.md

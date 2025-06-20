@@ -15,7 +15,6 @@ export const CancelGameButton: React.FC<Props> = ({ gameID, style }) => {
 
   const { mutate, isPending } = useCancelGame({
     onSuccess: () => {
-      // Invalidate the `useGameDetails` query for this gameID
       queryClient.invalidateQueries({
         queryKey: ['game-details', { gameID }],
       });
@@ -23,7 +22,6 @@ export const CancelGameButton: React.FC<Props> = ({ gameID, style }) => {
     },
     onError: (err) => {
       Alert.alert('Error', err.response?.data?.message ?? 'Failed to cancel');
-      console.log(err);
     },
   });
 

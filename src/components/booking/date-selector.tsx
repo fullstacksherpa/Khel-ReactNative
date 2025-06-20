@@ -20,16 +20,16 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
       horizontal
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => `${item.fullDate}-${index}`}
-      contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 18 }}
+      contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 13 }}
       renderItem={({ item }) => {
         const isSelected = item.fullDate === selectedDate;
         return (
           <Pressable
             onPress={() => onSelect(item.fullDate)}
-            className={`mx-1 items-center justify-center rounded-lg p-4 ${isSelected ? 'bg-gray-800' : 'bg-gray-200'}`}
+            className={`mx-1 items-center justify-center rounded-lg p-3 ${isSelected ? 'bg-mainGreen' : 'bg-gray-200'}`}
           >
             <Text
-              className={`${isSelected ? 'text-white' : 'text-gray-700'} text-sm`}
+              className={`${isSelected ? 'text-white' : 'text-red-800'} text-lg font-semibold`}
             >
               {item.dayLabel}
             </Text>

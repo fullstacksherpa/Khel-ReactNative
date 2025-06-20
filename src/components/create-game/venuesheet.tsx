@@ -29,7 +29,6 @@ export default function VenueSheet({
   snapPoints = ['80%'],
   sport,
 }: VenueSheetProps) {
-  console.log('venues', venues);
   return (
     <BottomSheet
       ref={bottomSheetRef}
